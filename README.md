@@ -1,20 +1,19 @@
-# Bot-base_General
+# XperPool Bot
 
-Voici la structure pour créer un bot général.
-
-
-## Installation du bot
-
-1. Cloner ce répertoire avec la commande `git clone https://github.com/Guscraftin/Bot-base_General.git`.  
-*Vous devez avoir installé git sur votre machine. Si votre machine ne reconnait la commande **git**, installez la via ce lien : https://git-scm.com/download/. Une fois git installé, ouvrez **Git Bash** pour exécuter les commandes git.*
-
-2. Allez à la racine du répertoire que vous venez de télécharger (avec la commande `cd Bot-base_General`) et tapez la commande : `npm i`.  
-*Vous devez avoir installé nodejs sur votre machine. Si votre machine ne reconnait la commande **npm**, installez la via ce lien : https://nodejs.org/fr/download/*.
-
-3. Renommer le fichier `.env.example` en `.env`.
-4. Remplacer les `...` des trois variables dans `.env` par vos valeurs.
+This is the discord bot of the [discord server (insert link)]()
 
 
-## Lancement du bot
+## Bot Installation
 
-- Exécuter la commmande `node .` dans le dossier précédemment clone
+1. Clone this repository using the command `git clone https://github.com/Guscraftin/bot_XperPool.git`.  
+*You must have Git installed on your machine. If your machine doesn't recognize the **git** command, you can install it using this link: https://git-scm.com/download/. Once Git is installed, open **Git Bash** to execute Git commands.*
+
+2. Navigate to the root directory of the downloaded repository (using the command `cd bot_XperPool`) and run the command: `npm i`.  
+*You must have Node.js installed on your machine. If your machine doesn't recognize the **npm** command, you can install it using this link: https://nodejs.org/download/*.
+
+3. Rename the `.env.example` file to `.env`.
+4. Replace the `...` placeholders of the three variables in `.env` with your own values.
+
+## Bot Launch
+
+- Execute the command `node .` in the previously cloned folder.
