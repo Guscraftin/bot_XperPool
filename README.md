@@ -2,6 +2,11 @@
 
 This is the discord bot of the [discord server (insert link)]()
 
+## Features
+
+- Log when a user joins or leaves the server.
+- Send a welcome message to the new user.
+
 
 ## Bot Installation
 
