@@ -1,10 +1,15 @@
 # XperPool Bot
 
-This is the discord bot of the [discord server (insert link)]()
+This is the discord bot of the [discord server (insert link)]().
+More information about this project is available on the [XperPool Website](https://xperpool.fr/).
+
+## Commands
+- ...
 
 ## Features
 
 - Log when a user joins or leaves the server.
+- Logs when a message changes or is deleted.
 - Send a welcome message to the new user.
 
 
