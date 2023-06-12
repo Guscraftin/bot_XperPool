@@ -4,8 +4,10 @@ dotenv.config();
 
 const client = new Client({ intents: [
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildModeration,
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
 ] });
 client.commands = new Collection();
 client.buttons = new Collection();
