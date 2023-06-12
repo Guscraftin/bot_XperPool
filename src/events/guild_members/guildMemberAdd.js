@@ -4,7 +4,10 @@ const { channel_logs_join_leave } = require('../../const.json');
 module.exports = {
     name: Events.GuildMemberAdd,
     async execute(member){
-        // Send the log message to the log channel
+
+        /*
+         * Log
+         */
         try {
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `${member.user.tag} (${member.id})`, iconURL: member.user.displayAvatarURL() })
@@ -24,7 +27,9 @@ module.exports = {
             console.error(error);
         }     
         
-        // Send the welcome message to the new member
+        /*
+         * Send a welcome DM to the new member
+         */
         try {
             if (member.user.bot) return;
             const guildOwnerId = await member.guild.ownerId;

@@ -4,8 +4,10 @@ const { channel_logs_message } = require('../../const.json');
 module.exports = {
     name: Events.MessageDelete,
     async execute(message){
-        
-        // Send the log message to the log channel
+
+        /*
+         * Log
+         */
         try {
             let embed;
             if (message.author === null) {

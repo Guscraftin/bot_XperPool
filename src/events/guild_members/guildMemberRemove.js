@@ -5,7 +5,9 @@ module.exports = {
     name: Events.GuildMemberRemove,
     async execute(member){
 
-        // Send the log message to the log channel
+        /*
+         * Log
+         */
         try {
             // Check if the member has been kicked
             const fetchKickLog = await member.guild.fetchAuditLogs({

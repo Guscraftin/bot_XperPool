@@ -5,7 +5,9 @@ module.exports = {
     name: Events.MessageUpdate,
     async execute(oldMessage, newMessage){
 
-        // Send the log message to the log channel
+        /*
+         * Log
+         */
         try {
             if (newMessage.author.bot) return;
 
