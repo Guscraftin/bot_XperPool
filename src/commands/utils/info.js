@@ -10,13 +10,13 @@ module.exports = {
         let isTeamOwner = false;
         let owner = "Aucun";
         await interaction.client.application.fetch().then(function(bot) {
-            if (bot.owner.tag !== undefined) {
-                owner = `▸ ${bot.owner.tag}`
+            if (bot.owner.username !== undefined) {
+                owner = `▸ [${bot.owner.username}](https://discord.com/users/${bot.owner.id})`
             } else {
                 isTeamOwner = true;
                 owner = "";
                 bot.owner.members.forEach(member => {
-                    owner += `▸ ${member.user.tag}\n`;
+                    owner += `▸ [${bot.owner.username}](https://discord.com/users/${bot.owner.id})\n`;
                 });
             }
         });
@@ -31,7 +31,7 @@ module.exports = {
                 { name: 'Date de création', value: `<t:${parseInt(botUser.createdTimestamp / 1000)}:R>`, inline: true },
                 { name: 'En ligne depuis', value: `<t:${parseInt(interaction.client.readyTimestamp / 1000)}:f>`, inline: true },
                 { name: `${isTeamOwner ? "Mes propriétaires" : "Mon propriétaire"} :`, value: owner, inline: true },
-                { name: 'Mes développeurs :', value: `▸ [guscraftin](https://github.com/Guscraftin)`, inline: true },
+                { name: 'Mes développeurs :', value: `▸ [Guscraftin](https://github.com/Guscraftin)`, inline: true },
             )
             .setColor('DarkAqua')
             .setTimestamp()
