@@ -16,22 +16,36 @@ module.exports = {
             });
 
             const kickLog = fetchKickLog.entries.first();
-            const { target, reason } = kickLog;
+            const { target: targetKick, reason: reasonKick, createdAt } = kickLog;
             let isMemberKick = false;
 
-            if (target.id === member.id) isMemberKick = true;
+            if (targetKick.id === member.id && Date.now() - createdAt.getTime() < 0) isMemberKick = true;
+            else {
+                // Check if the member has been banned
+                const fetchBanLog = await member.guild.fetchAuditLogs({
+                    limit: 1,
+                    type: 22
+                });
 
+                const banLog = fetchBanLog.entries.first();
+                const { target: targetBan, reason: reasonBan } = banLog;
+                let isMemberBan = false;
+
+                if (targetBan.id === member.id && Date.now() - banLog.createdTimestamp < 0) isMemberBan = true;
+            }
+
+            
             // Send the log message
             const embed = new EmbedBuilder()
-                .setAuthor({ name: `${member.user.tag} (${member.id})`, iconURL: member.user.displayAvatarURL() })
+                .setAuthor({ name: `${member.user.username} (${member.id})`, iconURL: member.user.displayAvatarURL() })
                 .setColor('#dc143c')
-                .setDescription(`
-• Nom d'utilisateur : ${member.displayName} - \`${member.user.tag}\` (${member.id})
+                .setDescription(
+`• Nom d'utilisateur : ${member.displayName} - \`${member.user.username}\` (${member.id})
 • Créé le : <t:${parseInt(member.user.createdTimestamp / 1000)}:f> (<t:${parseInt(member.user.createdTimestamp / 1000)}:R>)
 • Rejoint le : <t:${parseInt(member.joinedTimestamp / 1000)}:f> (<t:${parseInt(member.joinedTimestamp / 1000)}:R>)
-• Quitté le : <t:${parseInt(Date.now() / 1000)}:f> (<t:${parseInt(Date.now() / 1000)}:R>)
-• Kick ? : ${isMemberKick ? `🟢 (raison : ${reason !== null ? reason : `\`Non fourni\``})` : `🔴`}
-                `)
+• Quitté le : <t:${parseInt(Date.now() / 1000)}:f> (<t:${parseInt(Date.now() / 1000)}:R>)` +
+`${isMemberKick ? `\n• Expulsé : 🟢 (raison : ${reasonKick !== null ? reasonKick : `\`Non fournie\``})` : ``}` +
+`${isMemberBan ? `\n• Banni : 🟢 (raison : ${reasonBan !== null ? reasonBan : `\`Non fournie\``})` : ``}`)
                 .setTimestamp()
                 .setFooter({ text: `L'utilisateur a quitté !` })
 
