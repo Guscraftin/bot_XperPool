@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { channel_logs_role, channel_general, role_members } = require('../../const.json');
+const { channel_logs_moderation, channel_logs_role, channel_general, role_members } = require('../../const.json');
 
 module.exports = {
     name: Events.GuildMemberUpdate,
@@ -9,22 +9,84 @@ module.exports = {
          * Log
          */
         try {
+            // Logs when a member get or remove a role
             const addRoles = listAddRole(oldMember, newMember);
             const removeRoles = listRemoveRole(oldMember, newMember);
 
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: oldMember.user.tag, iconURL: oldMember.user.displayAvatarURL() })
-                .setColor('#009ECA')
-                .setThumbnail(newMember.user.displayAvatarURL())
-                .setDescription(`**${newMember.user} a été mis à jour.**\n` +
-                `${addRoles.length !== 0 ? `> **Rôle ajouté :** ${addRoles}\n` : ``}` +
-                `${removeRoles.length !== 0 ? `> **Rôle supprimé :** ${removeRoles}\n` : ``}`)
-                .setTimestamp()
-                .setFooter({ text: newMember.guild.name, iconURL: newMember.guild.iconURL() })
+            if (addRoles.length !== 0 || removeRoles.length !== 0) {
+                // Send the log message
+                const embed = new EmbedBuilder()
+                    .setAuthor({ name: oldMember.user.tag, iconURL: oldMember.user.displayAvatarURL() })
+                    .setColor('#009ECA')
+                    .setThumbnail(newMember.user.displayAvatarURL())
+                    .setDescription(`**${newMember.user} a été mis à jour.**\n` +
+                    `${addRoles.length !== 0 ? `> **Rôle ajouté :** ${addRoles}\n` : ``}` +
+                    `${removeRoles.length !== 0 ? `> **Rôle supprimé :** ${removeRoles}\n` : ``}`)
+                    .setTimestamp()
+                    .setFooter({ text: newMember.guild.name, iconURL: newMember.guild.iconURL() })
 
-            newMember.guild.channels.fetch(channel_logs_role).then(channel =>
-                channel.send({ embeds: [embed] })
-            );
+                newMember.guild.channels.fetch(channel_logs_role).then(channel =>
+                    channel.send({ embeds: [embed] })
+                );
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        try {
+            // Logs when a member has timed out or has been un-timed out
+            if (oldMember.communicationDisabledUntilTimestamp !== newMember.communicationDisabledUntilTimestamp) {
+                // Logs when a member has timed out
+                if (oldMember.communicationDisabledUntilTimestamp === null) {
+
+                    const fetchMuteLog = await newMember.guild.fetchAuditLogs({ 
+                        limit: 1,
+                        type: 24
+                    });
+                    
+                    const MuteLog = await fetchMuteLog.entries.first();
+                    const { executor, target, reason } = MuteLog;
+                    if (target.id === newMember.id && Date.now() - MuteLog.createdTimestamp < 0) {
+                        const embed = new EmbedBuilder()
+                            .setTitle(`Exclusion temporaire`)
+                            .setDescription(`**${newMember.user} a été exclu par ${executor}.**\n` +
+                            `> **Jusque :** <t:${parseInt(newMember.communicationDisabledUntilTimestamp / 1000)}:f> (<t:${parseInt(newMember.communicationDisabledUntilTimestamp / 1000)}:R>)\n` +
+                            `> **Raison :** ${reason !== null ? `${reason}` : `\`Non fournie\``}\n`)
+                            .setColor('#009ECA')
+                            .setThumbnail(newMember.user.displayAvatarURL())
+                            .setTimestamp()
+                            .setFooter({ text: newMember.guild.name, iconURL: newMember.guild.iconURL() })
+
+                        newMember.guild.channels.fetch(channel_logs_moderation).then(channel =>
+                            channel.send({ embeds: [embed] })
+                        );
+                    }
+                } 
+                // Logs when a member has been un-timed out
+                else if (newMember.communicationDisabledUntilTimestamp === null) {
+                    const fetchMuteLog = await newMember.guild.fetchAuditLogs({ 
+                        limit: 1,
+                        type: 24
+                    });
+                    
+                    const MuteLog = await fetchMuteLog.entries.first();
+                    const { executor, target, reason } = MuteLog;
+                    if (target.id === newMember.id && Date.now() - MuteLog.createdTimestamp < 0) {
+                        const embed = new EmbedBuilder()
+                            .setTitle(`Fin à l'exclusion temporaire`)
+                            .setDescription(`**${newMember.user} arrêté d'être exclu par ${executor}.**\n` +
+                            `> **Sa sanction se serait terminé dans :** <t:${parseInt(oldMember.communicationDisabledUntilTimestamp / 1000)}:f> (<t:${parseInt(oldMember.communicationDisabledUntilTimestamp / 1000)}:R>)\n`)
+                            .setColor('#009ECA')
+                            .setThumbnail(newMember.user.displayAvatarURL())
+                            .setTimestamp()
+                            .setFooter({ text: newMember.guild.name, iconURL: newMember.guild.iconURL() })
+
+                        newMember.guild.channels.fetch(channel_logs_moderation).then(channel =>
+                            channel.send({ embeds: [embed] })
+                        );
+                    }
+                }
+            }
+
         } catch (error) {
             console.error(error);
         }
