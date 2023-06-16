@@ -10,13 +10,12 @@ module.exports = {
          */
         try {
             const embed = new EmbedBuilder()
-                .setAuthor({ name: `${member.user.tag} (${member.id})`, iconURL: member.user.displayAvatarURL() })
+                .setAuthor({ name: `${member.user.username} (${member.id})`, iconURL: member.user.displayAvatarURL() })
                 .setColor('#21ff81')
-                .setDescription(`
-• Nom d'utilisateur : ${member} - \`${member.user.tag}\` (${member.id})
+                .setDescription(
+`• Nom d'utilisateur : ${member} - \`${member.user.username}\` (${member.id})
 • Créé le : <t:${parseInt(member.user.createdTimestamp / 1000)}:f> (<t:${parseInt(member.user.createdTimestamp / 1000)}:R>)
-• Rejoint le : <t:${parseInt(member.joinedTimestamp / 1000)}:f> (<t:${parseInt(member.joinedTimestamp / 1000)}:R>)
-                `)
+• Rejoint le : <t:${parseInt(member.joinedTimestamp / 1000)}:f> (<t:${parseInt(member.joinedTimestamp / 1000)}:R>)`)
                 .setTimestamp()
                 .setFooter({ text: "L'utilisateur a rejoint !" })
 
