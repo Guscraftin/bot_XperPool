@@ -55,5 +55,17 @@ module.exports = {
         } catch (error) {
             console.error(error);
         }
+
+
+        /*
+         * Delete the member from the database
+         */
+        try {
+            const { Members } = require('../../dbObjects');
+            await Members.destroy({ where: { member_id: member.id } });
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 };
