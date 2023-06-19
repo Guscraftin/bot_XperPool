@@ -1,10 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('mission', {
-        main_message_id: {
+    return sequelize.define('missions', {
+        main_msg_id: {
             type: DataTypes.STRING,
             primaryKey: true,
         },
-        particular_message_id: {
+        particular_msg_id: {
             type: DataTypes.STRING,
             defaultValue: '0',
             allowNull: false,
