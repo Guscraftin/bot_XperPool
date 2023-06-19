@@ -53,7 +53,7 @@ module.exports = {
                 channel.send({ embeds: [embed] })
             );
         } catch (error) {
-            console.error(error);
+            console.error("guildMemberRemove.js Logs - " + error);
         }
 
 
@@ -65,7 +65,7 @@ module.exports = {
             await Members.destroy({ where: { member_id: member.id } });
         }
         catch (error) {
-            console.error(error);
+            console.error("guildMemberRemove.js MemberDB - " + error);
         }
     }
 };

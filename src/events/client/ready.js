@@ -11,8 +11,12 @@ module.exports = {
         client.user.setPresence({ status: 'online' });
 
         // Sync db models with db
-        await Members.sync({ alter: true });
-        await Missions.sync({ alter: true });
+        try {
+            await Members.sync({ alter: true });
+            await Missions.sync({ alter: true });
+        } catch (error) {
+            console.error("ready.js - " + error);
+        }
 
         console.log(`${client.user.username} est prêt à être utilisé par ${usersCount} utilisateurs sur ${guildsCount.size} serveurs !`);
     },

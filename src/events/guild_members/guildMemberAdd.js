@@ -23,7 +23,7 @@ module.exports = {
                 channel.send({ embeds: [embed] })
             );
         } catch (error) {
-            console.error(error);
+            console.error("guildMemberAdd.js Logs - " + error);
         }     
         
         /*
@@ -58,7 +58,7 @@ Nous te souhaitons à nouveau la bienvenue sur XperPool !`)
 
             member.send({ embeds: [embed] });
         } catch (error) {
-            console.error(error);
+            console.error("guildMemberAdd.js WelcomeMsg - " + error);
         }
     }
 };

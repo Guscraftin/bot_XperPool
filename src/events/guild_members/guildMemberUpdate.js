@@ -88,7 +88,7 @@ module.exports = {
             }
 
         } catch (error) {
-            console.error(error);
+            console.error("guildMemberUpdate.js Logs - " + error);
         }
 
 
@@ -103,7 +103,7 @@ module.exports = {
                 );
             }
         } catch (error) {
-            console.error(error);
+            console.error("guildMemberUpdate.js WelcomeMessage - " + error);
         }
     }
 };
@@ -112,32 +112,40 @@ module.exports = {
  * List of roles added
  */
 function listAddRole(oldMember, newMember) {
-    let listNewRole = [];
-    newMember.roles.cache.forEach(element => {
-        listNewRole.push(element);
-    });
-    oldMember.roles.cache.forEach(element => {
-        let indexElement = listNewRole.indexOf(element);
-        if (indexElement !== -1) {
-            listNewRole.splice(indexElement, 1);
-        }
-    });
-    return listNewRole;
+    try {
+        let listNewRole = [];
+        newMember.roles.cache.forEach(element => {
+            listNewRole.push(element);
+        });
+        oldMember.roles.cache.forEach(element => {
+            let indexElement = listNewRole.indexOf(element);
+            if (indexElement !== -1) {
+                listNewRole.splice(indexElement, 1);
+            }
+        });
+        return listNewRole;
+    } catch (error) {
+        console.error("guildMemberUpdate.js listAddRole - " + error);
+    }
 }
 
 /*
  * List of roles removed
  */
 function listRemoveRole(oldMember, newMember) {
-    let listOldRole = [];
-    oldMember.roles.cache.forEach(element => {
-        listOldRole.push(element);
-    });
-    newMember.roles.cache.forEach(element => {
-        let indexElement = listOldRole.indexOf(element);
-        if (indexElement !== -1) {
-            listOldRole.splice(indexElement, 1);
-        }
-    });
-    return listOldRole;
+    try {
+        let listOldRole = [];
+        oldMember.roles.cache.forEach(element => {
+            listOldRole.push(element);
+        });
+        newMember.roles.cache.forEach(element => {
+            let indexElement = listOldRole.indexOf(element);
+            if (indexElement !== -1) {
+                listOldRole.splice(indexElement, 1);
+            }
+        });
+        return listOldRole;
+    } catch (error) {
+        console.error("guildMemberUpdate.js listRemoveRole - " + error);
+    }
 }

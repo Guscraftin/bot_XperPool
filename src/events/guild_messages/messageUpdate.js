@@ -35,7 +35,7 @@ module.exports = {
                 channel.send({ embeds: [embed] })
             );
         } catch (error) {
-            console.error(error);
+            console.error("messageUpdate.js Logs - " + error);
         }
     }
 };

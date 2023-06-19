@@ -32,7 +32,7 @@ module.exports = {
                 channel.send({ embeds: [embed] })
             );
         } catch (error) {
-            console.error(error);
+            console.error("messageDelete.js Logs - " + error);
         }
     }
 };
