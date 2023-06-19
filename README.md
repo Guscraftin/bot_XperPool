@@ -10,7 +10,8 @@ More information about this project is available on the [XperPool Website](https
 
 - Log when a user joins or leaves the server.
 - Logs when a message changes or is deleted.
-- Logs when a role is added or removed from a user. 
+- Logs when a role is added or removed from a user.
+- Logs when a moderation actions as they occur (mute/ban).
 - Send a welcome message to the new user.
 - Send a welcome message in the general channel when a user receives the "members" role.
 
