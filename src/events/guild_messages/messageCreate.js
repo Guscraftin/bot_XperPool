@@ -44,7 +44,7 @@ module.exports = {
          */
         try {
             const embed = new EmbedBuilder()
-                .setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
+                .setAuthor({ name: `${message.member.displayName} (${message.author.id})`, iconURL: message.author.displayAvatarURL() })
                 .setColor('#009ECA')
                 .setDescription(`${message.content}`)
                 .setTimestamp()
