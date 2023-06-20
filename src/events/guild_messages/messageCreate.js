@@ -5,6 +5,27 @@ const { channel_suggestions, emoji_yes, emoji_neutral, emoji_no } = require('../
 module.exports = {
     name: Events.MessageCreate,
     async execute(message) {
+        /*
+         * Suggestions system
+         */
+        if (message.channel.id === channel_suggestions && !message.author.bot) {
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `${message.member.displayName} (${message.author.id})`, iconURL: message.author.displayAvatarURL() })
+                .setColor('#009ECA')
+                .setDescription(`${message.content}`)
+                .setTimestamp()
+                .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() })
+
+            message.delete();
+
+            const msg = await message.guild.channels.fetch(channel_suggestions).then(channel =>   
+                channel.send({ embeds: [embed] })
+            );
+            await msg.react(emoji_yes);
+            await msg.react(emoji_neutral);
+            await msg.react(emoji_no);
+        }
+
 
         /*
          * Add score to member
@@ -36,31 +57,6 @@ module.exports = {
             }
         } catch (error) {
             console.error("messageCreate.js AddScore - " + error);
-        }
-
-
-        /*
-         * Suggestions system
-         */
-        try {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${message.member.displayName} (${message.author.id})`, iconURL: message.author.displayAvatarURL() })
-                .setColor('#009ECA')
-                .setDescription(`${message.content}`)
-                .setTimestamp()
-                .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() })
-
-            message.delete();
-
-            const msg = await message.guild.channels.fetch(channel_suggestions).then(channel =>   
-                channel.send({ embeds: [embed] })
-            );
-            await msg.react(emoji_yes);
-            await msg.react(emoji_neutral);
-            await msg.react(emoji_no);
-
-        } catch (error) {
-            console.error("messageCreate.js Suggestions - " + error);
         }
     }
 };
