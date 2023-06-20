@@ -2,11 +2,11 @@ const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('disc
 const { channel_suggestions } = require('../../const.json');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName("adminsuggest")
-		.setDescription("🔧 Permet de modifier une suggestion.")
+    data: new SlashCommandBuilder()
+        .setName("adminsuggest")
+        .setDescription("🔧 Permet de modifier une suggestion.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-		.setDMPermission(false)
+        .setDMPermission(false)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('accepter')
@@ -19,7 +19,7 @@ module.exports = {
                 .setDescription("🔧 Refuser une suggestion.")
                 .addStringOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setRequired(true))
                 .addStringOption(option => option.setName('commentaire').setDescription("Le raison du refus.").setRequired(true))),
-	async execute(interaction) {
+    async execute(interaction) {
         const messageId = interaction.options.getString("message");
         const comment = interaction.options.getString("commentaire");
 
@@ -75,5 +75,5 @@ module.exports = {
             default:
                 return interaction.reply({ content: "Cette action n'existe pas.", ephemeral: true });
         }
-	},
+    },
 };

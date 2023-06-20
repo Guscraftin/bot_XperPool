@@ -2,11 +2,11 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, Permi
 const { Members } = require('../../dbObjects');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName("adminscore")
-		.setDescription("🔧 Permet de modifier la db des membres.")
+    data: new SlashCommandBuilder()
+        .setName("adminscore")
+	    .setDescription("🔧 Permet de modifier la db des membres.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-		.setDMPermission(false)
+        .setDMPermission(false)
         .addSubcommand(subcommand =>
             subcommand
                 .setName('add')
@@ -25,7 +25,7 @@ module.exports = {
                 .setDescription("🔧 Définir le score d'un membre.")
                 .addUserOption(option => option.setName('membre').setDescription("Le membre auquel définir le score.").setRequired(true))
                 .addIntegerOption(option => option.setName('score').setDescription("Le score à mettre.").setRequired(true)))
-		.addSubcommand(subcommand =>
+        .addSubcommand(subcommand =>
             subcommand
                 .setName('clear')
                 .setDescription("🔧 Supprimer le score d'un membre.")
@@ -38,8 +38,8 @@ module.exports = {
             subcommand
                 .setName('deleteall')
                 .setDescription("🔧 Supprimer tous les membres de la base de donnée.")),
-	async execute(interaction) {
-		try {
+    async execute(interaction) {
+        try {
             const member = interaction.options.getUser("membre");
             const score = interaction.options.getInteger("score");
 
@@ -106,9 +106,9 @@ module.exports = {
                     return interaction.reply({ content: "Voulez-vous vraiment supprimer des données de la base de données ?", components: [deleteEmbed], ephemeral: true });
                 default:
                     return interaction.reply({ content: "Cette action n'existe pas.", ephemeral: true });
-		}} catch (error) {
+        }} catch (error) {
             console.error("adminscore.js - " + error);
             return interaction.reply({ content: "Une erreur est survenue lors de l'exécution de la commande.", ephemeral: true });
         }
-	},
+    },
 };
