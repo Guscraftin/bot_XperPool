@@ -1,5 +1,6 @@
-const { Events } = require('discord.js');
+const { Events, EmbedBuilder } = require('discord.js');
 const { Members, sequelize } = require('../../dbObjects');
+const { channel_suggestions, emoji_yes, emoji_neutral, emoji_no } = require('../../const.json');
 
 module.exports = {
     name: Events.MessageCreate,
@@ -35,6 +36,31 @@ module.exports = {
             }
         } catch (error) {
             console.error("messageCreate.js AddScore - " + error);
+        }
+
+
+        /*
+         * Suggestions system
+         */
+        try {
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
+                .setColor('#009ECA')
+                .setDescription(`${message.content}`)
+                .setTimestamp()
+                .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() })
+
+            message.delete();
+
+            const msg = await message.guild.channels.fetch(channel_suggestions).then(channel =>   
+                channel.send({ embeds: [embed] })
+            );
+            await msg.react(emoji_yes);
+            await msg.react(emoji_neutral);
+            await msg.react(emoji_no);
+
+        } catch (error) {
+            console.error("messageCreate.js Suggestions - " + error);
         }
     }
 };

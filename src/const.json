@@ -4,6 +4,11 @@
     "channel_logs_join_leave": "1116845107744870532",
     "channel_logs_role": "1116845109028335656",
     "channel_general": "1116845100425814117",
+    "channel_suggestions": "1116845101453422694",
+
+    "emoji_yes": "<:Tick_vert:1120663604442701894>",
+    "emoji_neutral": "<:Neutre:1120663602370719857>",
+    "emoji_no": "<:Croix_rouge:1120663601041117274>",
 
     "role_members": "1116845051079819415"
 }
