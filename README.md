@@ -5,18 +5,20 @@ More information about this project is available on the [XperPool Website](https
 
 ## Commands
 - adminscore: manage the 'score' database.
+- adminsuggest: manage a suggestion message.
 - leaderboard: get the leaderboard of all member.
 - score: get the score of a member.
 
 ## Features
-- Delete the user of the 'score' database when he left the guild.
 - Add 1 point when a member send a message (cooldown 5 secondes).
+- Delete the user of the 'score' database when he left the guild.
 - Log when a user joins or leaves the server.
 - Logs when a message changes or is deleted.
 - Logs when a role is added or removed from a user.
 - Logs when a moderation actions as they occur (mute/ban).
 - Send a welcome message to the new user.
 - Send a welcome message in the general channel when a user receives the "members" role.
+- Suggestion system
 
 
 ## Bot Installation
