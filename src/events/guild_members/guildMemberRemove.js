@@ -17,6 +17,8 @@ module.exports = {
         const kickLog = fetchKickLog.entries.first();
         const { target: targetKick, reason: reasonKick, createdAt } = kickLog;
         let isMemberKick = false;
+        let isMemberBan = false;
+        let reasonBan;
 
         if (targetKick.id === member.id && Date.now() - createdAt.getTime() < 0) isMemberKick = true;
         else {
@@ -27,8 +29,8 @@ module.exports = {
             });
 
             const banLog = fetchBanLog.entries.first();
-            const { target: targetBan, reason: reasonBan } = banLog;
-            let isMemberBan = false;
+            const targetBan = banLog.target;
+            reasonBan = banLog.reason;
 
             if (targetBan.id === member.id && Date.now() - banLog.createdTimestamp < 0) isMemberBan = true;
         }
