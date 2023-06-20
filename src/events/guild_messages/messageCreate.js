@@ -46,14 +46,14 @@ module.exports = {
                 }).catch(console.error);
             } else {
                 // Check if member has send a message in the last 5 seconds
-                if (member.is_messaging) return;
-
-                // Update member score
-                await member.update({ score: member.score + 1, is_messaging: true });
-                setTimeout(async () => {
-                    await member.update({ is_messaging: false });
+                if (!member.is_messaging) {
+                    // Update member score
+                    await member.update({ score: member.score + 1, is_messaging: true });
+                    setTimeout(async () => {
+                        await member.update({ is_messaging: false });
+                    }
+                    , 5000);
                 }
-                , 5000);
             }
         } catch (error) {
             console.error("messageCreate.js AddScore - " + error);
