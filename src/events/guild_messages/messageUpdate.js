@@ -8,34 +8,30 @@ module.exports = {
         /*
          * Log
          */
-        try {
-            if (newMessage.author.bot) return;
+        if (newMessage.author.bot) return;
 
-            const oldContentMessage = oldMessage.content;
-            const newContentMessage = newMessage.content;
+        const oldContentMessage = oldMessage.content;
+        const newContentMessage = newMessage.content;
 
-            let embed = new EmbedBuilder()
-                .setAuthor({ name: newMessage.author.tag, iconURL: newMessage.author.displayAvatarURL() })
-                .setColor('#009ECA')
-                .setTimestamp()
-                .setFooter({ text: newMessage.guild.name, iconURL: newMessage.guild.iconURL() })
+        let embed = new EmbedBuilder()
+            .setAuthor({ name: newMessage.author.tag, iconURL: newMessage.author.displayAvatarURL() })
+            .setColor('#009ECA')
+            .setTimestamp()
+            .setFooter({ text: newMessage.guild.name, iconURL: newMessage.guild.iconURL() })
 
-            // Logs for edited messages
-            if ((oldContentMessage === null || oldContentMessage.length <= 1024) && newContentMessage.length <= 1024) {
-                embed
-                    .setDescription(`**Message envoyé par <@${newMessage.author.id}> modifié dans ${newMessage.channel}.** [Aller au message.](${newMessage.url})`)
-                    .addFields([
-                        {name: `\`🔅\` - Ancien - \`🔅\``, value: `\`\`\`${oldContentMessage}\`\`\``},
-                        {name: `\`🔅\` - Nouveau - \`🔅\``, value: `\`\`\`${newContentMessage}\`\`\``}
-                    ])
+        // Logs for edited messages
+        if ((oldContentMessage === null || oldContentMessage.length <= 1024) && newContentMessage.length <= 1024) {
+            embed
+                .setDescription(`**Message envoyé par <@${newMessage.author.id}> modifié dans ${newMessage.channel}.** [Aller au message.](${newMessage.url})`)
+                .addFields([
+                    {name: `\`🔅\` - Ancien - \`🔅\``, value: `\`\`\`${oldContentMessage}\`\`\``},
+                    {name: `\`🔅\` - Nouveau - \`🔅\``, value: `\`\`\`${newContentMessage}\`\`\``}
+                ])
 
-            } else return;
+        } else return;
 
-            newMessage.guild.channels.fetch(channel_logs_message).then(channel => 
-                channel.send({ embeds: [embed] })
-            );
-        } catch (error) {
-            console.error("messageUpdate.js Logs - " + error);
-        }
+        newMessage.guild.channels.fetch(channel_logs_message).then(channel => 
+            channel.send({ embeds: [embed] })
+        );
     }
 };
