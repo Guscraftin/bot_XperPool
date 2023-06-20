@@ -12,19 +12,19 @@ module.exports = {
                 .setName('add')
                 .setDescription("🔧 Ajouter du score à un membre.")
                 .addUserOption(option => option.setName('membre').setDescription("Le membre auquel ajouter le score.").setRequired(true))
-                .addStringOption(option => option.setName('score').setDescription("Le score à ajouter.").setRequired(true)))
+                .addIntegerOption(option => option.setName('score').setDescription("Le score à ajouter.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('remove')
                 .setDescription("🔧 Retirer du score à un membre.")
                 .addUserOption(option => option.setName('membre').setDescription("Le membre auquel supprimer le score.").setRequired(true))
-                .addStringOption(option => option.setName('score').setDescription("Le score à retirer.").setRequired(true)))
+                .addIntegerOption(option => option.setName('score').setDescription("Le score à retirer.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('set')
                 .setDescription("🔧 Définir le score d'un membre.")
                 .addUserOption(option => option.setName('membre').setDescription("Le membre auquel définir le score.").setRequired(true))
-                .addStringOption(option => option.setName('score').setDescription("Le score à mettre.").setRequired(true)))
+                .addIntegerOption(option => option.setName('score').setDescription("Le score à mettre.").setRequired(true)))
 		.addSubcommand(subcommand =>
             subcommand
                 .setName('clear')
@@ -41,14 +41,15 @@ module.exports = {
 	async execute(interaction) {
 		try {
             const member = interaction.options.getUser("membre");
-            const score = interaction.options.getString("score");
+            const score = interaction.options.getInteger("score");
 
+            let user;
             if (member) {
                 // Check if member is a bot
                 if (member.bot) return interaction.reply({ content: "Vous ne pouvez pas modifier le score d'un bot.", ephemeral: true });
 
                 // Check if member exists in db
-                let user = await Members.findOne({ where: { member_id: member.id } });
+                user = await Members.findOne({ where: { member_id: member.id } });
                 if (!user) {
                     user = [
                         Members.upsert({ member_id: member.id}),
@@ -62,16 +63,12 @@ module.exports = {
             let deleteEmbed;
             switch (interaction.options.getSubcommand()) {
                 case "add":
-                    console.log(score);
-                    console.log(user.score);
-                    console.log(parseInt(score));
-                    newScore = parseInt(user.score) + parseInt(score);
-                    console.log(newScore);
+                    newScore = user.score + score;
                     await Members.update({ score: newScore }, { where: { member_id: member.id } });
                     return interaction.reply({ content: `Le score de ${member} a été augmenté à \`${newScore}\`.`, ephemeral: true });
 
                 case "remove":
-                    newScore = parseInt(user.score) - parseInt(score);
+                    newScore = user.score - score;
                     if (newScore < 0) newScore = 0;
                     await Members.update({ score: newScore }, { where: { member_id: member.id } });
                     return interaction.reply({ content: `Le score de ${member} a été diminué à \`${newScore}\`.`, ephemeral: true });
