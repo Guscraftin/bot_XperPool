@@ -31,30 +31,20 @@ module.exports = {
          */
         try {
             if (member.user.bot) return;
-            const guildOwnerId = await member.guild.ownerId;
-            const guildOwner = await member.guild.members.fetch(guildOwnerId);
 
             const embed = new EmbedBuilder()
-                .setAuthor({ name: `${guildOwner.user.username}`, iconURL: guildOwner.displayAvatarURL() })
                 .setColor('#0A038C')
                 .setDescription(`
-Welcome ${member} !🎉
+## Bienvenue ${member} !
 
-Nous sommes heureux de t'accueillir sur le serveur Discord de la Communauté XperPool dédiée au portage salarial IT !
+Je suis le robot de la communauté XperPool !
+J'ai été créer dans le but de t'aider à proposer ou trouver des missions en portage salarial dans le domaine de l'IT.
 
-Afin de pouvoir rejoindre officiellement la communauté et accéder aux différents salons, va vite remplir notre petit questionnaire pour récupérer ton accès 😉
-
-https://tally.so/r/3EKPvN
-
-Ici, tu pourras discuter avec d'autres professionnels de diverses secteurs, partager tes expériences et poser des questions précises sur n'importe quel domaine.
-
-Nous proposons également des missions adaptées à ton profil pour t'aider à développer ta carrière et ta montée en compétences !
-
-N'hésite pas à consulter les différentes sections du serveur et à participer aux discussions. Si tu as des questions ou des suggestions, tu as la possibilité de contacter notre équipe d'administration à l'aide des tickets dans le salon "Help".
-
-Nous te souhaitons à nouveau la bienvenue sur XperPool !`)
-                .addFields({ name: "NB : Tu peux aussi aller jeter un coup d'œil à notre site web !😁", value: 'Xperpool.fr' })
-                .setImage('https://media.discordapp.net/attachments/1117544311848976505/1117544390534119554/Xperpool_logo_2.jpeg?width=225&height=225')
+La première étape afin d'accéder à toutes mes fonctionnalités et de **remplir ce formulaire : https://tally.so/r/3EKPvN**.
+Grâce à celui-ci, tu pourras accéder à l'ensemble des canaux de discussion et de recherche de missions.
+`)
+                .setThumbnail('https://media.discordapp.net/attachments/1117544311848976505/1117544390534119554/Xperpool_logo_2.jpeg?width=225&height=225')
+                .setFooter({ text: "A tout de suite sur le serveur !" })
 
             member.send({ embeds: [embed] });
         } catch (error) {
