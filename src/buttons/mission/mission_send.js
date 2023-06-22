@@ -33,25 +33,7 @@ module.exports = {
 
         // Send the embed mission
         const particular_msg = await particular_channel.send({ components: [buttonRow], embeds: [missionEmbed] });
-
-        const { text: footer_text, iconURL: footer_url } = missionEmbed.footer;
-        const main_embed = new EmbedBuilder()
-            .setTitle(missionEmbed.title)
-            .setDescription(missionEmbed.description)
-            .setColor(missionEmbed.color)
-            .setFields(missionEmbed.fields)
-            .setTimestamp()
-            .setFooter({ text: `${footer_text} - ${particular_msg.id}`, iconURL: footer_url });
-
-        const main_msg = await main_channel.send({ components: [buttonRow], embeds: [main_embed] });
-        const particular_embed = new EmbedBuilder()
-            .setTitle(missionEmbed.title)
-            .setDescription(missionEmbed.description)
-            .setColor(missionEmbed.color)
-            .setFields(missionEmbed.fields)
-            .setTimestamp()
-            .setFooter({ text: `${footer_text} - ${main_msg.id}`, iconURL: footer_url });
-        await particular_msg.edit({ embeds: [particular_embed] })
+        const main_msg = await main_channel.send({ components: [buttonRow], embeds: [missionEmbed] });
 
         // Add the mission to the database
         try {
