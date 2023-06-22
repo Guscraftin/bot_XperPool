@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: '0',
             allowNull: false,
         },
-        url_mission: {
+        url: {
             type: DataTypes.STRING,
             defaultValue: '',
             allowNull: false,
