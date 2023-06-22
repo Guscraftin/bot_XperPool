@@ -4,8 +4,13 @@ This is the discord bot of the [discord server (insert link)]().
 More information about this project is available on the [XperPool Website](https://xperpool.fr/).
 
 ## Commands
+### Admin Only
 - adminscore: manage the 'score' database.
 - adminsuggest: manage a suggestion message.
+- clear: clear some messages in a channel.
+- newmission: create a mission.
+- techno: create or delete a techno (role and category).
+### For everyone
 - leaderboard: get the leaderboard of all member.
 - score: get the score of a member.
 
@@ -16,9 +21,10 @@ More information about this project is available on the [XperPool Website](https
 - Logs when a message changes or is deleted.
 - Logs when a role is added or removed from a user.
 - Logs when a moderation actions as they occur (mute/ban).
+- Logs when a member react to a mission.
 - Send a welcome message to the new user.
 - Send a welcome message in the general channel when a user receives the "members" role.
-- Suggestion system
+- Suggestion system.
 
 
 ## Bot Installation
