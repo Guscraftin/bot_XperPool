@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { Members, Missions } = require('../../dbObjects');
+const { Members, Missions, LogMissions } = require('../../dbObjects');
 
 module.exports = {
     name: Events.ClientReady,
@@ -14,6 +14,7 @@ module.exports = {
         try {
             await Members.sync({ alter: true });
             await Missions.sync({ alter: true });
+            await LogMissions.sync({ alter: true });
         } catch (error) {
             console.error("ready.js - " + error);
         }

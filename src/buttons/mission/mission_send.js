@@ -1,4 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { Missions } = require("../../dbObjects");
 
 module.exports = {
     data: {
@@ -11,6 +12,9 @@ module.exports = {
         const step1 = interaction.message.content.split("<#");
         const main_channel = await interaction.guild.channels.fetch(step1[1].split(">")[0]);
         const particular_channel = await interaction.guild.channels.fetch(step1[2].split(">")[0]);
+
+        // Get the url of the mission
+        const url = interaction.message.content.split(" : ")[1];
 
         // Create the button row
         const buttonRow = new ActionRowBuilder()
@@ -48,6 +52,18 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: `${footer_text} - ${main_msg.id}`, iconURL: footer_url });
         await particular_msg.edit({ embeds: [particular_embed] })
+
+        // Add the mission to the database
+        try {
+            await Missions.create({
+                main_msg_id: main_msg.id,
+                particular_msg_id: particular_msg.id,
+                url_mission: url,
+            });
+        } catch (error) {
+            console.error("mission_send.js - " + error);
+            return interaction.reply({ content: "Une erreur est survenue lors de l'enregistrement de la mission dans la base de donné. De ce fait, les logs de cette mission ne pourront pas être enregistré.", ephemeral: true });
+        }
 
         return interaction.reply({ content: "La mission a bien été publiée.", ephemeral: true });
     }

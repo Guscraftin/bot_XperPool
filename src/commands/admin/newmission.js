@@ -17,6 +17,7 @@ module.exports = {
         .addStringOption(option => option.setName('teletravail').setDescription("Télétravail de la mission.").setMaxLength(1024).setRequired(true))
         .addStringOption(option => option.setName('duree').setDescription("Durée de la mission.").setMaxLength(1024).setRequired(true))
         .addStringOption(option => option.setName('competences').setDescription("Compétences de la mission.").setMaxLength(1024).setRequired(true))
+        .addStringOption(option => option.setName("url").setDescription("Lien de la mission complète.").setRequired(true))
         .addChannelOption(option => option.setName('commu').setDescription("La commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory)),
     async execute(interaction) {
         const title = interaction.options.getString('titre');
@@ -30,6 +31,7 @@ module.exports = {
         const duration = interaction.options.getString('duree');
         const skills = interaction.options.getString('competences');
         const community = interaction.options.getChannel('commu');
+        const url = interaction.options.getString('url');
 
         // Get the mission channel of the community category
         const channel = await interaction.guild.channels.fetch().then(channels => {
@@ -65,6 +67,11 @@ module.exports = {
             );
 
         // Send the embed mission
-        return interaction.reply({ content: `Es-tu sur de vouloir publier cette mission dans <#${channel_all_missions}>${channel ? ` et dans ${channel.first()}` : ``} ?`, embeds: [missionEmbed], components: [buttonRow], ephemeral: true });
+        return interaction.reply({ content: 
+            `**Es-tu sur de vouloir publier cette mission dans <#${channel_all_missions}>${channel ? ` et dans ${channel.first()}` : ``} ?**\nAvec l'url pour postuler : ${url}`,
+            embeds: [missionEmbed],
+            components: [buttonRow],
+            ephemeral: true
+        });
     },
 };
