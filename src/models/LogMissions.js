@@ -2,12 +2,12 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define('logmissions', {
         main_msg_id: {
             type: DataTypes.STRING,
-            primaryKey: true,
+            defaultValue: '0',
+            allowNull: false,
         },
         user_id: {
             type: DataTypes.STRING,
             defaultValue: '0',
-            unique: true,
             allowNull: false,
         },
         first_name: {
