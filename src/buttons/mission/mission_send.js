@@ -40,7 +40,7 @@ module.exports = {
             await Missions.create({
                 main_msg_id: main_msg.id,
                 particular_msg_id: particular_msg.id,
-                url_mission: url,
+                url: url,
             });
         } catch (error) {
             console.error("mission_send.js - " + error);
