@@ -12,6 +12,11 @@
     "channel_suggestions": "1116845101453422694",
     "channel_all_missions": "1116845087117283408",
 
+    "_color_green": "32768",
+    "color_accept": "#008000",
+    "_color_red": "10430247",
+    "color_decline": "#9F2727",
+
     "emoji_yes": "<:Tick_vert:1120663604442701894>",
     "emoji_neutral": "<:Neutre:1120663602370719857>",
     "emoji_no": "<:Croix_rouge:1120663601041117274>",

@@ -1,5 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { channel_suggestions } = require('../../const.json');
+const { channel_suggestions, color_accept, color_decline } = require('../../const.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -43,7 +43,7 @@ module.exports = {
             if (comment) {
                     embed = new EmbedBuilder()
                         .setAuthor({ name: `${author.displayName} - ✅ Suggestion acceptée par ${interaction.member.displayName}`, iconURL: author.displayAvatarURL() })
-                        .setColor('#008000')
+                        .setColor(color_accept)
                         .setDescription(`${embedMsg.description}`)
                         .setFields([{ name: "Commentaire :", value: `>>> ${comment}` }])
                         .setTimestamp()
@@ -51,7 +51,7 @@ module.exports = {
                 } else {
                     embed = new EmbedBuilder()
                         .setAuthor({ name: `${author.displayName} - ✅ Suggestion acceptée par ${interaction.member.displayName}`, iconURL: author.displayAvatarURL() })
-                        .setColor('#008000')
+                        .setColor(color_accept)
                         .setDescription(`${embedMsg.description}`)
                         .setTimestamp()
                         .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
@@ -63,7 +63,7 @@ module.exports = {
             case "refuser":
                 const embed2 = new EmbedBuilder()
                     .setAuthor({ name: `${author.displayName} - ❌ Suggestion refusée par ${interaction.member.displayName}`, iconURL: author.displayAvatarURL() })
-                    .setColor('#9F2727')
+                    .setColor(color_decline)
                     .setDescription(`${embedMsg.description}`)
                     .setFields([{ name: "Raison :", value: `>>> ${comment}` }])
                     .setTimestamp()

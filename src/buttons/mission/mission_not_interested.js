@@ -27,6 +27,7 @@ module.exports = {
             }
         }
         if (!mission) return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+        if (!mission.is_open) return interaction.reply({ content: "Cette mission n'est plus ouverte aux candidatures.", ephemeral: true });
 
 
         const is_react_mission = await LogMissions.findOne({ where: { main_msg_id: mission.main_msg_id, user_id: interaction.user.id } });
