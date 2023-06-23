@@ -26,6 +26,11 @@ More information about this project is available on the [XperPool Website](https
 - Send a welcome message in the general channel when a user receives the "members" role.
 - Suggestion system.
 
+## Database
+- LogMissions: log when a member react to a mission.
+- Member: score of a member for the economic system.
+- Missions: all mission send in public channel (name missions).
+
 
 ## Bot Installation
 
