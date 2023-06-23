@@ -3,28 +3,28 @@ const { category_admin, category_general, category_important, category_xerpool, 
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("techno")
-        .setDescription("🔧 Permet de créer une nouvelle techno sur le serveur.")
+        .setName("commu")
+        .setDescription("🔧 Permet de créer une nouvelle commu sur le serveur.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
         .addSubcommand(subcommand => subcommand
             .setName('add')
-            .setDescription("🔧 Ajoute une nouvelle techno au serveur.")
-            .addStringOption(option => option.setName('nom').setDescription("Le nom de la technologie a ajouter au serveur.").setRequired(true)))
+            .setDescription("🔧 Ajoute une nouvelle commu au serveur.")
+            .addStringOption(option => option.setName('nom').setDescription("Le nom de la communauté a ajouter au serveur.").setRequired(true)))
         .addSubcommand(subcommand => subcommand
             .setName('remove')
-            .setDescription("🔧 Supprime une techno du serveur.")
-            .addChannelOption(option => option.setName('category').setDescription("La catégorie de la technologie a supprimer du serveur.").addChannelTypes(ChannelType.GuildCategory).setRequired(true))),
+            .setDescription("🔧 Supprime une commu du serveur.")
+            .addChannelOption(option => option.setName('categorie').setDescription("La catégorie de la communauté a supprimer du serveur.").addChannelTypes(ChannelType.GuildCategory).setRequired(true))),
     async execute(interaction) {
         const name = interaction.options.getString('nom');
-        const del_category = interaction.options.getChannel('category');
+        const del_category = interaction.options.getChannel('categorie');
 
         switch (interaction.options.getSubcommand()) {
             case 'add':
                 /*
                 * Find the position of the role
                 */
-                // Get all techno roles and sort them by name in roles array
+                // Get all commu roles and sort them by name in roles array
                 const roles_fetch = await interaction.guild.roles.fetch();
                 const roles = await roles_fetch.filter(role => !role.managed && role.id != interaction.guild.id && role.id != role_admins && role.id != role_members && role.id != role_bots);
                 roles.sort(compareName);
@@ -95,12 +95,12 @@ module.exports = {
                     type: ChannelType.GuildVoice,
                 });
  
-                return interaction.reply({content: `La technologie **${name}** a été ajoutée au serveur.`, ephemeral: true});
+                return interaction.reply({content: `La communauté **${name}** a été ajoutée au serveur.`, ephemeral: true});
 
             case 'remove':
-                // Check if the category is a technology category
+                // Check if the category is a commulogy category
                 if (!del_category.name.startsWith("💻┃Commu")) {
-                    return interaction.reply({content: "Cette catégorie n'est pas une catégorie de technologie.", ephemeral: true});
+                    return interaction.reply({content: "Cette catégorie n'est pas une catégorie de communauté.", ephemeral: true});
                 }
 
                 // Delete the role
@@ -115,7 +115,7 @@ module.exports = {
                 });
                 await del_category.delete();
 
-                return interaction.reply({content: `La technologie **${del_name_role}** a été supprimée du serveur.`, ephemeral: true});
+                return interaction.reply({content: `La communauté **${del_name_role}** a été supprimée du serveur.`, ephemeral: true});
 
             default:
                 return interaction.reply({content: "Une erreur est survenue.", ephemeral: true});
