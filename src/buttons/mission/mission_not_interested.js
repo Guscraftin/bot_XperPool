@@ -40,7 +40,7 @@ module.exports = {
                     .setURL(mission.url)
                     .setStyle(ButtonStyle.Link)
             );
-            if (is_react_mission.is_interested) return interaction.reply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
+            if (is_react_mission.is_interested) return interaction.reply({ content: `Vous avez déjà répondu être intéressés par cette mission. De ce fait, revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
             else return interaction.reply({ content: "Vous avez déjà répondu ne pas être intéressé par cette mission.", ephemeral: true });
         }
 
