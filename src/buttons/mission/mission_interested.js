@@ -42,7 +42,21 @@ module.exports = {
         // Check if the user has already reacted to the message
         if (is_react_mission) {
             if (is_react_mission.is_interested) return interaction.reply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
-            else return interaction.reply({ content: "Vous avez déjà répondu ne pas être intéressé par cette mission.", ephemeral: true });
+            else {
+                const row_confirm = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setLabel("Confirmer son intérêt")
+                        .setCustomId("mission_to_interested")
+                        .setStyle(ButtonStyle.Secondary)
+                );
+
+                return interaction.reply({ 
+                    content: "Vous avez déjà répondu ne pas être intéressé par cette mission.\n" +
+                    "Si vous souhaitez changer votre réponse, cliquez sur le bouton ci-dessous.",
+                    components: [row_confirm],
+                    ephemeral: true
+                });
+            }
         }
 
         // Add the user to the database
