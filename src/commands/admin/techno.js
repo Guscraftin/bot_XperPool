@@ -9,11 +9,11 @@ module.exports = {
         .setDMPermission(false)
         .addSubcommand(subcommand => subcommand
             .setName('add')
-            .setDescription("Ajoute une nouvelle techno au serveur.")
+            .setDescription("🔧 Ajoute une nouvelle techno au serveur.")
             .addStringOption(option => option.setName('nom').setDescription("Le nom de la technologie a ajouter au serveur.").setRequired(true)))
         .addSubcommand(subcommand => subcommand
             .setName('remove')
-            .setDescription("Supprime une techno du serveur.")
+            .setDescription("🔧 Supprime une techno du serveur.")
             .addChannelOption(option => option.setName('category').setDescription("La catégorie de la technologie a supprimer du serveur.").addChannelTypes(ChannelType.GuildCategory).setRequired(true))),
     async execute(interaction) {
         const name = interaction.options.getString('nom');
