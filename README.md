@@ -8,9 +8,12 @@ More information about this project is available on the [XperPool Website](https
 - adminscore: manage the 'score' database.
 - adminsuggest: manage a suggestion message.
 - clear: clear some messages in a channel.
-- newmission: create a mission.
-- techno: create or delete a techno (role and category).
+- commu: create or delete a commu (role and category).
+- docs: send a embed message.
+- getlogmission: get the log of the click on a mission.
+- mission: create or edit a mission.
 ### For everyone
+- info: information about the bot.
 - leaderboard: get the leaderboard of all member.
 - score: get the score of a member.
 
@@ -25,6 +28,7 @@ More information about this project is available on the [XperPool Website](https
 - Send a welcome message to the new user.
 - Send a welcome message in the general channel when a user receives the "members" role.
 - Suggestion system.
+- Mission system.
 
 ## Database
 - LogMissions: log when a member react to a mission.
