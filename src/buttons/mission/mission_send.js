@@ -32,12 +32,6 @@ module.exports = {
                     .setCustomId("mission_interested")
                     .setStyle(ButtonStyle.Success)
                     .setLabel("Je suis intéressé")
-            )
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId("mission_not_interested")
-                    .setStyle(ButtonStyle.Danger)
-                    .setLabel("Je ne suis pas intéressé")
             );
 
         // Send the embed mission

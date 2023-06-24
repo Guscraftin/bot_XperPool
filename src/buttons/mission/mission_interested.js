@@ -7,7 +7,7 @@ module.exports = {
         name: "mission_interested",
     },
     async execute(interaction) {
-        // Get the main channel where the mission was sent
+        // Get the mission from the database
         let mission;
         let is_react_main_msg = false;
         if (interaction.channel.id === channel_all_missions) {
@@ -15,14 +15,14 @@ module.exports = {
             try {
                 mission = await Missions.findOne({ where: { main_msg_id: interaction.message.id } });            
             } catch (error) {
-                console.error("mission_not_interested.js - " + error);
+                console.error("mission_interested.js - " + error);
                 return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
             }
         } else {
             try {
                 mission = await Missions.findOne({ where: { particular_msg_id: interaction.message.id } });            
             } catch (error) {
-                console.error("mission_not_interested.js - " + error);
+                console.error("mission_interested.js - " + error);
                 return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
             }
         }
@@ -41,24 +41,7 @@ module.exports = {
         );
 
         // Check if the user has already reacted to the message
-        if (is_react_mission) {
-            if (is_react_mission.is_interested) return interaction.reply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
-            else {
-                const row_confirm = new ActionRowBuilder().addComponents(
-                    new ButtonBuilder()
-                        .setLabel("Confirmer son intérêt")
-                        .setCustomId("mission_to_interested")
-                        .setStyle(ButtonStyle.Secondary)
-                );
-
-                return interaction.reply({ 
-                    content: "Vous avez déjà répondu ne pas être intéressé par cette mission.\n" +
-                    "Si vous souhaitez changer votre réponse, cliquez sur le bouton ci-dessous.",
-                    components: [row_confirm],
-                    ephemeral: true
-                });
-            }
-        }
+        if (is_react_mission) return interaction.reply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
 
         // Add the user to the database
         const user_name = interaction.member.displayName.split("_");
@@ -68,7 +51,6 @@ module.exports = {
                 user_id: interaction.user.id,
                 first_name: user_name[0],
                 last_name: user_name[1],
-                is_interested: true,
                 is_react_main_msg: is_react_main_msg,
             });
         } catch (error) {

@@ -20,11 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: '',
             allowNull: false,
         },
-        is_interested: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-            allowNull: false,
-        },
         is_react_main_msg: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
