@@ -118,6 +118,7 @@ module.exports = {
                 if (interaction.channel.id !== channel_all_missions) {
                     try {
                         mission = await Missions.findOne({ where: { particular_msg_id: id } });
+                        if (!mission) return interaction.reply({ content: "Aucune mission n'a été trouvée avec cet id.", ephemeral: true });
                         main_message_id = mission.main_msg_id;
                     } catch (error) {
                         console.error(error);
@@ -126,6 +127,7 @@ module.exports = {
                 } else {
                     try {
                         mission = await Missions.findOne({ where: { main_msg_id: id } });
+                        if (!mission) return interaction.reply({ content: "Aucune mission n'a été trouvée avec cet id.", ephemeral: true });
                     } catch (error) {
                         console.error(error);
                         return interaction.reply({ content: "Une erreur est survenue lors de la récupération de la base de donnée.", ephemeral: true });
