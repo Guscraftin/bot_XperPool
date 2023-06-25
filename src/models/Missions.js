@@ -1,17 +1,23 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('missions', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         main_msg_id: {
             type: DataTypes.STRING,
-            primaryKey: true,
+            defaultValue: '0',
+            allowNull: false,
         },
         particular_msg_id: {
             type: DataTypes.STRING,
             defaultValue: '0',
             allowNull: false,
         },
-        url: {
+        channel_staff_id: {
             type: DataTypes.STRING,
-            defaultValue: '',
+            defaultValue: '0',
             allowNull: false,
         },
         is_open: {

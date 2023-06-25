@@ -1,6 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('logmissions', {
-        main_msg_id: {
+        mission_id: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+            allowNull: false,
+        },
+        channel_details:{
             type: DataTypes.STRING,
             defaultValue: '0',
             allowNull: false,

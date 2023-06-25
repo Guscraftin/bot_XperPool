@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions, _color_green, _color_red, color_accept, color_decline } = require('../../const.json');
+const { channel_all_missions, channel_staff_missions, _color_green, _color_red, color_accept, color_decline } = require('../../const.json');
 const { Missions } = require('../../dbObjects');
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
             .addStringOption(option => option.setName('teletravail').setDescription("Télétravail de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('duree').setDescription("Durée de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('competences').setDescription("Compétences de la mission.").setMaxLength(1024).setRequired(true))
-            .addStringOption(option => option.setName("url").setDescription("Lien de la mission complète.").setRequired(true))
+            .addChannelOption(option => option.setName("salon").setDescription("Le salon staff de la mission.").addChannelTypes(ChannelType.PublicThread).setRequired(true))
             .addChannelOption(option => option.setName('commu').setDescription("La commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory)))
         .addSubcommand(subcommand => subcommand
             .setName("edit")
@@ -53,8 +53,14 @@ module.exports = {
                 const teleworking = interaction.options.getString('teletravail');
                 const duration = interaction.options.getString('duree');
                 const skills = interaction.options.getString('competences');
+                const channelStaff = interaction.options.getChannel('salon');
                 const community = interaction.options.getChannel('commu');
-                const url = interaction.options.getString('url');
+
+                // Check the channelStaff
+                if (channelStaff.parentId !== channel_staff_missions) return interaction.reply({ content: `Le salon staff de la mission doit être un fil de discussion public dans le salon <#${channel_staff_missions}>.`, ephemeral: true });
+
+                const channelStaffUsed = await Missions.findOne({ where: { channel_staff_id: channelStaff.id } });
+                if (channelStaffUsed) return interaction.reply({ content: `Le salon staff de la mission est déjà utilisé par la mission ${channelStaffUsed.id}.`, ephemeral: true });
 
                 // Get the mission channel of the community category
                 const channel = await interaction.guild.channels.fetch().then(channels => {
@@ -91,7 +97,7 @@ module.exports = {
 
                 // Send the embed mission
                 return interaction.reply({ content: 
-                    `**Es-tu sur de vouloir publier cette mission dans <#${channel_all_missions}>${channel ? ` et dans ${channel.first()}` : ``} ?**\nAvec l'url pour postuler : ${url}`,
+                    `**Es-tu sur de vouloir publier cette mission dans <#${channel_all_missions}>${channel ? ` et dans ${channel.first()}` : ``} ?**\nAvec le salon staff : ${channelStaff}`,
                     embeds: [missionEmbed],
                     components: [buttonRow],
                     ephemeral: true

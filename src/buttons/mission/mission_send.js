@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { Missions } = require("../../dbObjects");
 
 module.exports = {
@@ -22,8 +22,8 @@ module.exports = {
             role = role_fetch.find(role => role.name.toLowerCase() == name);
         }
 
-        // Get the url of the mission
-        const url = interaction.message.content.split(" : ")[1];
+        // Get the channel_staff of the mission
+        const channel_staff_id = interaction.message.content.split(" : ")[1].split("<#")[1].split(">")[0];
 
         // Create the button row
         const buttonRow = new ActionRowBuilder()
@@ -46,22 +46,34 @@ module.exports = {
         }
 
         // Add the mission to the database
+        let mission;
         try {
             if (is_particular) {
-                await Missions.create({
+                mission = await Missions.create({
                     main_msg_id: main_msg.id,
                     particular_msg_id: particular_msg.id,
-                    url: url,
+                    channel_staff_id: channel_staff_id,
                 });
             } else {
-                await Missions.create({
+                mission = await Missions.create({
                     main_msg_id: main_msg.id,
-                    url: url,
+                    channel_staff_id: channel_staff_id,
                 });
             }
         } catch (error) {
             console.error("mission_send.js - " + error);
             return interaction.reply({ content: "Une erreur est survenue lors de l'enregistrement de la mission dans la base de donné. De ce fait, les logs de cette mission ne pourront pas être enregistré.", ephemeral: true });
+        }
+
+        // Change the channel staff name with the id of the mission
+        const channel_staff = await interaction.guild.channels.fetch(channel_staff_id);
+        try {
+            if (channel_staff.name !== `Mission ${mission.id}`) {
+                await channel_staff.setName(`Mission ${mission.id}`);
+            }
+        } catch (error) {
+            console.error("mission_send.js - " + error);
+            return interaction.reply({ content: `Une erreur est survenue lors du changement du nom du channel staff. De ce fait, vous devez changer manuellement le nom du salon ${channel_staff} avec \`Mission ${mission.id}\`.`, ephemeral: true });
         }
 
         return interaction.reply({ content: "La mission a bien été publiée.", ephemeral: true });
