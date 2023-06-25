@@ -25,10 +25,11 @@ More information about this project is available on the [XperPool Website](https
 - Logs when a role is added or removed from a user.
 - Logs when a moderation actions as they occur (mute/ban).
 - Logs when a member react to a mission.
+- Manage automatically the Vocal Général (unlock when at least one admin is in).
+- Mission system.
 - Send a welcome message to the new user.
 - Send a welcome message in the general channel when a user receives the "members" role.
 - Suggestion system.
-- Mission system.
 
 ## Database
 - LogMissions: log when a member react to a mission.
