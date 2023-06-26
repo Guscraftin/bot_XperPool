@@ -1,5 +1,5 @@
 const { ChannelType, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { category_admin, category_general, category_important, category_xerpool, role_admins, role_members, role_bots } = require('../../const.json');
+const { category_admin, category_general, category_important, category_xperpool, role_admins, role_members, role_bots } = require('../../const.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -47,7 +47,7 @@ module.exports = {
 
                 // Create the category
                 const category_fetch = await interaction.guild.channels.fetch();
-                const categories = await category_fetch.filter(channel => channel.type == ChannelType.GuildCategory && channel.id != category_admin && channel.id != category_general && channel.id != category_important && channel.id != category_xerpool);
+                const categories = await category_fetch.filter(channel => channel.type == ChannelType.GuildCategory && channel.id != category_admin && channel.id != category_general && channel.id != category_important && channel.id != category_xperpool);
                 categories.sort(compareName);
                 
                 const position_category = findPosition(categories, name);
