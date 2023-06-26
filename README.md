@@ -6,12 +6,13 @@ More information about this project is available on the [XperPool Website](https
 ## Commands
 ### Admin Only
 - adminscore: manage the 'score' database.
-- adminsuggest: manage a suggestion message.
+- adminuser: manage the 'member' database.
 - clear: clear some messages in a channel.
 - commu: create or delete a commu (role and category).
 - docs: send a embed message.
-- getlogmission: get the log of the click on a mission.
+- getdb: get some tables of the databases in excel file.
 - mission: create or edit a mission.
+- suggest: manage a suggestion message.
 ### For everyone
 - info: information about the bot.
 - leaderboard: get the leaderboard of all member.
@@ -34,7 +35,7 @@ More information about this project is available on the [XperPool Website](https
 ## Database
 - LogMissions: log when a member react to a mission.
 - Member: score of a member for the economic system.
-- Missions: all mission send in public channel (name missions).
+- Missions: all mission send in public channel.
 
 
 ## Bot Installation
