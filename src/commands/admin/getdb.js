@@ -7,7 +7,7 @@ const fs = require('fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("getlogmission")
+        .setName("getdb")
         .setDescription("🔧 Permet d'obtenir les logs des réactions des membres sur les missions publiées.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
