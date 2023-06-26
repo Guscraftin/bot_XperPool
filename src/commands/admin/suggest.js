@@ -3,7 +3,7 @@ const { channel_suggestions, color_accept, color_decline } = require('../../cons
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("adminsuggest")
+        .setName("suggest")
         .setDescription("🔧 Permet de modifier une suggestion.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
