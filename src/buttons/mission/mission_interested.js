@@ -76,6 +76,7 @@ module.exports = {
                 user_id: interaction.user.id,
                 first_name: user_name[0],
                 last_name: user_name[1],
+                is_accepted: false,
                 is_react_main_msg: is_react_main_msg,
             });
         } catch (error) {

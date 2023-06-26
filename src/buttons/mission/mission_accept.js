@@ -7,10 +7,19 @@ module.exports = {
     },
     async execute(interaction) {
         
-        // Sends logs to staff channel of the mission
+        // Update the database
         const logMission = await LogMissions.findOne({ where: { channel_details: interaction.channelId } });
         if (!logMission) return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la logmission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
-        
+
+        try {
+            await logMission.update({ is_accepted: true });
+        } catch (error) {
+            console.error("mission_accept.js db - " + error);
+            return interaction.reply({ content: "Une erreur est survenue lors de la mise à jour de la logmission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+        }
+
+
+        // Sends logs to staff channel of the mission
         const mission = await Missions.findOne({ where: { id: logMission.mission_id } });
         if (!mission) return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
         
