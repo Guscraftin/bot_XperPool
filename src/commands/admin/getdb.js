@@ -8,44 +8,45 @@ const fs = require('fs');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("getdb")
-        .setDescription("🔧 Permet d'obtenir les logs des réactions des membres sur les missions publiées.")
+        .setDescription("🔧 Permet d'obtenir des données en fichier excel de la base de données.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
-        .addStringOption(option => option
-            .setName('id')
-            .setDescription("L'id du message de la mission.")),
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('members')
+                .setDescription("🔧 Permet d'obtenir des données en fichier excel des membres.")
+                .addUserOption(option => option
+                    .setName('user')
+                    .setDescription("L'utilisateur dont on veut les informations.")))
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('logmissions')
+                .setDescription("🔧 Permet d'obtenir des données en fichier excel concernant les missions.")
+                .addStringOption(option => option
+                    .setName('id')
+                    .setDescription("L'id du message de la mission."))),
     async execute(interaction) {
+        const tableName = interaction.options.getSubcommand();
+        let id_mission = interaction.options.getString('id');
+        const user = interaction.options.getUser('user');
+
+        const user_id = user ? user.id : null;
+        const value = id_mission ? id_mission : user_id;
+        const fieldName = tableName === 'members' ? 'member_id' : 'mission_id';
+
         const sqliteFilePath = 'database.sqlite';
-        const tableName = 'logmissions';
-        const fieldName = 'main_msg_id';
-        let id_main_msg = interaction.options.getString('id');
         const outputFilePath = 'db.xlsx';
 
-        // Get the main message
-        if (id_main_msg) {
-            if (!interaction.channel.name.includes("missions")) return interaction.reply({ content: "Cette commande ne peut être utilisée que dans un channel de missions sauf si vous voulez les logs de toutes les missions (dans ce cas, veuillez ne pas mettre d'id lors de l'envoi de cette commande).", ephemeral: true });
-
-            if (interaction.channel.id !== channel_all_missions) {
-                try {
-                    const mission = await Missions.findOne({ where: { particular_msg_id: id_main_msg } });
-                    if (!mission) return interaction.reply({ content: "Aucune mission n'a été trouvée avec cet id.", ephemeral: true });
-                    id_main_msg = mission.main_msg_id;
-                } catch (error) {
-                    console.error(error);
-                    return interaction.reply({ content: "Une erreur est survenue lors de la récupération de la base de donnée.", ephemeral: true });
-                }
-            }
-        }
 
         // Extract data from SQLite database and create Excel file
         let is_create = false;
-        await extractDataFromSQLite(sqliteFilePath, tableName, fieldName, id_main_msg)
+        await extractDataFromSQLite(sqliteFilePath, tableName, fieldName, value)
             .then((data) => {
                 is_create = true;
                 createExcelFile(data, outputFilePath);
             })
             .catch((error) => {
-                if (error === 'Aucune donnée trouvée dans la base de données.') return interaction.reply({ content: "Aucun log pour la mission demandée n'a été trouvée.", ephemeral: true });
+                if (error === 'Aucune donnée trouvée dans la base de données.') return interaction.reply({ content: "Aucun log avec les paramètres demandés n'a pu être trouvé.", ephemeral: true });
                 else {
                     console.error('Une erreur s\'est produite :', error);
                     return interaction.reply({ content: "Une erreur s'est produite lors de la création du fichier Excel.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
@@ -54,28 +55,41 @@ module.exports = {
         if (!is_create) return;
 
         // Send the file to the user
-        if (id_main_msg) {
+        if (id_mission) {
             return interaction.reply({
-                content: `Voici les logs de la mission avec l'id ${id_main_msg} :`,
+                content: `Voici les logs de la mission avec l'id ${id_mission} :`,
+                files: [new AttachmentBuilder(outputFilePath)],
+                ephemeral: true
+            });
+        } else if (user_id) {
+            return interaction.reply({
+                content: `Voici les logs de l'utilisateur ${user_id} :`,
+                files: [new AttachmentBuilder(outputFilePath)],
+                ephemeral: true
+            });
+        } else if (tableName) {
+            return interaction.reply({
+                content: `Voici les logs de la table ${tableName} :`,
                 files: [new AttachmentBuilder(outputFilePath)],
                 ephemeral: true
             });
         } else {
             return interaction.reply({
-                content: `Voici les logs de toutes les missions :`,
+                content: `Voici toutes les logs :`,
                 files: [new AttachmentBuilder(outputFilePath)],
                 ephemeral: true
             });
         }
+
     },
 };
 
 // Function for extracting data from SQLite database
-function extractDataFromSQLite(filePath, tableName, fieldName, id_main_msg) {
+function extractDataFromSQLite(filePath, tableName, fieldName, value) {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database(filePath);
         let commandSQL = `SELECT * FROM ${tableName};`;
-        if (id_main_msg) commandSQL = `SELECT * FROM ${tableName} WHERE ${fieldName} = ${id_main_msg};`;
+        if (value) commandSQL = `SELECT * FROM ${tableName} WHERE ${fieldName} = ${value};`;
 
         db.all(commandSQL, (error, rows) => {
             if (error) {
