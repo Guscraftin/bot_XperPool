@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions, channel_staff_missions, _color_green, _color_red, color_accept, color_decline } = require('../../const.json');
+const { channel_all_missions, channel_staff_missions, color_accept, color_decline } = require('../../const.json');
 const { Missions } = require('../../dbObjects');
 
 module.exports = {
@@ -107,42 +107,25 @@ module.exports = {
                 const id = interaction.options.getString('id');
                 const status = interaction.options.getString('status');
 
-                // Get the message
-                const message = await interaction.channel.messages.fetch(id).catch(error => {return});
-                if (!message) return interaction.reply({ content: "Le message n'a pas été trouvé.", ephemeral: true });
-                const embed = message.embeds[0];
-                const color = embed.color;
+                // Get the mission
+                const mission = await Missions.findOne({ where: { id: id } });
+                if (!mission) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
 
-                // Exception
-                if (!interaction.channel.name.includes("missions")) return interaction.reply({ content: "Cette commande ne peut être utilisée que dans un channel de mission.", ephemeral: true });
-                if (color == _color_green && status === "open") return interaction.reply({ content: "Cette mission est déjà ouverte.", ephemeral: true });
-                if (color == _color_red && status === "close") return interaction.reply({ content: "Cette mission est déjà fermée.", ephemeral: true });
-
-                // Get the main message
-                let main_message_id = id;
-                let mission;
-                if (interaction.channel.id !== channel_all_missions) {
-                    try {
-                        mission = await Missions.findOne({ where: { particular_msg_id: id } });
-                        if (!mission) return interaction.reply({ content: "Aucune mission n'a été trouvée avec cet id.", ephemeral: true });
-                        main_message_id = mission.main_msg_id;
-                    } catch (error) {
-                        console.error(error);
-                        return interaction.reply({ content: "Une erreur est survenue lors de la récupération de la base de donnée.", ephemeral: true });
-                    }
+                let is_open;
+                if (mission.is_open) {
+                    if (status === "open") return interaction.reply({ content: "Cette mission est déjà ouverte.", ephemeral: true });
+                    is_open = false;
                 } else {
-                    try {
-                        mission = await Missions.findOne({ where: { main_msg_id: id } });
-                        if (!mission) return interaction.reply({ content: "Aucune mission n'a été trouvée avec cet id.", ephemeral: true });
-                    } catch (error) {
-                        console.error(error);
-                        return interaction.reply({ content: "Une erreur est survenue lors de la récupération de la base de donnée.", ephemeral: true });
-                    }
+                    if (status === "close") return interaction.reply({ content: "Cette mission est déjà fermée.", ephemeral: true });
+                    is_open = true;
                 }
-                
-                // Update the database
-                const is_open = status === "open" ? true : false;
-                Missions.update({ is_open }, { where: { main_msg_id: main_message_id } });
+
+                // Get the embed
+                const main_channel = await interaction.guild.channels.fetch(channel_all_missions);
+                if (!main_channel) return interaction.reply({ content: "Le salon de la mission n'existe plus.", ephemeral: true });
+                const message = await main_channel.messages.fetch(mission.main_msg_id);
+                if (!message) return interaction.reply({ content: "Le message de la mission n'existe plus.", ephemeral: true });
+                const embed = message.embeds[0];
 
                 // Edit the embed
                 const newEmbed = new EmbedBuilder()
@@ -153,6 +136,10 @@ module.exports = {
                     .setTimestamp()
                     .setFooter(embed.footer);
 
+                // Update the database
+                Missions.update({ is_open }, { where: { id: mission.id } });
+
+                // Edit the message
                 if (mission.particular_msg_id) {
                     await interaction.guild.channels.fetch(channel_all_missions).then(channel => {
                         channel.messages.fetch(mission.main_msg_id).then(msg => msg.edit({ embeds: [newEmbed] }));
@@ -165,6 +152,12 @@ module.exports = {
                 } else {
                     await message.edit({ embeds: [newEmbed] });
                 }
+
+                // Send log in the staff channel
+                const channelStaffLog = await interaction.guild.channels.fetch(mission.channel_staff_id);
+                if (!channelStaffLog) return interaction.reply({ content: "Le salon staff de la mission n'existe plus mais le changement a bien eu lieu.", ephemeral: true });
+                
+                await channelStaffLog.send({ content: `La mission (${message.url}) a été ${is_open ? "ouverte" : "fermée"} par ${interaction.member}.` });
 
                 return interaction.reply({ content: `La mission (${message.url}) a bien été ${is_open ? "ouverte" : "fermée"}.`, ephemeral: true });
             }
