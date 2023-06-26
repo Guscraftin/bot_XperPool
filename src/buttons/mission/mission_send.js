@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const { Missions } = require("../../dbObjects");
 
 module.exports = {
@@ -24,6 +24,9 @@ module.exports = {
 
         // Get the channel_staff of the mission
         const channel_staff_id = interaction.message.content.split(" : ")[1].split("<#")[1].split(">")[0];
+
+        // TODO: Check if the channel_staff is not already used
+
 
         // Create the button row
         const buttonRow = new ActionRowBuilder()
@@ -63,6 +66,15 @@ module.exports = {
         } catch (error) {
             console.error("mission_send.js - " + error);
             return interaction.reply({ content: "Une erreur est survenue lors de l'enregistrement de la mission dans la base de donné. De ce fait, les logs de cette mission ne pourront pas être enregistré.", ephemeral: true });
+        }
+
+        // Change the footer of the embed with the mission id
+        const newEmbed = new EmbedBuilder(missionEmbed)
+            .setFooter({ text: `Id: ${mission.id}`, iconURL: interaction.guild.iconURL() })
+
+        await main_msg.edit({ embeds: [newEmbed] });
+        if (is_particular) {
+            await particular_msg.edit({ embeds: [newEmbed] });
         }
 
         // Change the channel staff name with the id of the mission

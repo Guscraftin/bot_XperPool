@@ -84,7 +84,7 @@ module.exports = {
                     ])
                     .setColor(color_accept)
                     .setTimestamp()
-                    .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL()});
+                    .setFooter({ text: `Id: X`, iconURL: interaction.guild.iconURL() });
 
                 // Create the button row
                 const buttonRow = new ActionRowBuilder()
