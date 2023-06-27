@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 const { Members, LogMissions, Missions } = require("../../dbObjects");
-const { channel_all_missions } = require("../../const.json");
+const { channel_all_missions, role_admins } = require("../../const.json");
 
 module.exports = {
     data: {
@@ -29,6 +29,8 @@ module.exports = {
         
         const member = await Members.findOne({ where: { member_id: interaction.user.id } });
         if (!member) return interaction.reply({ content: "Une erreur est survenue lors de la recherche du membre dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+
+        const roleAdmin = await interaction.guild.roles.fetch(role_admins);
         const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.member.displayName} (${interaction.member.id})`, iconURL: interaction.user.displayAvatarURL() })
             .setColor('#009ECA')
@@ -43,7 +45,7 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
 
-        await channel_staff.send({ content: `${interaction.member} a accepté la mission !`, embeds: [embed] });
+        await channel_staff.send({ content: `${interaction.member} a accepté la mission ! ||(${roleAdmin})||`, embeds: [embed] });
         
 
         // Disable button
