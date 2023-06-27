@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 const { Members, LogMissions, Missions } = require("../../dbObjects");
+const { channel_all_missions } = require("../../const.json");
 
 module.exports = {
     data: {
@@ -54,6 +55,19 @@ module.exports = {
                 .setDisabled(true)
         );
         interaction.message.edit({ components: [row_detail] });
+
+        
+        // Update the mission message with the number of people interested
+        const channel = await interaction.guild.channels.fetch(channel_all_missions);
+        if (!channel) return interaction.reply({ content: "Une erreur est survenue lors de la recherche du channel des missions.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+
+        const message = await channel.messages.fetch(mission.main_msg_id);
+        if (!message) return interaction.reply({ content: "Une erreur est survenue lors de la recherche du message de la mission.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+
+        const number_of_people_accept = await LogMissions.count({ where: { mission_id: mission.id, is_accepted: true } });
+        if (number_of_people_accept > 1)
+            await message.edit({ content: `Déjà ${number_of_people_accept} membres ont candidaté à cette mission.` });
+
 
         return interaction.reply({ content: "Tu as bien validé ton intérêt pour réaliser la mission !" });
     }
