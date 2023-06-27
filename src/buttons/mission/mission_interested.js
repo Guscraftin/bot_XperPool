@@ -1,33 +1,21 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType } = require("discord.js");
 const { channel_all_missions, channel_detail_missions } = require("../../const.json");
-const { Missions, LogMissions } = require("../../dbObjects");
+const { Members, Missions, LogMissions } = require("../../dbObjects");
 
 module.exports = {
     data: {
         name: "mission_interested",
     },
     async execute(interaction) {
+        // Check if the user is in the database
+        const member = await Members.findOne({ where: { member_id: interaction.user.id } });
+        if (!member) return interaction.reply({ content: "Tu n'es pas dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+
         // Get the mission from the database
-        let mission;
-        let is_react_main_msg = false;
-        if (interaction.channel.id === channel_all_missions) {
-            is_react_main_msg = true;
-            try {
-                mission = await Missions.findOne({ where: { main_msg_id: interaction.message.id } });            
-            } catch (error) {
-                console.error("mission_interested.js - " + error);
-                return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
-            }
-        } else {
-            try {
-                mission = await Missions.findOne({ where: { particular_msg_id: interaction.message.id } });            
-            } catch (error) {
-                console.error("mission_interested.js - " + error);
-                return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
-            }
-        }
+        let is_react_main_msg = interaction.channel.id === channel_all_missions;
+        const mission_id = interaction.message.embeds[0].footer.text.split(" ")[1];
+        const mission = await Missions.findOne({ where: { id: mission_id } });
         if (!mission) return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
-        if (!mission.is_open) return interaction.reply({ content: "Cette mission n'est plus ouverte aux candidatures.", ephemeral: true });
 
 
         // Check if the user has already reacted to the message
@@ -43,6 +31,7 @@ module.exports = {
             );
             return interaction.reply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
         }
+        if (!mission.is_open) return interaction.reply({ content: "Cette mission n'est plus ouverte aux candidatures.", ephemeral: true });
 
 
         // Get the detail mission of the channel staff

@@ -1,5 +1,5 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { LogMissions, Missions } = require("../../dbObjects");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
+const { Members, LogMissions, Missions } = require("../../dbObjects");
 
 module.exports = {
     data: {
@@ -26,7 +26,23 @@ module.exports = {
         const channel_staff = await interaction.guild.channels.fetch(mission.channel_staff_id);
         if (!channel_staff) return interaction.reply({ content: "Une erreur est survenue lors de la recherche du channel staff de la mission.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
         
-        await channel_staff.send({ content: `${interaction.member} a accepté la mission !` }); // Ces détails (tel, mail, etc)
+        const member = await Members.findOne({ where: { member_id: interaction.user.id } });
+        if (!member) return interaction.reply({ content: "Une erreur est survenue lors de la recherche du membre dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${interaction.member.displayName} (${interaction.member.id})`, iconURL: interaction.user.displayAvatarURL() })
+            .setColor('#009ECA')
+            .setDescription(`Voici les informations de ce membre :`)
+            .setFields([
+                { name: 'Prénom', value: member.first_name, inline: true },
+                { name: 'Nom', value: member.last_name, inline: true },
+                { name: 'Email', value: member.email, inline: true },
+                { name: 'Téléphone', value: member.tel, inline: true },
+                { name: 'Technologies', value: member.technologies, inline: true },
+            ])
+            .setTimestamp()
+            .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+
+        await channel_staff.send({ content: `${interaction.member} a accepté la mission !`, embeds: [embed] });
         
 
         // Disable button
