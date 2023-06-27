@@ -18,6 +18,9 @@ More information about this project is available on the [XperPool Website](https
 - leaderboard: get the leaderboard of all member.
 - score: get the score of a member.
 
+## User application
+- Contact: display info about a member. [Admin Only]
+
 ## Features
 - Add 1 point when a member send a message (cooldown 5 secondes).
 - Delete the user of the 'score' database when he left the guild.
