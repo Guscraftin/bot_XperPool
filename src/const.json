@@ -4,15 +4,15 @@
     "category_general": "1116845065780854835",
     "category_admin": "1116845066741354526",
 
-    "channel_logs_message": "1117195801425358858",
-    "channel_logs_moderation": "1116845106192973917",
-    "channel_logs_join_leave": "1116845107744870532",
-    "channel_logs_role": "1116845109028335656",
     "channel_general": "1116845100425814117",
     "channel_suggestions": "1116845101453422694",
     "channel_all_missions": "1116845087117283408",
     "channel_detail_missions": "1122083889125523477",
     "channel_staff_missions": "1122085565253292122",
+    "channel_logs_message": "1117195801425358858",
+    "channel_logs_moderation": "1116845106192973917",
+    "channel_logs_join_leave": "1116845107744870532",
+    "channel_logs_role": "1116845109028335656",
 
     "vocal_general": "1121810736985952338",
 
