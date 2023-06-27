@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { channel_logs_moderation, channel_logs_role, channel_general, role_members } = require('../../const.json');
+const { channel_logs_moderation, channel_logs_role, channel_general, role_members } = require(process.env.CONST);
 
 module.exports = {
     name: Events.GuildMemberUpdate,

@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions, channel_staff_missions, color_accept, color_decline } = require('../../const.json');
+const { channel_all_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
 const { Missions } = require('../../dbObjects');
 
 module.exports = {

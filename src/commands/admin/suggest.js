@@ -1,5 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { channel_suggestions, color_accept, color_decline } = require('../../const.json');
+const { channel_suggestions, color_accept, color_decline } = require(process.env.CONST);
 
 module.exports = {
     data: new SlashCommandBuilder()

@@ -1,6 +1,6 @@
 const { Events, EmbedBuilder } = require('discord.js');
 const { Members, sequelize } = require('../../dbObjects');
-const { channel_suggestions, emoji_yes, emoji_neutral, emoji_no } = require('../../const.json');
+const { channel_suggestions, emoji_yes, emoji_neutral, emoji_no } = require(process.env.CONST);
 
 module.exports = {
     name: Events.MessageCreate,

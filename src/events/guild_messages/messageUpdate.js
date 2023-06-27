@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { channel_logs_message } = require('../../const.json');
+const { channel_logs_message } = require(process.env.CONST);
 
 module.exports = {
     name: Events.MessageUpdate,

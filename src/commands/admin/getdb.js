@@ -1,5 +1,5 @@
 const { AttachmentBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions } = require('../../const.json');
+const { channel_all_missions } = require(process.env.CONST);
 const { Missions } = require('../../dbObjects');
 const sqlite3 = require('sqlite3').verbose();
 const XLSX = require('xlsx');

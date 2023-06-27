@@ -1,5 +1,5 @@
 const { Events, PermissionFlagsBits } = require('discord.js');
-const { vocal_general } = require('../../const.json');
+const { vocal_general } = require(process.env.CONST);
 
 module.exports = {
     name: Events.VoiceStateUpdate,

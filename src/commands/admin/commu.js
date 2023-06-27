@@ -1,5 +1,5 @@
 const { ChannelType, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { category_admin, category_general, category_important, category_xperpool, role_admins, role_members, role_bots } = require('../../const.json');
+const { category_admin, category_general, category_important, category_xperpool, role_admins, role_members, role_bots } = require(process.env.CONST);
 
 module.exports = {
     data: new SlashCommandBuilder()
