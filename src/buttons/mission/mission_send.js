@@ -19,13 +19,11 @@ module.exports = {
             // Get the role from the particular channel
             const name = particular_channel.name.split("-")[1];
             const role_fetch = await interaction.guild.roles.fetch();
-            role = role_fetch.find(role => role.name.toLowerCase() == name);
+            role = await role_fetch.find(role => role.name.toLowerCase() == name);
         }
 
         // Get the channel_staff of the mission
         const channel_staff_id = interaction.message.content.split(" : ")[1].split("<#")[1].split(">")[0];
-
-        // TODO: Check if the channel_staff is not already used
 
 
         // Create the button row
@@ -42,7 +40,7 @@ module.exports = {
         let particular_msg;
         if (is_particular) {
             particular_msg = await particular_channel.send({ 
-                content: `${role.toString()}, voici une nouvelle mission qui pourrait vous intéresser :`,
+                content: `${role}, voici une nouvelle mission qui pourrait vous intéresser :`,
                 components: [buttonRow],
                 embeds: [missionEmbed],
             });
