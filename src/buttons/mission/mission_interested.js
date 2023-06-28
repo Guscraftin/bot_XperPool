@@ -51,10 +51,15 @@ module.exports = {
                 .setCustomId(`mission_accept`)
                 .setStyle(ButtonStyle.Success)
         );
-        const detail_mission = await channel.send({ 
-            content: `### ${interaction.member}, voici tous les détails concernant la mission ${mission.id}.\n\n${detail_mission_staff}\n\n**Souhaitez-vous confirmer définitivement votre candidature à cette mission ?**`,
+
+        await channel.send({ content: `### Voici tous les détails concernant la mission ${mission.id}.\n_ _` });
+        const detail_mission = await channel.send({ content: detail_mission_staff });
+        await channel.send({ 
+            content: `_ _\n**Souhaitez-vous confirmer définitivement votre candidature à cette mission ?**`,
             components: [row_detail]
         });
+        await channel.send({ content: `${interaction.member}, c'est dans ce salon pour le détail de la mission.` });
+        await channel.messages.fetch().then(messages => {return messages.first().delete()});
 
         // Add the user to the database
         const user_name = interaction.member.displayName.split("_");
