@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
 const { Members, LogMissions, Missions } = require("../../dbObjects");
-const { channel_all_missions, role_admins } = require("../../const.json");
+const { channel_all_missions, role_admins } = require(process.env.CONST);
 
 module.exports = {
     data: {
