@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
+const { channel_all_missions, channel_detail_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
 const { Missions } = require('../../dbObjects');
 
 module.exports = {
@@ -111,6 +111,9 @@ module.exports = {
                 const id = interaction.options.getString('id');
                 const status = interaction.options.getString('status');
 
+                const channelDetails = await interaction.guild.channels.fetch(channel_detail_missions);
+                if (!channelDetails) return interaction.reply({ content: "Le salon de détails de la mission n'existe plus mais le changement a bien eu lieu.", ephemeral: true });
+
                 // Get the mission
                 const mission = await Missions.findOne({ where: { id: id } });
                 if (!mission) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
@@ -157,13 +160,34 @@ module.exports = {
                     await message.edit({ embeds: [newEmbed] });
                 }
 
+
+                // Send message in details channel for members where interested
+                await channelDetails.threads.fetch().then(threads => {
+                    threads.threads.each(async thread => {
+                        if (thread.parentId === channel_detail_missions && thread.name.split(" ")[1] == mission.id) {
+                            const isButtEnabled = await thread.messages.fetch().then(messages => {
+                                return !messages.at(-3).components[0].components[0].disabled;
+                            });
+                            if (isButtEnabled) {
+                                const member = await thread.members.fetch().then(members => {
+                                    return members.filter(member => !member.bot).first();
+                                });
+                                await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+                            }
+                        }
+                    });
+                });
+
+
+
+
                 // Send log in the staff channel
                 const channelStaffLog = await interaction.guild.channels.fetch(mission.channel_staff_id);
                 if (!channelStaffLog) return interaction.reply({ content: "Le salon staff de la mission n'existe plus mais le changement a bien eu lieu.", ephemeral: true });
                 
-                await channelStaffLog.send({ content: `La mission (${message.url}) a été ${is_open ? "ouverte" : "fermée"} par ${interaction.member}.` });
+                await channelStaffLog.send({ content: `La mission (${message.url}) a été ${is_open ? "réouverte" : "fermée"} par ${interaction.member}.` });
 
-                return interaction.reply({ content: `La mission (${message.url}) a bien été ${is_open ? "ouverte" : "fermée"}.`, ephemeral: true });
+                return interaction.reply({ content: `La mission (${message.url}) a bien été ${is_open ? "réouverte" : "fermée"}.`, ephemeral: true });
             }
 
     },
