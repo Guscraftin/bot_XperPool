@@ -62,6 +62,10 @@ module.exports = {
                 const channelStaffUsed = await Missions.findOne({ where: { channel_staff_id: channelStaff.id } });
                 if (channelStaffUsed) return interaction.reply({ content: `Le salon staff de la mission est déjà utilisé par la mission ${channelStaffUsed.id}.`, ephemeral: true });
 
+                const maxCharacter = 2000;
+                const messageDetail = await channelStaff.messages.fetch().then(messages => {return messages.last()});
+                if (messageDetail.content.length > maxCharacter) return interaction.reply({ content: `${messageDetail.url} doit contenir **moins de ${maxCharacter+1}**. Actuellement, il en a ${messageDetail.content.length}.`, ephemeral: true });
+
                 // Get the mission channel of the community category
                 const channel = await interaction.guild.channels.fetch().then(channels => {
                     if (community) return channels.filter(channel => channel.type === ChannelType.GuildText && channel.parentId === community.id && channel.name.includes("missions-"))
