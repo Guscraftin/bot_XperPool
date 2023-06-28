@@ -1,5 +1,5 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const { role_members } = require(process.env.CONST);
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, WebhookClient } = require('discord.js');
+const { role_admins, role_members } = require(process.env.CONST);
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,8 +14,12 @@ module.exports = {
                 { name: "Bienvenue", value: "welcome" },
                 { name: "Règlement", value: "rules" },
                 { name: "Avantages", value: "advantages" },
+                { name: "Details-Missions", value: "detailsMissions" },
+                { name: "Staff-Missions", value: "staffMissions" },
                 { name: "Astuces", value: "tips" },
                 { name: "Annonces", value: "annonces" },
+                { name: "Events", value: "events" },
+
             )
             .setRequired(true)),
     async execute(interaction) {
@@ -54,7 +58,9 @@ L'équipe XperPool vous souhaite à tous la bienvenue 😃`)
                             .setURL("https://xperpool.fr/"),
                     );
 
-                await interaction.channel.send({ embeds: [embed], components: [row] });
+                const msg1 = await interaction.channel.send({ embeds: [embed], components: [row] });
+                await msg1.pin();
+                await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
             case "rules":
@@ -94,8 +100,10 @@ Nous modifions votre pseudo à votre entrée sur le serveur avec votre prénom e
 
 Merci d'ouvrir un ticket dans <#1116845080410603520> en cas de problèmes.\n||@everyone||`
 
-                await interaction.channel.send({ content: rules1 });
+                const msg2 = await interaction.channel.send({ content: rules1 });
                 await interaction.channel.send({ content: rules2 });
+                await msg2.pin();
+                await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
             case "advantages":
@@ -124,10 +132,54 @@ Voici pour tous les <@&${role_members}>, des liens vers des outils externes pouv
 - **Adservio Academy :** Accès à de multiples formations, que ce soit de nos experts internes ou de nos partenaires, LinkedIn Learning et Udemy.
  - <https://www.adservio.academy>`
 
-                await interaction.channel.send({ content: advantages });
+                const msg3 = await interaction.channel.send({ content: advantages });
+                await msg3.pin();
+                await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
+            case "detailsMissions":
+                const detailsMissions = `||<@&${role_members}>||
+# Comment postuler à une mission ?
+
+1. Choisissez une mission qui vous intéresse parmi les différentes offres disponibles dans les salons missions.
+2. Cliquez sur le bouton vert "Je suis intéressé".
+3. Vous serez mentionné dans une discussion dans ce salon, où vous pourrez trouver plus d'informations sur la mission sélectionnée.
+4. Si la mission vous convient toujours, il vous suffit de "Accepter la mission".
+5. Nous vous enverrons un e-mail pour prendre contact avec vous.`
+
+                const msg4 = await interaction.channel.send({ content: detailsMissions });
+                await msg4.pin();
+                await interaction.channel.messages.fetch().then(messages => messages.first().delete());
+                break;
+
+
+            case "staffMissions":
+                const staffMissions = `||<@&${role_admins}>||
+# Comment créer une mission ?
+
+1. Créez un fil de discussion public dans ce salon en incluant les détails de la mission dans le premier message (peu importe le nom du salon).
+2. Utilisez la commande \`/mission add\`.
+3. Si le récapitulatif des informations qui seront envoyées dans les salons missions vous convient, validez-le.
+*Toutes les confirmations d'intérêt pour une mission seront directement envoyées dans le fil de discussion que vous avez créé pour la mission.*
+
+# Comment gérer une mission ?
+- Utilisez la commande \`/mission edit\` pour fermer ou ouvrir une mission.
+- Utilisez la commande \`/getdb logmissions\` pour récupérer la base de données des personnes intéressées par une ou toutes les missions.
+*Toutes les missions sont classées selon leur identifiant unique.*`
+
+                const msg5 = await interaction.channel.send({ content: staffMissions });
+                await msg5.pin();
+                await interaction.channel.messages.fetch().then(messages => messages.first().delete());
+                break;
+
+
+            /**
+             * WITH WEBHOOKS
+             * Because this messages below are subject to change frequently, we use webhooks to send them with discord Dev Bot.
+             * 
+             */
             case "tips":
+                const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123509820218167447/158YbwUvNPdSVj00AMJtrRYaroFzYt-N8kWgw-tZwyBMJYpCiF89n6RoouRtSLLa6Ki-' });
                 const tips = `
 # 🚀 Démarrage de la semaine avec Angular ! 🚀
 Bienvenue dans notre semaine thématique dédiée à Angular ! Nous sommes impatients de plonger dans l'univers de ce puissant framework JavaScript et d'explorer ses dernières mises à jour, ses meilleures pratiques et ses conseils d'optimisation des performances.
@@ -143,11 +195,12 @@ Restez à l'écoute tout au long de la semaine pour d'autres bonnes choses sur A
                     .setDescription("Starting from Angular v16.1.0, a new helpful feature has been introduced to provide an alternative and easy way to transform input values…")
                     .setColor('#009ECA')
 
-                await interaction.channel.send({ content: tips, embeds: [embed1] });
+                await webhookClient.send({ content: tips, embeds: [embed1] });
                 break;
 
 
             case "annonces":
+                const webhookClient2 = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123509984748113962/8CmqhBC8pa_Gafb3ztHRGsWPCRmi6GK8yccGk_Ent9DXBvu7tuFp0voTmBGprKsChQeu' });
                 const embed10 = new EmbedBuilder()
                     .setTitle("Pôle Emploi et création d'entreprise : comment ça fonctionne ?")
                     .setURL("https://app.livestorm.co/numbr/pole-emploi-et-creation-dentreprise-comment-ca-fonctionne?utm_source=Livestorm+company+page")
@@ -166,7 +219,14 @@ Restez à l'écoute tout au long de la semaine pour d'autres bonnes choses sur A
                     .setDescription("Le <t:1689066000:F> par Numbr.")
                     .setColor('#009ECA')
 
-                await interaction.channel.send({ content: `# Voici le programme des webinars partenaires à venir :`, embeds: [embed10, embed11, embed12] });
+                await webhookClient2.send({ content: `# Voici le programme des webinars partenaires à venir :`, embeds: [embed10, embed11, embed12] });
+                break;
+
+            case "events":
+                const webhookClient3 = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123510249014439957/qEuTfzWmh6vOoLSQOV33FWTp_epBpfi7kQ_hPW7-Sm2NlyQK4HmXfMvx9fESgLBehbfY' });
+                const missions = `Test moi !`
+
+                await webhookClient3.send({ content: missions });
                 break;
 
             default:
