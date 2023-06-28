@@ -32,7 +32,7 @@ module.exports = {
                         .setRequired(true))
                 .addStringOption(option =>
                     option.setName("technologies")
-                        .setDescription("Ses domaines de compétences (nom nom nom).")
+                        .setDescription("Ses domaines de compétences (nom, nom, nom).")
                         .setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
@@ -56,7 +56,7 @@ module.exports = {
                         .setDescription("Son numéro de téléphone."))
                 .addStringOption(option =>
                     option.setName("technologies")
-                        .setDescription("Ses domaines de compétences (nom nom nom)."))
+                        .setDescription("Ses domaines de compétences (nom, nom, nom)."))
         ),
     async execute(interaction) {
         const user = interaction.options.getMember('user');
@@ -86,7 +86,7 @@ module.exports = {
         
         
         // Check the technologies
-        const technologiesArray = technologies ? technologies.split(' ') : [];
+        const technologiesArray = technologies ? technologies.split(', ') : [];
         const technologiesArrayFiltered = technologiesArray.filter(technology => technology !== '');
         const guildRoles = await interaction.guild.roles.fetch();
 
@@ -94,7 +94,7 @@ module.exports = {
         for (const technology of technologiesArrayFiltered) {
             const role = await guildRoles.find(role => role.name.toLowerCase() === technology.toLowerCase());
             if (!role) {
-                return interaction.reply({ content: `Le rôle ${technology} n'existe pas sur le serveur.`, ephemeral: true });
+                return interaction.reply({ content: `Le rôle \`${technology}\` n'existe pas sur le serveur.`, ephemeral: true });
             } else {
                 technoRoles.push(role);
             }

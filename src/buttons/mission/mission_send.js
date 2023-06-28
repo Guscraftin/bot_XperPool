@@ -17,7 +17,8 @@ module.exports = {
             particular_channel = await interaction.guild.channels.fetch(step1[2].split(">")[0]);
             
             // Get the role from the particular channel
-            const name = particular_channel.name.split("-")[1];
+            const nameBrut = particular_channel.name.slice(9);
+            const name = nameBrut.replace('-', ' ');
             const role_fetch = await interaction.guild.roles.fetch();
             role = await role_fetch.find(role => role.name.toLowerCase() == name);
         }

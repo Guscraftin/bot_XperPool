@@ -104,7 +104,7 @@ module.exports = {
                 }
 
                 // Delete the role
-                const del_name_role = del_category.name.split(" ")[1].toLowerCase();
+                const del_name_role = del_category.name.slice(9).toLowerCase();
                 const del_role_fetch = await interaction.guild.roles.fetch();
                 const del_role = await del_role_fetch.find(role => role.name.toLowerCase() == del_name_role);
                 await del_role.delete();
