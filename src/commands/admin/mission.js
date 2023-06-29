@@ -196,7 +196,7 @@ module.exports = {
                                         const logMission = await LogMissions.findOne({ where: { channel_details: thread.id } });
                                         if (logMission) {console.log("is_delete"); await logMission.update({ is_delete: true });}
                                         await thread.delete();
-                                    } , 5000); // 48h - 172800000
+                                    } , 172800000); // 48h = 172800000 milliseconds
                                 }
                             }
                         }
