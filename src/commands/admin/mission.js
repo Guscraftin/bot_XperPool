@@ -324,7 +324,7 @@ module.exports = {
                     }
                 }
 
-                const channel_staff_delete = await interaction.guild.channels.fetch(mission_delete.channel_staff_id);
+                const channel_staff_delete = await interaction.guild.channels.fetch(mission_delete.channel_staff_id).catch(() => { return null; })
                 if (channel_staff_delete) await channel_staff_delete.delete();
                 await mission_delete.destroy();
 
