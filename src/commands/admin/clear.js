@@ -4,10 +4,10 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("clear")
 		.setDescription("🔧 Supprimer un nombre de message spécifié dans un salon.")
-        .addIntegerOption(option => option.setName('message').setDescription("Le nombre de message à supprimer.").setMinValue(1).setMaxValue(100).setRequired(true))
-        .addUserOption(option => option.setName('membre').setDescription("Le membre auquel supprimer les messages."))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .setDMPermission(false),
+        .setDMPermission(false)
+        .addIntegerOption(option => option.setName('message').setDescription("Le nombre de message à supprimer.").setMinValue(1).setMaxValue(100).setRequired(true))
+        .addUserOption(option => option.setName('membre').setDescription("Le membre auquel supprimer les messages.")),
 	async execute(interaction) {
         const amountToDelete = interaction.options.getInteger('message');
         const member = interaction.options.getUser('membre');

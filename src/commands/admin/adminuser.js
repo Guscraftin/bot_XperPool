@@ -6,6 +6,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("adminuser")
         .setDescription("🔧 Commande admin pour gérer les utilisateurs de la base de données.")
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(false)
         .addSubcommand(subcommand =>
             subcommand
                 .setName("add")
