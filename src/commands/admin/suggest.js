@@ -11,21 +11,21 @@ module.exports = {
             subcommand
                 .setName('accepter')
                 .setDescription("🔧 Accepter une suggestion.")
-                .addStringOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setRequired(true))
+                .addIntegerOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setMinValue(0).setRequired(true))
                 .addStringOption(option => option.setName('commentaire').setDescription("Le commentaire a ajouter.")))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('refuser')
                 .setDescription("🔧 Refuser une suggestion.")
-                .addStringOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setRequired(true))
+                .addIntegerOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setMinValue(0).setRequired(true))
                 .addStringOption(option => option.setName('commentaire').setDescription("Le raison du refus.").setRequired(true))),
     async execute(interaction) {
-        const messageId = interaction.options.getString("message");
+        const messageId = interaction.options.getInteger("message");
         const comment = interaction.options.getString("commentaire");
 
         // Get the message of the suggestion
         const message = await interaction.guild.channels.fetch(channel_suggestions).then(channel =>
-            channel.messages.fetch(messageId)
+            channel.messages.fetch(messageId).catch(() => null)
         );
         if (!message) return interaction.reply({ content: "Ce message n'existe pas.", ephemeral: true });
         const embedMsg = message.embeds[0];
