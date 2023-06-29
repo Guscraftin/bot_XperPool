@@ -20,7 +20,7 @@ module.exports = {
 
         // Check if the user has already reacted to the message
         const is_react_mission = await LogMissions.findOne({ where: { mission_id: mission.id, user_id: interaction.user.id } });
-        if (is_react_mission) {
+        if (is_react_mission && !is_react_mission.is_delete) {
             const channel_details = await interaction.guild.channels.fetch(is_react_mission.channel_details);
             const detail_mission = await channel_details.messages.fetch().then(messages => {return messages.at(-1)});
             const row = new ActionRowBuilder().addComponents(
@@ -64,6 +64,9 @@ module.exports = {
         // Add the user to the database
         const user_name = interaction.member.displayName.split("_");
         try {
+            if (is_react_mission && is_react_mission.is_delete) {
+                await is_react_mission.destroy();
+            }
             LogMissions.upsert({
                 mission_id: mission.id,
                 channel_details: channel.id,
@@ -72,6 +75,7 @@ module.exports = {
                 last_name: user_name[1],
                 is_accepted: false,
                 is_react_main_msg: is_react_main_msg,
+                is_delete: false,
             });
         } catch (error) {
             console.error("mission_interested.js - " + error);

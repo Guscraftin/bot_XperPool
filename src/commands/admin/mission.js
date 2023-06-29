@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
 const { channel_all_missions, channel_detail_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
-const { Missions } = require('../../dbObjects');
+const { LogMissions, Missions } = require('../../dbObjects');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,9 +26,10 @@ module.exports = {
         .addSubcommand(subcommand => subcommand
             .setName("edit")
             .setDescription("🔧 Permet de mettre à jour une mission.")
-            .addStringOption(option => option
+            .addIntegerOption(option => option
                 .setName('id')
                 .setDescription("L'id de la mission.")
+                .setMinValue(1)
                 .setRequired(true))
             .addStringOption(option => option
                 .setName('status')
@@ -38,7 +39,19 @@ module.exports = {
                     { name: 'Fermé', value: 'close' },
                 )
                 .setRequired(true)
-            )),
+            ))
+        .addSubcommand(subcommand => subcommand
+            .setName("delete")
+            .setDescription("🔧 Permet de supprimer une mission.")
+            .addIntegerOption(option => option
+                .setName('id')
+                .setDescription("L'id de la mission.")
+                .setMinValue(1)
+                .setRequired(true))
+            .addBooleanOption(option => option
+                .setName('confirm')
+                .setDescription("Confirmer la suppression de la mission.")
+                .setRequired(true))),
     async execute(interaction) {
 
         switch (interaction.options.getSubcommand()) {
@@ -108,7 +121,7 @@ module.exports = {
                 });
 
             case "edit":
-                const id = interaction.options.getString('id');
+                const id = interaction.options.getInteger('id');
                 const status = interaction.options.getString('status');
 
                 const channelDetails = await interaction.guild.channels.fetch(channel_detail_missions);
@@ -172,13 +185,23 @@ module.exports = {
                                 const member = await thread.members.fetch().then(members => {
                                     return members.filter(member => !member.bot).first();
                                 });
-                                await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+                                if (member) await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+                                else await thread.send({ content: `Cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+
+                                // Delete the thread after 48h if the mission is closed
+                                if (!is_open) {
+                                    setTimeout(async () => {
+                                        const mission = await Missions.findOne({ where: { id: id } });
+                                        if (mission && mission.is_open) return console.log("Mission is open");
+                                        const logMission = await LogMissions.findOne({ where: { channel_details: thread.id } });
+                                        if (logMission) {console.log("is_delete"); await logMission.update({ is_delete: true });}
+                                        await thread.delete();
+                                    } , 5000); // 48h - 172800000
+                                }
                             }
                         }
                     });
                 });
-
-
 
 
                 // Send log in the staff channel
@@ -188,7 +211,31 @@ module.exports = {
                 await channelStaffLog.send({ content: `La mission (${message.url}) a été ${is_open ? "réouverte" : "fermée"} par ${interaction.member}.` });
 
                 return interaction.reply({ content: `La mission (${message.url}) a bien été ${is_open ? "réouverte" : "fermée"}.`, ephemeral: true });
-            }
+
+            case "delete":
+                const id_delete = interaction.options.getInteger('id');
+                const confirm = interaction.options.getBoolean('confirm');
+
+                if (!confirm) return interaction.reply({ content: "Vous devez confirmer la suppression de la mission.", ephemeral: true });
+
+                // Get the mission
+                const mission_delete = await Missions.findOne({ where: { id: id_delete } });
+                if (!mission_delete) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
+
+                // Get the embed
+                const main_channel_delete = await interaction.guild.channels.fetch(channel_all_missions);
+                if (!main_channel_delete) return interaction.reply({ content: "Le salon de la mission n'existe plus.", ephemeral: true });
+
+                const message_delete = await main_channel_delete.messages.fetch(mission_delete.main_msg_id);
+                if (!message_delete) return interaction.reply({ content: "Le message de la mission n'existe plus.", ephemeral: true });
+
+                // Delete the message
+                await message_delete.delete();
+
+                
+                
+
+        }
 
     },
 };
