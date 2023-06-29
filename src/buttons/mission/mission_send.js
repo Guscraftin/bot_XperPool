@@ -54,6 +54,7 @@ module.exports = {
                 mission = await Missions.create({
                     main_msg_id: main_msg.id,
                     particular_msg_id: particular_msg.id,
+                    channel_particular_id: particular_channel.id,
                     channel_staff_id: channel_staff_id,
                 });
             } else {

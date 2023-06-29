@@ -222,19 +222,64 @@ module.exports = {
                 const mission_delete = await Missions.findOne({ where: { id: id_delete } });
                 if (!mission_delete) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
 
-                // Get the embed
+                // Get the embed message and delete it
                 const main_channel_delete = await interaction.guild.channels.fetch(channel_all_missions);
                 if (!main_channel_delete) return interaction.reply({ content: "Le salon de la mission n'existe plus.", ephemeral: true });
-
                 const message_delete = await main_channel_delete.messages.fetch(mission_delete.main_msg_id);
                 if (!message_delete) return interaction.reply({ content: "Le message de la mission n'existe plus.", ephemeral: true });
-
-                // Delete the message
                 await message_delete.delete();
 
-                
-                
+                if (mission_delete.particular_msg_id) {
+                    const particular_channel_delete = await interaction.guild.channels.fetch(mission_delete.channel_particular_id);
+                    if (!particular_channel_delete) return interaction.reply({ content: "Particular: Le salon de la mission n'existe plus.", ephemeral: true });
+                    const message_particular_delete = await particular_channel_delete.messages.fetch(mission_delete.particular_msg_id);
+                    if (!message_particular_delete) return interaction.reply({ content: "Particular: Le message de la mission n'existe plus.", ephemeral: true });
+                    await message_particular_delete.delete();
+                }
 
+
+                // Send message in thread and delete mission in db
+                let logMissionMember;
+                try {
+                    logMissionMember = await LogMissions.findAll({ where: { mission_id: mission_delete.id } });
+                }
+                catch (error) {
+                    console.error("mission.js LogMissionsDB - " + error);
+                }
+
+                if (logMissionMember) {
+                    for (const logMission of logMissionMember) {
+                        const thread = await interaction.guild.channels.fetch(logMission.channel_details);
+                        if (thread) {
+                            const member = await thread.members.fetch().then(members => {
+                                return members.filter(member => !member.bot).first();
+                            });
+                            if (member) await thread.send({ content: `<@${member.id}>, cette mission a été supprimé. Ce fil de discussion sera supprimé dans 48h.` });
+                            else await thread.send({ content: `Cette mission a été supprimé. Ce fil de discussion sera supprimé dans 48h.` });
+                        }
+
+                        try {
+                            await logMission.destroy();
+                        } catch (error) {
+                            console.error("mission.js ThreadDB - " + error);
+                        }
+                    }
+                }
+
+                const channel_staff_delete = await interaction.guild.channels.fetch(mission_delete.channel_staff_id);
+                if (channel_staff_delete) await channel_staff_delete.delete();
+                await mission_delete.destroy();
+
+                // Delete thread in details channel after 48h
+                setTimeout(async () => {
+                    for (const logMission of logMissionMember) {
+                        const thread = await interaction.guild.channels.fetch(logMission.channel_details);
+                        if (thread) await thread.delete();
+                    }
+                } , 172800000); // 48h = 172800000 milliseconds
+
+
+                return interaction.reply({ content: `La mission a bien été supprimée.`, ephemeral: true });
         }
 
     },

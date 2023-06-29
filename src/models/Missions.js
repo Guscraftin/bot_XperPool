@@ -12,11 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         particular_msg_id: {
             type: DataTypes.STRING,
-            defaultValue: '0',
         },
         channel_particular_id: {
             type: DataTypes.STRING,
-            defaultValue: '0',
         },
         channel_staff_id: {
             type: DataTypes.STRING,
