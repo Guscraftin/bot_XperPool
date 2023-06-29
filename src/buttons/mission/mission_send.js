@@ -9,6 +9,12 @@ module.exports = {
         const missionEmbed = interaction.message.embeds[0];
         const is_particular = interaction.message.content.includes(" et dans ");
 
+        // Get the channel_staff of the mission
+        const channel_staff_id = interaction.message.content.split(" : ")[1].split("<#")[1].split(">")[0];
+        const channelStaffUsed = await Missions.findOne({ where: { channel_staff_id: channel_staff_id } });
+        if (channelStaffUsed) return interaction.reply({ content: `Le salon staff de la mission est déjà utilisé par la mission ${channelStaffUsed.id}.`, ephemeral: true });
+
+
         // Get the mission channels from the message
         const step1 = interaction.message.content.split("<#");
         const main_channel = await interaction.guild.channels.fetch(step1[1].split(">")[0]);
@@ -22,9 +28,6 @@ module.exports = {
             const role_fetch = await interaction.guild.roles.fetch();
             role = await role_fetch.find(role => role.name.toLowerCase() == name);
         }
-
-        // Get the channel_staff of the mission
-        const channel_staff_id = interaction.message.content.split(" : ")[1].split("<#")[1].split(">")[0];
 
 
         // Create the button row
