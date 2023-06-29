@@ -6,23 +6,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         first_name: {
             type: DataTypes.STRING,
-            defaultValue: 'null',
-            allowNull: false,
         },
         last_name: {
             type: DataTypes.STRING,
-            defaultValue: 'null',
-            allowNull: false,
         },
         email: {
             type: DataTypes.STRING,
-            defaultValue: 'null',
-            allowNull: false,
         },
         tel: {
             type: DataTypes.STRING,
-            defaultValue: 'null',
-            allowNull: false,
         },
         technologies: {
             type: DataTypes.TEXT,

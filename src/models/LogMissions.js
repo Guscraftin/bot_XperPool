@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('logmissions', {
-        channel_details:{
+        channel_details: {
             type: DataTypes.STRING,
             primaryKey: true,
         },
@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         is_react_main_msg: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false,
+        },
+        is_delete: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false,

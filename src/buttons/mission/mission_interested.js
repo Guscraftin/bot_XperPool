@@ -22,7 +22,7 @@ module.exports = {
         const is_react_mission = await LogMissions.findOne({ where: { mission_id: mission.id, user_id: interaction.user.id } });
         if (is_react_mission && !is_react_mission.is_delete) {
             const channel_details = await interaction.guild.channels.fetch(is_react_mission.channel_details);
-            const detail_mission = await channel_details.messages.fetch().then(messages => {return messages.at(-1)});
+            const detail_mission = await channel_details.messages.fetch().then(messages => { return messages.at(-1) });
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                     .setLabel("Mission complète")
@@ -36,8 +36,8 @@ module.exports = {
 
         // Get the detail mission of the channel staff
         const channel_staff = await interaction.guild.channels.fetch(mission.channel_staff_id);
-        const detail_mission_staff = await channel_staff.messages.fetch().then(messages => {return messages.at(-1).content});
- 
+        const detail_mission_staff = await channel_staff.messages.fetch().then(messages => { return messages.at(-1).content });
+
         // Create the channel with the description of the mission
         const channel = await interaction.guild.channels.fetch(channel_detail_missions).then(channel => {
             return channel.threads.create({
@@ -54,12 +54,12 @@ module.exports = {
 
         await channel.send({ content: `### Voici tous les détails concernant la mission ${mission.id}.\n_ _` });
         const detail_mission = await channel.send({ content: detail_mission_staff });
-        await channel.send({ 
+        await channel.send({
             content: `_ _\n**Souhaitez-vous confirmer définitivement votre candidature à cette mission ?**`,
             components: [row_detail]
         });
         await channel.send({ content: `${interaction.member}, c'est dans ce salon pour le détail de la mission.` });
-        await channel.messages.fetch().then(messages => {return messages.first().delete()});
+        await channel.messages.fetch().then(messages => { return messages.first().delete() });
 
         // Add the user to the database
         const user_name = interaction.member.displayName.split("_");
@@ -91,8 +91,9 @@ module.exports = {
 
         return interaction.reply({
             content: "Le fait que vous êtes intéressé par cette mission a bien été pris en compte.\n" +
-            `Vous trouverez ci dessous le bouton vous permettant d'accéder à l'entièreté de la mission où vous pourrez y déposer votre candidature.`,
+                `Vous trouverez ci dessous le bouton vous permettant d'accéder à l'entièreté de la mission où vous pourrez y déposer votre candidature.`,
             components: [row],
-            ephemeral: true });
+            ephemeral: true
+        });
     },
 };
