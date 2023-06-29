@@ -14,13 +14,18 @@ module.exports = {
             type: 20
         });
 
-        const kickLog = fetchKickLog.entries.first();
-        const { target: targetKick, reason: reasonKick, createdAt } = kickLog;
+        let kickLog, targetKick, reasonKick, createdAt;
+        if (fetchKickLog.entries.size > 0) {
+            kickLog = fetchKickLog.entries.first();
+            targetKick = kickLog.target;
+            reasonKick = kickLog.reason;
+            createdAt = kickLog.createdAt;
+        }
         let isMemberKick = false;
         let isMemberBan = false;
         let reasonBan;
 
-        if (targetKick.id === member.id && Date.now() - createdAt.getTime() < 0) isMemberKick = true;
+        if (kickLog && targetKick.id === member.id && Date.now() - createdAt.getTime() < 0) isMemberKick = true;
         else {
             // Check if the member has been banned
             const fetchBanLog = await member.guild.fetchAuditLogs({
@@ -28,11 +33,13 @@ module.exports = {
                 type: 22
             });
 
-            const banLog = fetchBanLog.entries.first();
-            const targetBan = banLog.target;
-            reasonBan = banLog.reason;
-
-            if (targetBan.id === member.id && Date.now() - banLog.createdTimestamp < 0) isMemberBan = true;
+            let banLog, targetBan, reasonBan;
+            if (fetchBanLog.entries.size > 0) {
+                banLog = fetchBanLog.entries.first();
+                targetBan = banLog.target;
+                reasonBan = banLog.reason;
+            }
+            if (banLog && targetBan.id === member.id && Date.now() - banLog.createdTimestamp < 0) isMemberBan = true;
         }
 
         // Send the log message
@@ -52,7 +59,32 @@ module.exports = {
         member.guild.channels.fetch(channel_logs_join_leave).then(channel => 
             channel.send({ embeds: [embed] })
         );
-        
+
+
+        /**
+         * Delete the missions of the member from the database and threads
+         */
+        let logMissionMember;
+        try {
+            const { LogMissions } = require('../../dbObjects');
+            logMissionMember = await LogMissions.findAll({ where: { user_id: member.id } });
+        }
+        catch (error) {
+            console.error("guildMemberRemove.js LogMissionsDB - " + error);
+        }
+
+        if (logMissionMember) {
+            for (const logMission of logMissionMember) {
+                const thread = await member.guild.channels.fetch(logMission.channel_details);
+                if (thread) await thread.delete();
+
+                try {
+                    await logMission.destroy();
+                } catch (error) {
+                    console.error("guildMemberRemove.js ThreadDB - " + error);
+                }
+            }
+        }
 
         /*
          * Delete the member from the database
