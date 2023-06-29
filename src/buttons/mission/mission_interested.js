@@ -11,11 +11,13 @@ module.exports = {
         const member = await Members.findOne({ where: { member_id: interaction.user.id } });
         if (!member) return interaction.reply({ content: "Tu n'es pas dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
 
+        await interaction.deferReply({ ephemeral: true });
+
         // Get the mission from the database
         let is_react_main_msg = interaction.channel.id === channel_all_missions;
         const mission_id = interaction.message.embeds[0].footer.text.split(" ")[1];
         const mission = await Missions.findOne({ where: { id: mission_id } });
-        if (!mission) return interaction.reply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+        if (!mission) return interaction.editReply({ content: "Une erreur est survenue lors de la recherche de la mission dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
 
 
         // Check if the user has already reacted to the message
@@ -29,9 +31,9 @@ module.exports = {
                     .setURL(detail_mission.url)
                     .setStyle(ButtonStyle.Link)
             );
-            return interaction.reply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
+            return interaction.editReply({ content: `Revoici le bouton pour accéder à l'entièreté de la mission.`, components: [row], ephemeral: true });
         }
-        if (!mission.is_open) return interaction.reply({ content: "Cette mission n'est plus ouverte aux candidatures.", ephemeral: true });
+        if (!mission.is_open) return interaction.editReply({ content: "Cette mission n'est plus ouverte aux candidatures.", ephemeral: true });
 
 
         // Get the detail mission of the channel staff
@@ -79,7 +81,7 @@ module.exports = {
             });
         } catch (error) {
             console.error("mission_interested.js - " + error);
-            return interaction.reply({ content: "Une erreur est survenue lors de l'ajout de votre réponse dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+            return interaction.editReply({ content: "Une erreur est survenue lors de l'ajout de votre réponse dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
         }
 
         const row = new ActionRowBuilder().addComponents(
@@ -89,7 +91,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Link)
         );
 
-        return interaction.reply({
+        return interaction.editReply({
             content: "Le fait que vous êtes intéressé par cette mission a bien été pris en compte.\n" +
                 `Vous trouverez ci dessous le bouton vous permettant d'accéder à l'entièreté de la mission où vous pourrez y déposer votre candidature.`,
             components: [row],
