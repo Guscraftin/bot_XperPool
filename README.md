@@ -10,6 +10,7 @@ More information about this project is available on the [XperPool Website](https
 - clear: clear some messages in a channel.
 - commu: create or delete a commu (role and category).
 - docs: send a embed message.
+- embed: send a custom embed message.
 - getdb: get some tables of the databases in excel file.
 - mission: create or edit a mission.
 - suggest: manage a suggestion message.
