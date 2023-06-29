@@ -31,6 +31,16 @@ module.exports = {
                 .setDescription("L'id de la mission.")
                 .setMinValue(1)
                 .setRequired(true))
+            .addStringOption(option => option.setName('titre').setDescription("Titre de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('client').setDescription("Client de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('seniorite').setDescription("Seniorité de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('tjm').setDescription("TJM de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('debut').setDescription("Date de début de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('lieu').setDescription("Lieu de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('frequence').setDescription("Fréquence de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('teletravail').setDescription("Télétravail de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('duree').setDescription("Durée de la mission.").setMaxLength(1024))
+            .addStringOption(option => option.setName('competences').setDescription("Compétences de la mission.").setMaxLength(1024))
             .addStringOption(option => option
                 .setName('status')
                 .setDescription("Le status de la mission.")
@@ -38,7 +48,6 @@ module.exports = {
                     { name: 'Ouvert', value: 'open' },
                     { name: 'Fermé', value: 'close' },
                 )
-                .setRequired(true)
             ))
         .addSubcommand(subcommand => subcommand
             .setName("delete")
@@ -53,19 +62,23 @@ module.exports = {
                 .setDescription("Confirmer la suppression de la mission.")
                 .setRequired(true))),
     async execute(interaction) {
+        // Get arguments for add and edit subcommand
+        const title = interaction.options.getString('titre');
+        const client = interaction.options.getString('client');
+        const seniority = interaction.options.getString('seniorite');
+        const tjm = interaction.options.getString('tjm');
+        const start = interaction.options.getString('debut');
+        const place = interaction.options.getString('lieu');
+        const frequency = interaction.options.getString('frequence');
+        const teleworking = interaction.options.getString('teletravail');
+        const duration = interaction.options.getString('duree');
+        const skills = interaction.options.getString('competences');
 
         switch (interaction.options.getSubcommand()) {
+            /**
+             * Add a mission
+             */
             case "add":
-                const title = interaction.options.getString('titre');
-                const client = interaction.options.getString('client');
-                const seniority = interaction.options.getString('seniorite');
-                const tjm = interaction.options.getString('tjm');
-                const start = interaction.options.getString('debut');
-                const place = interaction.options.getString('lieu');
-                const frequency = interaction.options.getString('frequence');
-                const teleworking = interaction.options.getString('teletravail');
-                const duration = interaction.options.getString('duree');
-                const skills = interaction.options.getString('competences');
                 const channelStaff = interaction.options.getChannel('salon');
                 const community = interaction.options.getChannel('commu');
 
@@ -120,6 +133,10 @@ module.exports = {
                     ephemeral: true
                 });
 
+
+            /**
+             * Edit a mission
+             */
             case "edit":
                 const id = interaction.options.getInteger('id');
                 const status = interaction.options.getString('status');
@@ -132,12 +149,14 @@ module.exports = {
                 if (!mission) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
 
                 let is_open;
-                if (mission.is_open) {
-                    if (status === "open") return interaction.reply({ content: "Cette mission est déjà ouverte.", ephemeral: true });
-                    is_open = false;
-                } else {
-                    if (status === "close") return interaction.reply({ content: "Cette mission est déjà fermée.", ephemeral: true });
-                    is_open = true;
+                if (status) {
+                    if (mission.is_open) {
+                        if (status === "open") return interaction.reply({ content: "Cette mission est déjà ouverte.", ephemeral: true });
+                        is_open = false;
+                    } else {
+                        if (status === "close") return interaction.reply({ content: "Cette mission est déjà fermée.", ephemeral: true });
+                        is_open = true;
+                    }
                 }
 
                 // Get the embed
@@ -146,18 +165,38 @@ module.exports = {
                 const message = await main_channel.messages.fetch(mission.main_msg_id);
                 if (!message) return interaction.reply({ content: "Le message de la mission n'existe plus.", ephemeral: true });
                 const embed = message.embeds[0];
+                
+                // Change embed fields
+                embed.fields[0].value = title ? title : embed.fields[0].value;
+                embed.fields[1].value = client ? client : embed.fields[1].value;
+                embed.fields[2].value = seniority ? seniority : embed.fields[2].value;
+                embed.fields[3].value = tjm ? tjm : embed.fields[3].value;
+                embed.fields[4].value = start ? start : embed.fields[4].value;
+                embed.fields[5].value = place ? place : embed.fields[5].value;
+                embed.fields[6].value = frequency ? frequency : embed.fields[6].value;
+                embed.fields[7].value = teleworking ? teleworking : embed.fields[7].value;
+                embed.fields[8].value = duration ? duration : embed.fields[8].value;
+                embed.fields[9].value = skills ? skills : embed.fields[9].value;
+                const newColor = status ? (is_open ? color_accept : color_decline) : embed.color;
 
                 // Edit the embed
                 const newEmbed = new EmbedBuilder()
                     .setTitle(embed.title)
                     .setDescription(embed.description)
-                    .setColor(is_open ? color_accept : color_decline)
+                    .setColor(newColor)
                     .setFields(embed.fields)
-                    .setTimestamp()
+                    .setTimestamp(new Date())
                     .setFooter(embed.footer);
 
                 // Update the database
-                Missions.update({ is_open }, { where: { id: mission.id } });
+                if (status) {
+                    try {
+                        Missions.update({ is_open }, { where: { id: mission.id } });
+                    } catch (error) {
+                        console.error("mission.js edit - " + error);
+                        return interaction.reply({ content: "Une erreur est survenue lors de la modification de la mission.", ephemeral: true });
+                    }
+                }
 
                 // Edit the message
                 if (mission.particular_msg_id) {
@@ -185,11 +224,23 @@ module.exports = {
                                 const member = await thread.members.fetch().then(members => {
                                     return members.filter(member => !member.bot).first();
                                 });
-                                if (member) await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
-                                else await thread.send({ content: `Cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+                                let message_edit;
+                                if (status) {
+                                    if (member) {
+                                        message_edit = await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+                                    } else {
+                                        message_edit = await thread.send({ content: `Cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
+                                    }
+                                } else {
+                                    if (member) {
+                                        message_edit = await thread.send({ content: `<@${member.id}>, cette mission a été modifiée. Tu peux trouver les nouveaux détails dans ce message-ci : ${message.url}.` });
+                                    } else {
+                                        message_edit = await thread.send({ content: `Cette mission a été modifiée. Tu peux trouver les nouveaux détails dans ce message-ci : ${message.url}.` });
+                                    }
+                                }
 
                                 // Delete the thread after 48h if the mission is closed
-                                if (!is_open) {
+                                if (status && !is_open) {
                                     setTimeout(async () => {
                                         const mission = await Missions.findOne({ where: { id: id } });
                                         if (mission && mission.is_open) return console.log("Mission is open");
@@ -208,10 +259,17 @@ module.exports = {
                 const channelStaffLog = await interaction.guild.channels.fetch(mission.channel_staff_id);
                 if (!channelStaffLog) return interaction.reply({ content: "Le salon staff de la mission n'existe plus mais le changement a bien eu lieu.", ephemeral: true });
                 
-                await channelStaffLog.send({ content: `La mission (${message.url}) a été ${is_open ? "réouverte" : "fermée"} par ${interaction.member}.` });
+                if (status) {
+                    await channelStaffLog.send({ content: `La mission (${message.url}) a été ${is_open ? "réouverte" : "fermée"} par ${interaction.member}.` });
+                } else {
+                    await channelStaffLog.send({ content: `La mission (${message.url}) a été modifiée par ${interaction.member}.` });
+                }
 
-                return interaction.reply({ content: `La mission (${message.url}) a bien été ${is_open ? "réouverte" : "fermée"}.`, ephemeral: true });
+                return interaction.reply({ content: `La mission (${message.url}) a bien été modifié.`, ephemeral: true });
 
+            /**
+             * Delete a mission
+             */
             case "delete":
                 const id_delete = interaction.options.getInteger('id');
                 const confirm = interaction.options.getBoolean('confirm');
