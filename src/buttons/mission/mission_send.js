@@ -82,6 +82,7 @@ module.exports = {
 
         // Change the channel staff name with the id of the mission
         const channel_staff = await interaction.guild.channels.fetch(channel_staff_id);
+        if (!channel_staff) return interaction.reply({ content: "Le salon staff de la mission n'existe plus.", ephemeral: true });
         try {
             if (channel_staff.name !== `Mission ${mission.id}`) {
                 await channel_staff.setName(`Mission ${mission.id}`);
