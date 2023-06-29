@@ -19,7 +19,6 @@ module.exports = {
                 { name: "Astuces", value: "tips" },
                 { name: "Annonces", value: "annonces" },
                 { name: "Events", value: "events" },
-
             )
             .setRequired(true)),
     async execute(interaction) {
@@ -181,21 +180,21 @@ Voici pour tous les <@&${role_members}>, des liens vers des outils externes pouv
             case "tips":
                 const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123509820218167447/158YbwUvNPdSVj00AMJtrRYaroFzYt-N8kWgw-tZwyBMJYpCiF89n6RoouRtSLLa6Ki-' });
                 const tips = `
-# 🚀 Démarrage de la semaine avec Angular ! 🚀
-Bienvenue dans notre semaine thématique dédiée à Angular ! Nous sommes impatients de plonger dans l'univers de ce puissant framework JavaScript et d'explorer ses dernières mises à jour, ses meilleures pratiques et ses conseils d'optimisation des performances.
+## :headphones: Un enthousiaste d'Angular nous parle de son expérience ! 
 
-## 📰 Le point fort du jour : Dernières mises à jour sur Angular
-Préparez-vous à découvrir les fonctionnalités et les améliorations les plus récentes qu'Angular a à offrir. Nous partagerons un article perspicace qui dévoile les derniers ajouts, améliorations et possibilités passionnantes pour la construction d'applications web modernes.
+Nous sommes ravis de vous présenter l'épisode de podcast d'aujourd'hui dans le cadre de notre semaine Angular. Rejoignez-nous pour un voyage dans l'avenir d'Angular avec l'esprit brillant de Minko Gechev, un auteur et conférencier estimé de la communauté Angular.
 
-Restez à l'écoute tout au long de la semaine pour d'autres bonnes choses sur Angular, notamment des épisodes de podcast et des conseils d'experts sur l'exploitation du potentiel d'Angular pour offrir des expériences utilisateur exceptionnelles.`
+:microphone2: Podcast : **"The Future of Angular" par AngularAir**
+:microphone2: Invité vedette : **Minko Gechev**
 
-                const embed1 = new EmbedBuilder()
-                    .setTitle("Say Goodbye to Setters and Getters: Angular’s Transform Option for Input Values")
-                    .setURL("https://medium.com/netanelbasal/say-goodbye-to-setters-and-getters-angulars-transform-option-for-input-values-88fd9442dcad")
-                    .setDescription("Starting from Angular v16.1.0, a new helpful feature has been introduced to provide an alternative and easy way to transform input values…")
-                    .setColor('#009ECA')
+Dans cet épisode captivant, Minko partage ses idées profondes et ses prédictions sur la direction que prend Angular. Obtenez un aperçu des fonctionnalités à venir, des avancées passionnantes et du paysage évolutif de ce puissant framework JavaScript.
 
-                await webhookClient.send({ content: tips, embeds: [embed1] });
+:link: Regardez le podcast ici : https://www.youtube.com/live/s9ZFyMkDPmg?feature=share
+
+:star2: Préparez-vous à explorer l'avenir d'Angular et à libérer votre potentiel de développement grâce aux réflexions d'expert de Minko Gechev ! :star2:
+_ _`
+
+                await webhookClient.send({ content: tips });
                 break;
 
 
