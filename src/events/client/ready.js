@@ -1,4 +1,5 @@
 const { Events } = require('discord.js');
+const { channel_detail_missions } = require(process.env.CONST);
 const { Members, Missions, LogMissions } = require('../../dbObjects');
 
 module.exports = {
@@ -8,6 +9,7 @@ module.exports = {
         let guildsCount = await client.guilds.fetch();
         let usersCount = client.guilds.cache.reduce((a, g) => a + g.memberCount, 0);
 
+        // Set the bot's activity
         client.user.setPresence({ status: 'online' });
 
         // Sync db models with db
@@ -19,10 +21,23 @@ module.exports = {
             console.error("ready.js - " + error);
         }
 
+        // Delete all threads for a deleted mission
+        const threads = await client.channels.fetch(channel_detail_missions).then(channel => {return channel.threads.fetch()});
+        await threads.threads.filter(thread => thread.parentId === channel_detail_missions).forEach(async thread => {
+            const message = await thread.messages.fetch().then(messages => {return messages.first()});
+            if (message.content.includes("mission a été supprimé")) {
+                await thread.delete();
+            }
+        });
+
+        // Send a message when the bot is ready
         console.log(`${client.user.username} est prêt à être utilisé par ${usersCount} utilisateurs sur ${guildsCount.size} serveurs !`);
     },
 };
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// NOT USED
 // Fetch RSS feed
 // With a lib like rss-parser for parsing the feed
 async function fetchLatestArticles(client, rssUrl, channelId) {
