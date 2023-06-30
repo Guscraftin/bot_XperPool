@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions, channel_detail_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
+const { category_xperpool, category_important, category_general, category_admin, channel_all_missions, channel_detail_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
 const { LogMissions, Missions } = require('../../dbObjects');
 
 module.exports = {
@@ -17,12 +17,11 @@ module.exports = {
             .addStringOption(option => option.setName('tjm').setDescription("TJM de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('debut').setDescription("Date de début de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('lieu').setDescription("Lieu de la mission.").setMaxLength(1024).setRequired(true))
-            .addStringOption(option => option.setName('frequence').setDescription("Fréquence de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('teletravail').setDescription("Télétravail de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('duree').setDescription("Durée de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('competences').setDescription("Compétences de la mission.").setMaxLength(1024).setRequired(true))
             .addChannelOption(option => option.setName("salon").setDescription("Le salon staff de la mission.").addChannelTypes(ChannelType.PublicThread).setRequired(true))
-            .addChannelOption(option => option.setName('commu').setDescription("La commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory)))
+            .addChannelOption(option => option.setName('commu').setDescription("La commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory).setRequired(true)))
         .addSubcommand(subcommand => subcommand
             .setName("edit")
             .setDescription("🔧 Permet de mettre à jour une mission.")
@@ -37,7 +36,6 @@ module.exports = {
             .addStringOption(option => option.setName('tjm').setDescription("TJM de la mission.").setMaxLength(1024))
             .addStringOption(option => option.setName('debut').setDescription("Date de début de la mission.").setMaxLength(1024))
             .addStringOption(option => option.setName('lieu').setDescription("Lieu de la mission.").setMaxLength(1024))
-            .addStringOption(option => option.setName('frequence').setDescription("Fréquence de la mission.").setMaxLength(1024))
             .addStringOption(option => option.setName('teletravail').setDescription("Télétravail de la mission.").setMaxLength(1024))
             .addStringOption(option => option.setName('duree').setDescription("Durée de la mission.").setMaxLength(1024))
             .addStringOption(option => option.setName('competences').setDescription("Compétences de la mission.").setMaxLength(1024))
@@ -69,7 +67,6 @@ module.exports = {
         const tjm = interaction.options.getString('tjm');
         const start = interaction.options.getString('debut');
         const place = interaction.options.getString('lieu');
-        const frequency = interaction.options.getString('frequence');
         const teleworking = interaction.options.getString('teletravail');
         const duration = interaction.options.getString('duree');
         const skills = interaction.options.getString('competences');
@@ -81,6 +78,9 @@ module.exports = {
             case "add":
                 const channelStaff = interaction.options.getChannel('salon');
                 const community = interaction.options.getChannel('commu');
+
+                // Check the community category
+                if (community.id === category_xperpool || community.id === category_important || community.id === category_general || community.id === category_admin) return interaction.reply({ content: `La commu doit être une catégorie correspondant à une technologie.`, ephemeral: true });
 
                 // Check the channelStaff
                 if (channelStaff.parentId !== channel_staff_missions) return interaction.reply({ content: `Le salon staff de la mission doit être un fil de discussion public dans le salon <#${channel_staff_missions}>.`, ephemeral: true });
@@ -107,7 +107,6 @@ module.exports = {
                         { name: "💰 TJM", value: tjm, inline: true },
                         { name: "📆 Date de début", value: start, inline: true },
                         { name: "🌍 Lieu", value: place, inline: true },
-                        { name: "🕗 Fréquence", value: frequency, inline: true },
                         { name: "💻 Télétravail", value: teleworking, inline: true },
                         { name: "⌛ Durée", value: duration, inline: true },
                         { name: "🔧 Compétences", value: skills, inline: true },
@@ -173,10 +172,9 @@ module.exports = {
                 embed.fields[3].value = tjm ? tjm : embed.fields[3].value;
                 embed.fields[4].value = start ? start : embed.fields[4].value;
                 embed.fields[5].value = place ? place : embed.fields[5].value;
-                embed.fields[6].value = frequency ? frequency : embed.fields[6].value;
-                embed.fields[7].value = teleworking ? teleworking : embed.fields[7].value;
-                embed.fields[8].value = duration ? duration : embed.fields[8].value;
-                embed.fields[9].value = skills ? skills : embed.fields[9].value;
+                embed.fields[6].value = teleworking ? teleworking : embed.fields[7].value;
+                embed.fields[7].value = duration ? duration : embed.fields[8].value;
+                embed.fields[8].value = skills ? skills : embed.fields[9].value;
                 const newColor = status ? (is_open ? color_accept : color_decline) : embed.color;
 
                 // Edit the embed
