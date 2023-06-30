@@ -6,23 +6,41 @@ module.exports = {
         .setDescription("🔧 Permet d'envoyer un embed via le bot.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
-        .addStringOption(option => option.setName("contenu").setDescription("Le contenu a envoyé dans le message (ce qui est hors embed)."))
-        .addStringOption(option => option.setName("titre").setDescription("Le titre de l'embed."))
+        .addStringOption(option => option.setName("contenu").setDescription("Le contenu OU l'id du message pour le contenu du message.").setMaxLength(2000))
+        .addStringOption(option => option.setName("titre").setDescription("Le titre de l'embed.").setMaxLength(256))
         .addStringOption(option => option.setName("url").setDescription("L'url accessible en cliquant sur le titre de l'embed."))
-        .addStringOption(option => option.setName("description").setDescription("La description de l'embed."))
+        .addStringOption(option => option.setName("description").setDescription("La description OU l'id du message pour la description de l'embed.").setMaxLength(4096))
         .addAttachmentOption(option => option.setName("vignette").setDescription("La \"miniatur`\" de l'embed."))
         .addStringOption(option => option.setName("couleur").setDescription("La couleur de l'embed (format html comme : #77Ab00).").setMinLength(6).setMaxLength(7))
         .addAttachmentOption(option => option.setName("image").setDescription("L'image de l'embed."))
         .addStringOption(option => option.setName("id").setDescription("L'id du message a modifier dans ce salon.")),
     async execute(interaction) {
-        const content = interaction.options.getString("contenu");
+        let content = interaction.options.getString("contenu");
         const titre = interaction.options.getString("titre");
         const url = interaction.options.getString("url");
-        const description = interaction.options.getString("description");
+        let description = interaction.options.getString("description");
         const vignette = interaction.options.getAttachment("vignette");
         const color = interaction.options.getString("couleur");
         const image = interaction.options.getAttachment("image");
         const id = interaction.options.getString("id");
+
+        // Check content and description
+        const onlyNumber = /^\d+$/;
+        if (content && onlyNumber.test(content)) {
+            const contentCheck = await interaction.channel.messages.fetch(content).catch(() => { return null; });
+            if (!contentCheck || contentCheck.size > 1) return interaction.reply({ content: "Le contenu du message à copier n'existe pas.", ephemeral: true });
+            if (contentCheck.content && contentCheck.content.length > 2000) return interaction.reply({ content: "Le contenu ne peut pas dépasser 2000 caractères.", ephemeral: true });
+            if (contentCheck.content === '') return interaction.reply({ content: "Le contenu du message ne doit pas être vide. Si vous ne voulez pas de contenu, ne rentrez pas ce champ lors de l'exécution de la commande.", ephemeral: true });
+            content = contentCheck.content;
+        }
+        if (description && onlyNumber.test(description)) {
+            const descriptionCheck = await interaction.channel.messages.fetch(description).catch(() => { return null; });
+            if (!descriptionCheck || descriptionCheck.size > 1) return interaction.reply({ content: "La description du message à copier n'existe pas.", ephemeral: true });
+            if (descriptionCheck.content && descriptionCheck.content.length > 4096) return interaction.reply({ content: "La description ne peut pas dépasser 2000 caractères.", ephemeral: true });
+            if (descriptionCheck.content === '') return interaction.reply({ content: "La description du message ne doit pas être vide. Si vous ne voulez pas de description, ne rentrez pas ce champ lors de l'exécution de la commande.", ephemeral: true });
+            description = descriptionCheck.content;
+        }
+
 
         // Exception if some required options are missing
         if (url && !titre) return interaction.reply({ content: "Vous devez spécifier un titre si vous spécifiez une url.", ephemeral: true });
