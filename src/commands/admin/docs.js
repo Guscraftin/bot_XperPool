@@ -22,7 +22,14 @@ module.exports = {
             )
             .setRequired(true)),
     async execute(interaction) {
-        
+        // Filter only the owner of the bot because this command it's useless for other people.
+        const bot = await interaction.client.application.fetch();
+        if (bot.owner.username !== undefined) {
+            if (interaction.member.id !== bot.owner.id) {
+                return interaction.reply({ content: "Cette commande est inutile pour vous. Veuillez utiliser les commandes `/embed` et `message` à la place.", ephemeral: true });
+            }
+        }
+
         switch (interaction.options.getString("message")) {
             case "welcome":
                 const owner = await interaction.guild.members.fetch(interaction.guild.ownerId);
@@ -67,17 +74,17 @@ L'équipe XperPool vous souhaite à tous la bienvenue 😃`)
 # Règlement Serveur Discord
 Merci à tous et bienvenue dans la communauté XperPool ! Pour pouvoir discuter avec la communauté, vous devez respecter certaines règles :
 
-**1️⃣・Pas de débauchage**
-Nous apprécions la nature collaborative et solidaire de notre communauté. Afin de maintenir un environnement équitable et respectueux, le débauchage est strictement interdit. Le débauchage se réfère à l'acte de solliciter ou de recruter nos membres pour des opportunités externes sans consentement préalable. Tout membre surpris en train de se livrer à des activités de débauchage sera banni définitivement du serveur !
-
-**2️⃣・Respectez les règles définies par Discord**
+**1️⃣・Respectez les règles définies par Discord**
 Il est impératif de respecter les règles définies par Discord (https://discord.com/terms). Si certaines règles ne sont pas respectées, cela peut aller d'un ban de Discord même à des sanctions pénales.
 
-**3️⃣・Manques de respects et menaces**
+**2️⃣・Manques de respects et menaces**
 Aucun manque de respect ou menaces que ce soit envers le staff ou/et les membres ne sera toléré.
 
-**4️⃣・Parler correctement et en français**
+**3️⃣・Parler correctement et en français**
 Le serveur étant principalement francophone et pour des raisons de compréhension entre membres, il vous est demandé de parler français dans les chat général. De plus il est conseillé d'écrire correctement (que ce soit lisible et compréhensible).
+
+**4️⃣・Pas de débauchage**
+Nous apprécions la nature collaborative et solidaire de notre communauté. Afin de maintenir un environnement équitable et respectueux, le débauchage est strictement interdit. Le débauchage se réfère à l'acte de solliciter ou de recruter nos membres pour des opportunités externes sans consentement préalable. Tout membre surpris en train de se livrer à des activités de débauchage sera banni définitivement du serveur !
 
 **5️⃣・Spam et troll**
 Le spam et le troll ne sont pas autorisés.`
