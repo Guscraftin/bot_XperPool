@@ -55,7 +55,8 @@ module.exports = {
             else await msg.edit({ content: content, embeds: [embed] });
             await interaction.reply({ content: `Message correctement modifié : ${msg.url} !`, ephemeral: true });
         } else {
-            if (content) await interaction.channel.send({ content: content, embeds: [embed] });
+            if (content && !titre && !description && !vignetteUrl && !imageUrl) await interaction.channel.send({ content: content });
+            else if (content) await interaction.channel.send({ content: content, embeds: [embed] });
             else await interaction.channel.send({ embeds: [embed] });
             await interaction.reply({ content: "Message correctement envoyé !", ephemeral: true });
         }
