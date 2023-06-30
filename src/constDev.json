@@ -18,6 +18,7 @@
 
     "color_accept": "#008000",
     "color_decline": "#9F2727",
+    "color_basic": "#5865F2",
 
     "emoji_yes": "<:Tick_vert:1123502931400990781>",
     "emoji_neutral": "<:Neutre:1123502928813105182>",
