@@ -22,6 +22,9 @@ module.exports = {
             console.error("ready.js - " + error);
         }
 
+        // Reinitialize is_messaging to false for all members
+        await Members.update({ is_messaging: false }, { where: { is_messaging: true } });
+
         // Delete all threads for a deleted mission
         const threads = await client.channels.fetch(channel_detail_missions).then(channel => {return channel.threads.fetch()});
         await threads.threads.filter(thread => thread.parentId === channel_detail_missions).forEach(async thread => {
