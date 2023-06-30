@@ -11,22 +11,22 @@ module.exports = {
             subcommand
                 .setName('add')
                 .setDescription("🔧 Ajouter un article à la boutique.")
-                .addStringOption(option => option.setName('name').setDescription("Le nom de l'article.").setRequired(true))
-                .addStringOption(option => option.setName('description').setDescription("La description de l'article.").setRequired(true))
+                .addStringOption(option => option.setName('name').setDescription("Le nom de l'article.").setMaxLength(256).setRequired(true))
+                .addStringOption(option => option.setName('description').setDescription("La description de l'article.").setMaxLength(1024).setRequired(true))
                 .addIntegerOption(option => option.setName('price').setDescription("Le prix de l'article.").setMinValue(0).setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('edit')
                 .setDescription("🔧 Mettre à jour un article.")
-                .addIntegerOption(option => option.setName('id').setDescription("L'id de l'article.").setRequired(true))
-                .addStringOption(option => option.setName('name').setDescription("Le nom de l'article."))
-                .addStringOption(option => option.setName('description').setDescription("La description de l'article."))
+                .addIntegerOption(option => option.setName('id').setDescription("L'id de l'article.").setMinValue(1).setRequired(true))
+                .addStringOption(option => option.setName('name').setDescription("Le nom de l'article.").setMaxLength(256))
+                .addStringOption(option => option.setName('description').setDescription("La description de l'article.").setMaxLength(1024))
                 .addIntegerOption(option => option.setName('price').setDescription("Le prix de l'article.").setMinValue(0)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('remove')
                 .setDescription("🔧 Retirer un article de la boutique.")
-                .addIntegerOption(option => option.setName('id').setDescription("L'id de l'article.").setRequired(true)))
+                .addIntegerOption(option => option.setName('id').setDescription("L'id de l'article.").setMinValue(1).setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('clear')
