@@ -217,38 +217,32 @@ module.exports = {
                 await channelDetails.threads.fetch().then(threads => {
                     threads.threads.each(async thread => {
                         if (thread.parentId === channel_detail_missions && thread.name.split(" ")[1] == mission.id) {
-                            const isButtEnabled = await thread.messages.fetch().then(messages => {
-                                return !messages.at(-3).components[0].components[0].disabled;
+                            const member = await thread.members.fetch().then(members => {
+                                return members.filter(member => !member.bot).first();
                             });
-                            if (isButtEnabled) {
-                                const member = await thread.members.fetch().then(members => {
-                                    return members.filter(member => !member.bot).first();
-                                });
-                                let message_edit;
-                                if (status) {
-                                    if (member) {
-                                        message_edit = await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
-                                    } else {
-                                        message_edit = await thread.send({ content: `Cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
-                                    }
+                            if (status) {
+                                if (member) {
+                                    await thread.send({ content: `<@${member.id}>, cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
                                 } else {
-                                    if (member) {
-                                        message_edit = await thread.send({ content: `<@${member.id}>, cette mission a été modifiée. Tu peux trouver les nouveaux détails dans ce message-ci : ${message.url}.` });
-                                    } else {
-                                        message_edit = await thread.send({ content: `Cette mission a été modifiée. Tu peux trouver les nouveaux détails dans ce message-ci : ${message.url}.` });
-                                    }
+                                    await thread.send({ content: `Cette mission a été ${is_open ? "réouverte" : "fermée"}.` });
                                 }
+                            } else {
+                                if (member) {
+                                    await thread.send({ content: `<@${member.id}>, cette mission a été modifiée. Tu peux trouver les nouveaux détails dans ce message-ci : ${message.url}.` });
+                                } else {
+                                    await thread.send({ content: `Cette mission a été modifiée. Tu peux trouver les nouveaux détails dans ce message-ci : ${message.url}.` });
+                                }
+                            }
 
-                                // Delete the thread after 48h if the mission is closed
-                                if (status && !is_open) {
-                                    setTimeout(async () => {
-                                        const mission = await Missions.findOne({ where: { id: id } });
-                                        if (mission && mission.is_open) return console.log("Mission is open");
-                                        const logMission = await LogMissions.findOne({ where: { channel_details: thread.id } });
-                                        if (logMission) {console.log("is_delete"); await logMission.update({ is_delete: true });}
-                                        await thread.delete();
-                                    } , 172800000); // 48h = 172800000 milliseconds
-                                }
+                            // Delete the thread after 48h if the mission is closed
+                            if (status && !is_open) {
+                                setTimeout(async () => {
+                                    const mission = await Missions.findOne({ where: { id: id } });
+                                    if (mission && mission.is_open) return;
+                                    const logMission = await LogMissions.findOne({ where: { channel_details: thread.id } });
+                                    if (logMission) await logMission.update({ is_delete: true });
+                                    await thread.delete();
+                                } , 172800000); // 48h = 172800000 milliseconds
                             }
                         }
                     });
