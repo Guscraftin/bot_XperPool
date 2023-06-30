@@ -12,6 +12,7 @@ More information about this project is available on the [XperPool Website](https
 - docs: send a embed message.
 - embed: send a custom embed message.
 - getdb: get some tables of the databases in excel file.
+- message: copy a message in another channel.
 - mission: create or edit a mission.
 - suggest: manage a suggestion message.
 ### For everyone
@@ -34,9 +35,11 @@ More information about this project is available on the [XperPool Website](https
 - Mission system.
 - Send a welcome message to the new user.
 - Send a welcome message in the general channel when a user receives the "members" role.
+- Shop system.
 - Suggestion system.
 
 ## Database
+- Items: Items for sale in the shop.
 - LogMissions: log when a member react to a mission.
 - Member: score of a member for the economic system.
 - Missions: all mission send in public channel.
