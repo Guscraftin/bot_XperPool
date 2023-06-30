@@ -5,6 +5,7 @@ More information about this project is available on the [XperPool Website](https
 
 ## Commands
 ### Admin Only
+- adminitems: manage the 'items' database.
 - adminscore: manage the 'score' database.
 - adminuser: manage the 'member' database.
 - clear: clear some messages in a channel.
@@ -16,6 +17,7 @@ More information about this project is available on the [XperPool Website](https
 - mission: create or edit a mission.
 - suggest: manage a suggestion message.
 ### For everyone
+- boutique: display and buy a item of the shop.
 - info: information about the bot.
 - leaderboard: get the leaderboard of all member.
 - score: get the score of a member.
@@ -25,6 +27,9 @@ More information about this project is available on the [XperPool Website](https
 
 ## Features
 - Add 1 point when a member send a message (cooldown 5 secondes).
+- Add 5 points when a member react to a suggestion.
+- Rmove 5 points when a member remove his reaction to as suggestion.
+- Add 10 points when a member has a suggestion accepted.
 - Delete the user of the 'score' database when he left the guild.
 - Log when a user joins or leaves the server.
 - Logs when a message changes or is deleted.
