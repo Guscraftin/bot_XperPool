@@ -1,5 +1,6 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { channel_suggestions, color_accept, color_decline } = require(process.env.CONST);
+const { Members } = require('../../dbObjects');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -59,6 +60,12 @@ module.exports = {
                         .setDescription(`${embedMsg.description}`)
                         .setTimestamp()
                         .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+                }
+
+                // Update the score of the author of the suggestion
+                const user = await Members.findOne({ where: { member_id: author.id } });
+                if (user) {
+                    user.increment('score', { by: 10 });
                 }
                 
                 await message.edit({ embeds: [embed] });
