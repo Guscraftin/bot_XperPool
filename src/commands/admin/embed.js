@@ -42,7 +42,7 @@ module.exports = {
             .setColor(color)
             .setImage(imageUrl);
 
-        if (content) await interaction.channel.send(content, { embeds: [embed] });
+        if (content) await interaction.channel.send({ content: content, embeds: [embed] });
         else await interaction.channel.send({ embeds: [embed] });
         await interaction.reply({ content: "Message correctement envoyé !", ephemeral: true });
     },
