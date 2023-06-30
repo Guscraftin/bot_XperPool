@@ -11,17 +11,21 @@ module.exports = {
             subcommand
                 .setName('accepter')
                 .setDescription("🔧 Accepter une suggestion.")
-                .addStringOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setRequired(true))
+                .addStringOption(option => option.setName('id').setDescription("L'id du message de la suggestion.").setRequired(true))
                 .addStringOption(option => option.setName('commentaire').setDescription("Le commentaire a ajouter.")))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('refuser')
                 .setDescription("🔧 Refuser une suggestion.")
-                .addStringOption(option => option.setName('message').setDescription("L'id du message de la suggestion.").setRequired(true))
+                .addStringOption(option => option.setName('id').setDescription("L'id du message de la suggestion.").setRequired(true))
                 .addStringOption(option => option.setName('commentaire').setDescription("Le raison du refus.").setRequired(true))),
     async execute(interaction) {
-        const messageId = interaction.options.getString("message");
+        const messageId = interaction.options.getString("id");
         const comment = interaction.options.getString("commentaire");
+
+        // Check if the id is a number
+        const onlyNumber = /^\d+$/;
+        if (!onlyNumber.test(messageId)) return interaction.reply({ content: "L'id doit être l'identifiant du message de la suggestion.", ephemeral: true });
 
         // Get the message of the suggestion
         const message = await interaction.guild.channels.fetch(channel_suggestions).then(channel =>
