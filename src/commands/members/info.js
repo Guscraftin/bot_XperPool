@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { color_basic } = require(process.env.CONST);
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -33,7 +34,7 @@ module.exports = {
                 { name: `${isTeamOwner ? "Mes propriétaires" : "Mon propriétaire"} :`, value: owner, inline: true },
                 { name: 'Mes développeurs :', value: `▸ [Guscraftin](https://github.com/Guscraftin)`, inline: true },
             )
-            .setColor('DarkAqua')
+            .setColor(color_basic)
             .setTimestamp()
             .setFooter({ text: interaction.user.username, iconURL: interaction.user.displayAvatarURL() });
 

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { Op } = require('sequelize');
 const { Members } = require('../../dbObjects');
+const { color_basic } = require(process.env.CONST);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -19,7 +20,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle(`Stats de ${member.username}`)
                 .setDescription(`Score : \`${user.score}\`\n`+
-                `Rang : \`${rank}/${totalMembers}\``);
+                `Rang : \`${rank}/${totalMembers}\``)
+                .setColor(color_basic);
 
             return interaction.reply({ embeds: [embed], ephemeral: true });
         } catch (error) {

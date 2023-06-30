@@ -1,5 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { Members } = require('../../dbObjects');
+const {color_basic } = require(process.env.CONST);
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -29,6 +30,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle("Classement")
                 .setDescription(leaderboardPage.map((user, index) => `**${startIndex + index + 1}.** <@${user.member_id}> ▸ ${user.score}`).join("\n"))
+                .setColor(color_basic)
                 .setFooter({ text: `Page ${currentPage}/${pageCount} • Ton rang: ${memberRank}/${users.length}`});
 
             // Displaying the navigation buttons

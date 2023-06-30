@@ -8,9 +8,10 @@ module.exports = {
     async execute(interaction) {
         try {
             // Get information about the leaderboard
-            const memberRank = interaction.message.embeds[0].footer.text.split("•")[1];
-            const currentPage = parseInt(interaction.message.embeds[0].footer.text.split(" ")[1].split("/")[0]);
-            const pageCount = parseInt(interaction.message.embeds[0].footer.text.split(" ")[1].split("/")[1]);
+            const oldEmbed = interaction.message.embeds[0];
+            const memberRank = oldEmbed.footer.text.split("•")[1];
+            const currentPage = parseInt(oldEmbed.footer.text.split(" ")[1].split("/")[0]);
+            const pageCount = parseInt(oldEmbed.footer.text.split(" ")[1].split("/")[1]);
 
             // Recovering constants
             const pageSize = 10;
@@ -26,6 +27,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle("Classement")
                 .setDescription(leaderboardPage.map((user, index) => `**${startIndex + index + 1}.** <@${user.member_id}> ▸ ${user.score}`).join("\n"))
+                .setColor(oldEmbed.color)
                 .setFooter({ text: `Page ${nextPage}/${pageCount} •${memberRank}`});
 
             // Displaying the navigation buttons
