@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
 const { role_admins, role_bots, role_members } = require(process.env.CONST);
 const { Members } = require('../../dbObjects');
 
