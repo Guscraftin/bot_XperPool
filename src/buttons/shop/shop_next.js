@@ -14,7 +14,7 @@ module.exports = {
             const pageCount = parseInt(oldEmbed.footer.text.split(" ")[1].split("/")[1]);
 
             // Recovering constants
-            const pageSize = 1;
+            const pageSize = 10;
             const items = await Items.findAll();
 
             // Displaying the next page of the shop

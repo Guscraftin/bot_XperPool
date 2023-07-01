@@ -24,7 +24,7 @@ module.exports = {
         }
 
         // Division of items into groups of 10 for each page
-        const pageSize = 1;
+        const pageSize = 10;
         const pageCount = Math.ceil(items.length / pageSize);
 
         // Displaying the first page of the shop
