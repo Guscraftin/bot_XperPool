@@ -9,6 +9,7 @@ module.exports = {
     async execute(interaction) {
         const channel = interaction.channel;
         const ticket = await Tickets.findOne({ where: { channel_id: channel.id } });
+        if (!ticket) return interaction.reply({ content: "Ce ticket n'existe plus. Veuillez contacter un admin.", ephemeral: true });
         const member = await interaction.guild.members.fetch(ticket.user_id).catch(() => {});
 
         // Get the transcript of the messages in channel
