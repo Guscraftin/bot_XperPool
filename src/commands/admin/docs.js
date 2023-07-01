@@ -80,26 +80,26 @@ Il est impératif de respecter les règles définies par Discord (https://discor
 **2️⃣・Manques de respects et menaces**
 Aucun manque de respect ou menaces que ce soit envers le staff ou/et les membres ne sera toléré.
 
-**3️⃣・Parler correctement et en français**
+**3️⃣・Discrimination**
+Ne postez pas de contenu NSFW, et n'ayez pas de propos racistes, homophobes, sexistes et toutes autres formes de discriminations.
+
+**4️⃣・Parler correctement et en français**
 Le serveur étant principalement francophone et pour des raisons de compréhension entre membres, il vous est demandé de parler français dans les chat général. De plus il est conseillé d'écrire correctement (que ce soit lisible et compréhensible).
 
-**4️⃣・Pas de débauchage**
-Nous apprécions la nature collaborative et solidaire de notre communauté. Afin de maintenir un environnement équitable et respectueux, le débauchage est strictement interdit. Le débauchage se réfère à l'acte de solliciter ou de recruter nos membres pour des opportunités externes sans consentement préalable. Tout membre surpris en train de se livrer à des activités de débauchage sera banni définitivement du serveur !
-
-**5️⃣・Spam et troll**
-Le spam et le troll ne sont pas autorisés.`
+**5️⃣・Pas de débauchage**
+Nous apprécions la nature collaborative et solidaire de notre communauté. Afin de maintenir un environnement équitable et respectueux, le débauchage est strictement interdit. Le débauchage se réfère à l'acte de solliciter ou de recruter nos membres pour des opportunités externes sans consentement préalable. Tout membre surpris en train de se livrer à des activités de débauchage sera banni définitivement du serveur !`
                 const rules2 = `_ _
-**6️⃣・Pub et pub message privé**
+**6️⃣・Spam et troll**
+Le spam et le troll ne sont pas autorisés.
+
+**7️⃣・Pub et pub message privé**
 Les publicités (que ce soit sur le serveur ou en message privé) sont strictement interdites sous peine de bannissement.
 
-**7️⃣・Soyez matures**
+**8️⃣・Soyez matures**
 Aucune immaturité n'est acceptée, si cette règle n'est pas respectée, vous serez muté ou banni du serveur.
 
-**8️⃣・Mentions**
+**9️⃣・Mentions**
 Il est interdit de mentionner les <@&1116845041823002695>, si vous avez des questions nous avons mis en place un système de ticket pour vos requêtes.
-
-**9️⃣・Discrimination**
-Ne postez pas de contenu NSFW, et n'ayez pas de propos racistes, homophobes, sexistes et toutes autres formes de discriminations.
 
 **🔟・Pseudo**
 Nous modifions votre pseudo à votre entrée sur le serveur avec votre prénom et votre nom. Il s'agit d'un réseau professionnel, nous évitons donc les caractères spéciaux et tout autre nom d'utilisateur inventé.
