@@ -1,10 +1,11 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const { channel_logs_tickets, color_basic } = require(process.env.CONST);
 const { Tickets } = require('../../dbObjects');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("adminticket")
-	    .setDescription("🔧 Permet de modifier la db des retranscriptions des tickets fermés.")
+        .setDescription("🔧 Permet de modifier la db des retranscriptions des tickets fermés.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
         .addSubcommand(subcommand =>
@@ -16,16 +17,17 @@ module.exports = {
                     .setName('categorie')
                     .setDescription("La catégorie des tickets a récupérer.")
                     .addChoices(
-                        { name: 'Signaler un membre', value: 'signaler un membre' },
-                        { name: 'Problème sur une mission', value: 'problème sur une mission' },
-                        { name: 'Bug serveur', value: 'bug serveur' },
-                        { name: 'Question générale', value: 'question générale' },
+                        { name: 'Signaler un membre', value: 'Signaler un membre' },
+                        { name: 'Problème sur une mission', value: 'Problème sur une mission' },
+                        { name: 'Bug serveur', value: 'Bug serveur' },
+                        { name: 'Question générale', value: 'Question générale' },
                     )))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('delete')
                 .setDescription("🔧 Supprimer une retranscription de ticket.")
-                .addIntegerOption(option => option.setName('id').setDescription("L'id de la retranscription.").setMinValue(1).setRequired(true)))
+                .addIntegerOption(option => option.setName('id').setDescription("L'id de la retranscription.").setMinValue(1).setRequired(true))
+                .addBooleanOption(option => option.setName('confirm').setDescription("Confirmer la suppression.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('deleteall')
@@ -35,10 +37,10 @@ module.exports = {
                     .setName('categorie')
                     .setDescription("La catégorie des tickets a supprimer.")
                     .addChoices(
-                        { name: 'Signaler un membre', value: 'signaler un membre' },
-                        { name: 'Problème sur une mission', value: 'problème sur une mission' },
-                        { name: 'Bug serveur', value: 'bug serveur' },
-                        { name: 'Question générale', value: 'question générale' },
+                        { name: 'Signaler un membre', value: 'Signaler un membre' },
+                        { name: 'Problème sur une mission', value: 'Problème sur une mission' },
+                        { name: 'Bug serveur', value: 'Bug serveur' },
+                        { name: 'Question générale', value: 'Question générale' },
                     ))
                 .addBooleanOption(option => option.setName('confirm').setDescription("Confirmer la suppression."))),
     async execute(interaction) {
@@ -53,15 +55,17 @@ module.exports = {
              * List all transcriptions of closed tickets
              */
             case "list":
+                await interaction.deferReply({ ephemeral: true });
+
                 try {
-                    if (member && category) ticket = await Tickets.findAll({ where: { user_id: member.id, category: category } }); 
+                    if (member && category) ticket = await Tickets.findAll({ where: { user_id: member.id, category: category } });
                     else if (member) ticket = await Tickets.findAll({ where: { user_id: member.id } });
                     else if (category) ticket = await Tickets.findAll({ where: { category: category } });
-                    else ticket = await Tickets.findAll();
+                    else ticket = await Tickets.findAll({ where: { channel_id: null } });
                 } catch (error) {
                     console.error("adminticket list - " + error);
                 }
-                if (!ticket || ticket.length == 0) return interaction.reply({ content: `Aucune retranscription de ticket n'a été trouvée.`, ephemeral: true });
+                if (!ticket || ticket.length == 0) return interaction.editReply({ content: `Aucune retranscription de ticket n'a été trouvée.`, ephemeral: true });
 
                 // Division of ticket into groups of 10 for each page
                 const pageSize = 10;
@@ -75,9 +79,16 @@ module.exports = {
 
                 // Create embed fields
                 let fields = [];
-                ticketPage.forEach(({ id, user_id, category }) => {
-                    fields.push({ name: `Id: ${id}`, value: `<@${user_id}> -> ${category}` });
-                });
+                const channel_ticket = await interaction.guild.channels.fetch(channel_logs_tickets).catch(() => {});
+                if (!channel_ticket || channel_ticket.size > 1) return interaction.editReply({ content: `Le salon de logs des tickets n'a pas été trouvé.`, ephemeral: true });
+                await Promise.all(ticketPage.map(async ({ id, user_id, category, message_id, createdAt }) => {
+                    const msg = await channel_ticket.messages.fetch(message_id).catch(() => {});
+                    if (msg) {
+                        fields.push({ name: `Id: ${id}`, value: `<@${user_id}>・\`${category}\`\n${msg.url}・Datant du : <t:${parseInt(createdAt / 1000)}:F>` });
+                    } else {
+                        fields.push({ name: `Id: ${id}`, value: `<@${user_id}>・\`${category}\`\nMessage non trouvé・Datant du : <t:${parseInt(createdAt / 1000)}:F>` });
+                    }
+                }));
 
                 let description = "";
                 if (member) description += `**Membre :** <@${member.id}>\n`;
@@ -88,31 +99,33 @@ module.exports = {
                     .setTitle(`Liste des retranscriptions`)
                     .setDescription(description)
                     .addFields(fields)
+                    .setColor(color_basic)
                     .setTimestamp()
                     .setFooter({ text: `Page ${currentPage}/${pageCount}` })
 
                 // Displaying the navigation buttons
                 const navigationRow = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId("ticket_previous")
-                        .setLabel("◀️")
-                        .setStyle(ButtonStyle.Primary)
-                        .setDisabled(currentPage === 1),
-                    new ButtonBuilder()
-                        .setCustomId("ticket_next")
-                        .setLabel("▶️")
-                        .setStyle(ButtonStyle.Primary)
-                        .setDisabled(currentPage === pageCount)
-                );
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId("ticket_previous")
+                            .setLabel("◀️")
+                            .setStyle(ButtonStyle.Primary)
+                            .setDisabled(currentPage === 1),
+                        new ButtonBuilder()
+                            .setCustomId("ticket_next")
+                            .setLabel("▶️")
+                            .setStyle(ButtonStyle.Primary)
+                            .setDisabled(currentPage === pageCount)
+                    );
 
-                return interaction.reply({ embeds: [embed], components: [navigationRow], ephemeral: true });
+                return interaction.editReply({ embeds: [embed], components: [navigationRow], ephemeral: true });
 
 
             /**
              * Delete one ticket transcription
              */
             case "delete":
+                if (!confirm) return interaction.reply({ content: `Vous devez confirmer la suppression de l'élément désigné.`, ephemeral: true });
                 try {
                     ticket = await Tickets.findOne({ where: { id: id } });
                     if (!ticket || ticket.length == 0) return interaction.reply({ content: `La retranscription avec l'id \`${id}\` n'existe pas.`, ephemeral: true });
@@ -129,7 +142,7 @@ module.exports = {
             case "deleteall":
                 if (!confirm) return interaction.reply({ content: `Vous devez confirmer la suppression des éléments sélectionnés.`, ephemeral: true });
                 try {
-                    if (member && category) ticket = await Tickets.findAll({ where: { user_id: member.id, category: category } }); 
+                    if (member && category) ticket = await Tickets.findAll({ where: { user_id: member.id, category: category } });
                     else if (member) ticket = await Tickets.findAll({ where: { user_id: member.id } });
                     else if (category) ticket = await Tickets.findAll({ where: { category: category } });
                     else ticket = await Tickets.findAll();
@@ -138,7 +151,7 @@ module.exports = {
                 } catch (error) {
                     console.error("adminticket deleteall - " + error);
                 }
-                return interaction.reply({ content: `Tous les articles de la boutique ont été supprimés.`, ephemeral: true });
+                return interaction.reply({ content: `Tous les transcriptions des tickets ont été supprimés.`, ephemeral: true });
 
             default:
                 return interaction.reply({ content: `Cette subcommand n'existe pas.`, ephemeral: true });

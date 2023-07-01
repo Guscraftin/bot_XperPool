@@ -15,16 +15,16 @@ module.exports = {
                     .addOptions(
                         new StringSelectMenuOptionBuilder()
                             .setLabel("Signaler un membre")
-                            .setValue("signaler un membre"),
+                            .setValue("Signaler un membre"),
                         new StringSelectMenuOptionBuilder()
                             .setLabel("Problème sur une mission")
-                            .setValue("problème sur une mission"),
+                            .setValue("Problème sur une mission"),
                         new StringSelectMenuOptionBuilder()
                             .setLabel("Bug serveur")
-                            .setValue("bug serveur"),
+                            .setValue("Bug serveur"),
                         new StringSelectMenuOptionBuilder()
                             .setLabel("Question générale")
-                            .setValue("question générale"),
+                            .setValue("Question générale"),
                     ),
             );
 

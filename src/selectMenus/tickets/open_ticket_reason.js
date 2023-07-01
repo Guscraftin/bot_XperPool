@@ -13,7 +13,7 @@ module.exports = {
         const member = interaction.member;
 
         // Check if the user has already a ticket
-        const ticket = await Tickets.findOne({ where: { user_id: interaction.user.id, data: null } });
+        const ticket = await Tickets.findOne({ where: { user_id: interaction.user.id, message_id: null } });
         if (ticket) {
             return interaction.editReply({ content: `Vous avez déjà un ticket ouvert : <#${ticket.channel_id}>`, ephemeral: true });
         }

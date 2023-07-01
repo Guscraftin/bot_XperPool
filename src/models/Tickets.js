@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: '',
             allowNull: false,
         },
-        data: {
-            type: DataTypes.BLOB('long'),
+        message_id: {
+            type: DataTypes.STRING,
         },
         channel_id: {
             type: DataTypes.STRING,

@@ -15,15 +15,12 @@ module.exports = {
         // Get the transcript of the messages in channel
         const attachment = await discordTranscripts.createTranscript(channel);
 
-        // Save the transcript in a file
-        const fileData = Buffer.from(attachment.attachment, 'hex');
         try {
             await ticket.update({
                 channel_id: null,
-                data: fileData,
             });
         } catch (error) {
-            console.error("confirm_close_ticket.js tickets - " + error);
+            console.error("confirm_close_ticket.js tickets channel - " + error);
         }
 
         // Delete the channel
@@ -33,9 +30,17 @@ module.exports = {
         const channelLogs = await interaction.guild.channels.fetch(channel_logs_tickets);
         if (!channelLogs) return;
         
-        await channelLogs.send({
-            content: `**Le ticket de ${member ? member : `\`${channel.name}\``} a été fermé par ${interaction.user}.**\nVoici le transcript du ticket qui est également disponible avec la commande \`/adminticket\` :`,
+        const msg = await channelLogs.send({
+            content: `**Le ticket de ${member ? member : `\`${channel.name}\``} a été fermé par ${interaction.user}.**\n**Catégorie :** \`${ticket.category}\`\n**Date d'ouverture du ticket :** <t:${parseInt(ticket.createdAt / 1000)}:F> (<t:${parseInt(ticket.createdAt / 1000)}:R>)\n**Date de fermeture du ticket :** <t:${parseInt(Date.now() / 1000)}:F> (<t:${parseInt(Date.now() / 1000)}:R>)`,
             files: [attachment]
         });
+
+        try {
+            await ticket.update({
+                message_id: msg.id,
+            });
+        } catch (error) {
+            console.error("confirm_close_ticket.js tickets msg - " + error);
+        }
     }
 }
