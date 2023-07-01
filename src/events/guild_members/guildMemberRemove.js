@@ -62,6 +62,33 @@ module.exports = {
 
 
         /**
+         * Delete the tickets of the member from the database and channels
+         */
+        let ticketsMember;
+        try {
+            const { Tickets } = require('../../dbObjects');
+            ticketsMember = await Tickets.findAll({ where: { user_id: member.id } });
+        }
+        catch (error) {
+            console.error("guildMemberRemove.js AllTicketsDB - " + error);
+        }
+
+        if (ticketsMember) {
+            for (const ticket of ticketsMember) {
+                try {
+                    if (ticket.channel_id) {
+                        const channel = await member.guild.channels.fetch(ticket.channel_id).catch(() => {});
+                        if (channel) await channel.delete();
+                    }
+                    await ticket.destroy();
+                } catch (error) {
+                    console.error("guildMemberRemove.js TicketsDB - " + error);
+                }
+            }
+        }
+
+
+        /**
          * Delete the missions of the member from the database and threads
          */
         let logMissionMember;
@@ -70,18 +97,18 @@ module.exports = {
             logMissionMember = await LogMissions.findAll({ where: { user_id: member.id } });
         }
         catch (error) {
-            console.error("guildMemberRemove.js LogMissionsDB - " + error);
+            console.error("guildMemberRemove.js AllLogMissionsDB - " + error);
         }
 
         if (logMissionMember) {
             for (const logMission of logMissionMember) {
-                const thread = await member.guild.channels.fetch(logMission.channel_details);
+                const thread = await member.guild.channels.fetch(logMission.channel_details).catch(() => {});
                 if (thread) await thread.delete();
 
                 try {
                     await logMission.destroy();
                 } catch (error) {
-                    console.error("guildMemberRemove.js ThreadDB - " + error);
+                    console.error("guildMemberRemove.js LogMissionsDB - " + error);
                 }
             }
         }
