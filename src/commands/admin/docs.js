@@ -34,13 +34,15 @@ module.exports = {
             const row = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId("contact")
+                        .setCustomId("panel_ticket")
                         .setLabel("Contacter-nous")
                         .setStyle(ButtonStyle.Primary)
                         .setEmoji("📩")
                 );
 
-            await interaction.channel.send({ embeds: [embed], components: [row] });
+            const msg0 = await interaction.channel.send({ embeds: [embed], components: [row] });
+            await msg0.pin();
+            await interaction.channel.messages.fetch().then(messages => messages.first().delete());
             return interaction.reply({ content: "Message envoyé !", ephemeral: true });
         }
         
