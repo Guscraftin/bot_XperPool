@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { Tickets } = require('../../dbObjects');
 
 module.exports = {
@@ -63,11 +63,50 @@ module.exports = {
                 }
                 if (!ticket || ticket.length == 0) return interaction.reply({ content: `Aucune retranscription de ticket n'a été trouvée.`, ephemeral: true });
 
-                let list = "";
-                for (const t of ticket) {
-                    list += `**${t.id}** - ${t.user_id} - ${t.category}\n`;
-                }
-                return interaction.reply({ content: `Liste des retranscriptions de ticket fermés :\n${list}`, ephemeral: true });
+                // Division of ticket into groups of 10 for each page
+                const pageSize = 10;
+                const pageCount = Math.ceil(ticket.length / pageSize);
+
+                // Displaying the first page of the shop
+                const currentPage = 1;
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = currentPage * pageSize;
+                const ticketPage = ticket.slice(startIndex, endIndex);
+
+                // Create embed fields
+                let fields = [];
+                ticketPage.forEach(({ id, user_id, category }) => {
+                    fields.push({ name: `Id: ${id}`, value: `<@${user_id}> -> ${category}` });
+                });
+
+                let description = "";
+                if (member) description += `**Membre :** <@${member.id}>\n`;
+                if (category) description += `**Catégorie :** ${category}\n`;
+                if (description === "") description = " ";
+                // Create embed
+                const embed = new EmbedBuilder()
+                    .setTitle(`Liste des retranscriptions`)
+                    .setDescription(description)
+                    .addFields(fields)
+                    .setTimestamp()
+                    .setFooter({ text: `Page ${currentPage}/${pageCount}` })
+
+                // Displaying the navigation buttons
+                const navigationRow = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId("ticket_previous")
+                        .setLabel("◀️")
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(currentPage === 1),
+                    new ButtonBuilder()
+                        .setCustomId("ticket_next")
+                        .setLabel("▶️")
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(currentPage === pageCount)
+                );
+
+                return interaction.reply({ embeds: [embed], components: [navigationRow], ephemeral: true });
 
 
             /**
