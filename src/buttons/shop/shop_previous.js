@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { Items } = require("../../dbObjects");
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
             const pageCount = parseInt(oldEmbed.footer.text.split(" ")[1].split("/")[1]);
 
             // Recovering constants
-            const pageSize = 10;
+            const pageSize = 1;
             const items = await Items.findAll();
 
             // Displaying the previous page of the shop
@@ -31,8 +31,10 @@ module.exports = {
                 .setFooter({ text: `Page ${previousPage}/${pageCount} •${memberScore}`});
 
             let fields = [];
+            let selectMenuOptions = [];
             shopPage.forEach(({ name, description, price }) => {
                 fields.push({ name: `${name} (${price} score)`, value: description });
+                selectMenuOptions.push(new StringSelectMenuOptionBuilder().setLabel(name).setValue(name).setDescription(`${price} score`));
             });
             embed.addFields(fields);
 
@@ -51,7 +53,17 @@ module.exports = {
                         .setDisabled(previousPage === pageCount)
                 );
 
-            return interaction.update({ embeds: [embed], components: [navigationRow], ephemeral: true });
+            // Create the select menu to buy an item on the shop
+            const selectMenu = new StringSelectMenuBuilder()
+                .setCustomId("shop_buy")
+                .setPlaceholder("Choisissez un article à acheter...")
+                .setMaxValues(1)
+                .setOptions(selectMenuOptions)
+
+            const buyRow = new ActionRowBuilder()
+                .addComponents(selectMenu);
+
+            return interaction.update({ embeds: [embed], components: [buyRow, navigationRow], ephemeral: true });
         } catch (error) {
             console.error("shop_previous.js - " + error);
             return interaction.reply({ content: "Une erreur est survenue lors de l'affichage de la boutique.", ephemeral: true });
