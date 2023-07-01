@@ -41,6 +41,9 @@ module.exports = {
 
         let item;
         switch (interaction.options.getSubcommand()) {
+            /**
+             * Add an item to the shop
+             */
             case "add":
                 try {    
                     item = await Items.create({ name: name, description: description, price: price });
@@ -49,6 +52,10 @@ module.exports = {
                 }
                 return interaction.reply({ content: `L'article \`${item.name}\` avec l'id \`${item.id}\` a été ajouté à la boutique.`, ephemeral: true });
 
+
+            /**
+             * Edit an item in the shop
+             */
             case "edit":
                 try {
                     item = await Items.findOne({ where: { id: id } });
@@ -61,6 +68,10 @@ module.exports = {
                 }
                 return interaction.reply({ content: `L'article avec l'id \`${id}\` (\`${item.name}\`) a été mis à jour.`, ephemeral: true });
 
+
+            /**
+             * Remove an item from the shop
+             */
             case "remove":
                 try {
                     item = await Items.findOne({ where: { id: id } });
@@ -71,6 +82,10 @@ module.exports = {
                 }
                 return interaction.reply({ content: `L'article avec l'id \`${id}\` (\`${item.name}\`) a été supprimé.`, ephemeral: true });
 
+
+            /**
+             * Clear all items from the shop
+             */
             case "clear":
                 if (!confirm) return interaction.reply({ content: `Vous devez confirmer la suppression de tous les articles de la boutique.`, ephemeral: true });
                 try {
