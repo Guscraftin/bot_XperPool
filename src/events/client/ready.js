@@ -1,6 +1,6 @@
 const { Events } = require('discord.js');
 const { channel_detail_missions } = require(process.env.CONST);
-const { Items, Members, Missions, LogMissions } = require('../../dbObjects');
+const { Items, Members, Missions, LogMissions, Tickets } = require('../../dbObjects');
 
 module.exports = {
     name: Events.ClientReady,
@@ -18,6 +18,7 @@ module.exports = {
             await Members.sync({ alter: true });
             await Missions.sync({ alter: true });
             await LogMissions.sync({ alter: true });
+            await Tickets.sync({ alter: true });
         } catch (error) {
             console.error("ready.js - " + error);
         }
