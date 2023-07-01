@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { category_xperpool, category_important, category_general, category_admin, channel_all_missions, channel_detail_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
+const { category_xperpool, category_important, category_general, category_tickets, category_tickets_members, category_admin, channel_all_missions, channel_detail_missions, channel_staff_missions, color_accept, color_decline } = require(process.env.CONST);
 const { LogMissions, Missions } = require('../../dbObjects');
 
 module.exports = {
@@ -80,7 +80,7 @@ module.exports = {
                 const community = interaction.options.getChannel('commu');
 
                 // Check the community category
-                if (community.id === category_xperpool || community.id === category_important || community.id === category_general || community.id === category_admin) return interaction.reply({ content: `La commu doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                if (community.id === category_xperpool || community.id === category_important || community.id === category_general || community.id === category_admin || community.id === category_tickets || community.id === category_tickets_members) return interaction.reply({ content: `La commu doit être une catégorie correspondant à une technologie.`, ephemeral: true });
 
                 // Check the channelStaff
                 if (channelStaff.parentId !== channel_staff_missions) return interaction.reply({ content: `Le salon staff de la mission doit être un fil de discussion public dans le salon <#${channel_staff_missions}>.`, ephemeral: true });
