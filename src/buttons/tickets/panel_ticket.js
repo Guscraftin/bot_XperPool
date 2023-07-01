@@ -1,83 +1,38 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
-const { category_tickets, category_tickets_members, color_basic, role_admins } = require(process.env.CONST);
-const { Tickets } = require("../../dbObjects");
+const { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
+const { color_basic } = require(process.env.CONST);
 
 module.exports = {
     data: {
         name: "panel_ticket",
     },
     async execute(interaction) {
-        await interaction.deferReply({ ephemeral: true });
-
-        const member = interaction.member;
-
-        // Check if the user is a member
-        let isMember = false;
-        if (member.roles.cache.size !== 1) {
-            isMember = true;
-        }
-
-        // Create the channel of the ticket
-        const ticketChannel = await interaction.guild.channels.create({
-            name: `${interaction.member.displayName}`,
-            type: 0,
-            parent: isMember ? category_tickets_members : category_tickets,
-            permissionOverwrites: [
-                {
-                    id: interaction.guild.roles.everyone,
-                    deny: [ PermissionFlagsBits.ViewChannel ],
-                    allow: [
-                        PermissionFlagsBits.SendMessages,
-                        PermissionFlagsBits.SendMessagesInThreads,
-                        PermissionFlagsBits.EmbedLinks,
-                        PermissionFlagsBits.AttachFiles,
-                        PermissionFlagsBits.ReadMessageHistory,
-                        PermissionFlagsBits.UseApplicationCommands,
-                    ],
-                },
-                {
-                    id: interaction.user.id,
-                    allow: [ PermissionFlagsBits.ViewChannel ],
-                },
-            ],
-        });
-
-        // Add the tickets to the database
-        try {
-            await Tickets.create({
-                user_id: interaction.user.id,
-                category: isMember ? category_tickets_members : category_tickets,
-                channel_id: ticketChannel.id,
-            });
-        } catch (error) {
-            console.log("panel_ticket.js tickets - " + error);
-        }
+        // Create the select menu for the reasons
+        const selectMenu = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId("open_ticket_reason")
+                    .setPlaceholder("Sélectionnez une raison...")
+                    .addOptions(
+                        new StringSelectMenuOptionBuilder()
+                            .setLabel("Signaler un membre")
+                            .setValue("signaler un membre"),
+                        new StringSelectMenuOptionBuilder()
+                            .setLabel("Problème sur une mission")
+                            .setValue("problème sur une mission"),
+                        new StringSelectMenuOptionBuilder()
+                            .setLabel("Bug serveur")
+                            .setValue("bug serveur"),
+                        new StringSelectMenuOptionBuilder()
+                            .setLabel("Question générale")
+                            .setValue("question générale"),
+                    ),
+            );
 
         // Create the embed in the ticket channel
         const embed = new EmbedBuilder()
-            .setDescription("Merci pour votre ticket, l'équipe XperPool va très vite vous répondre !\n"+
-            "Si vous souhaitez fermer ce ticket, veuillez cliquer sur 🔒")
+            .setDescription("**Merci de sélectionner la raison de votre ticket.**")
             .setColor(color_basic)
-            .setTimestamp()
-            .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
-
-
-        const row = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId("close_ticket")
-                    .setLabel("Fermer le ticket")
-                    .setStyle(ButtonStyle.Secondary)
-                    .setEmoji("🔒")
-            );
-
-        const ticket = await ticketChannel.send({ content: `Bonjour ${member} !`, embeds: [embed], components: [row] });
-        await ticket.pin();
-        await ticketChannel.send(`<@&${role_admins}>`);
-        await ticketChannel.messages.fetch().then(messages => {
-            messages.at(0).delete();
-        });
-
-        await interaction.editReply({ content: `Votre ticket a été créé : ${ticketChannel}`, ephemeral: true });
+        
+        return interaction.reply({ embeds: [embed], components: [selectMenu], ephemeral: true });
     }
 }
