@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const { category_tickets, category_tickets_members, color_basic, role_admins } = require(process.env.CONST);
-const { Members } = require("../../dbObjects");
+const { Tickets } = require("../../dbObjects");
 
 module.exports = {
     data: {
@@ -41,6 +41,17 @@ module.exports = {
                 },
             ],
         });
+
+        // Add the tickets to the database
+        try {
+            await Tickets.create({
+                user_id: interaction.user.id,
+                category: isMember ? category_tickets_members : category_tickets,
+                channel_id: ticketChannel.id,
+            });
+        } catch (error) {
+            console.log("panel_ticket.js tickets - " + error);
+        }
 
         // Create the embed in the ticket channel
         const embed = new EmbedBuilder()
