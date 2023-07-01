@@ -3,7 +3,7 @@ const { Items } = require('../../dbObjects');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("adminitems")
+        .setName("adminitem")
 	    .setDescription("🔧 Permet de modifier la db de la boutique.")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .setDMPermission(false)
