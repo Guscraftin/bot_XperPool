@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits, WebhookClient } = require('discord.js');
-const { role_admins, role_members } = require(process.env.CONST);
+const { color_basic, role_admins, role_members } = require(process.env.CONST);
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,6 +11,7 @@ module.exports = {
             .setName('message')
             .setDescription("L'id du message de la suggestion.")
             .addChoices(
+                { name: "Contacter-nous", value: "contact" },
                 { name: "Bienvenue", value: "welcome" },
                 { name: "Règlement", value: "rules" },
                 { name: "Avantages", value: "advantages" },
@@ -22,11 +23,32 @@ module.exports = {
             )
             .setRequired(true)),
     async execute(interaction) {
+        if (interaction.options.getString("message") === "contact") {
+            const embed = new EmbedBuilder()
+                .setTitle("Contacter-nous")
+                .setDescription("Vous pouvez nous contacter en cliquant sur le bouton 📩")
+                .setColor(color_basic)
+                .setTimestamp()
+                .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+            
+            const row = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId("contact")
+                        .setLabel("Contacter-nous")
+                        .setStyle(ButtonStyle.Primary)
+                        .setEmoji("📩")
+                );
+
+            await interaction.channel.send({ embeds: [embed], components: [row] });
+            return interaction.reply({ content: "Message envoyé !", ephemeral: true });
+        }
+        
         // Filter only the owner of the bot because this command it's useless for other people.
         const bot = await interaction.client.application.fetch();
         if (bot.owner.username !== undefined) {
             if (interaction.member.id !== bot.owner.id) {
-                return interaction.reply({ content: "Cette commande est inutile pour vous. Veuillez utiliser les commandes `/embed` et `message` à la place.", ephemeral: true });
+                return interaction.reply({ content: "Cette commande est inutile pour vous à l'exception de l'option \`Contacter-nous\`. Veuillez utiliser les commandes `/embed` et `message` à la place.", ephemeral: true });
             }
         }
 
