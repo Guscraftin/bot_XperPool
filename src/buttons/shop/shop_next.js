@@ -1,5 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { Items } = require("../../dbObjects");
+const { role_admins } = require(process.env.CONST);
 
 module.exports = {
     data: {
@@ -14,7 +15,7 @@ module.exports = {
             const pageCount = parseInt(oldEmbed.footer.text.split(" ")[1].split("/")[1]);
 
             // Recovering constants
-            const pageSize = 10;
+            const pageSize = 1;
             const items = await Items.findAll();
 
             // Displaying the next page of the shop
@@ -32,8 +33,11 @@ module.exports = {
 
             let fields = [];
             let selectMenuOptions = [];
-            shopPage.forEach(({ name, description, price }) => {
-                fields.push({ name: `${name} (${price} score)`, value: description });
+            const isAdmin = oldEmbed.fields[0].name.includes("・");
+            shopPage.forEach(({ id, name, description, price }) => {
+                // Add the id of the item to the select menu for admin users
+                if (isAdmin) fields.push({ name: `${id}・${name} (${price} score)`, value: description });
+                else fields.push({ name: `${name} (${price} score)`, value: description });
                 selectMenuOptions.push(new StringSelectMenuOptionBuilder().setLabel(name).setValue(name).setDescription(`${price} score`));
             });
             embed.addFields(fields);

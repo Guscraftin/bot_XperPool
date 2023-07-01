@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 const { Items, Members } = require('../../dbObjects');
-const { color_basic, channel_staff, role_admins } = require(process.env.CONST);
+const { color_basic, role_admins } = require(process.env.CONST);
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -10,13 +10,14 @@ module.exports = {
     async execute(interaction) {
 
         // Get items of the shop
-        let items, memberScore;
+        let items, memberScore, isMember;
         try {
             items = await Items.findAll();
             if (!items.length) return interaction.reply({ content: "Aucun article est en vente.", ephemeral: true });
 
             // Get the score of the member who used the command
             const member = await Members.findOne({ where: { member_id: interaction.member.id } });
+            isMember = member ? true : false;
             memberScore = member ? member.score : 0;
         } catch (error) {
             console.error("boutique.js - " + error);
@@ -24,7 +25,7 @@ module.exports = {
         }
 
         // Division of items into groups of 10 for each page
-        const pageSize = 10;
+        const pageSize = 1;
         const pageCount = Math.ceil(items.length / pageSize);
 
         // Displaying the first page of the shop
@@ -42,8 +43,10 @@ module.exports = {
 
         let fields = [];
         let selectMenuOptions = [];
-        shopPage.forEach(({ name, description, price }) => {
-            fields.push({ name: `${name} (${price} score)`, value: description });
+        shopPage.forEach(({ id, name, description, price }) => {
+            // Add the id of the item to the select menu for admin users
+            if (isMember && interaction.member.roles.cache.has(role_admins)) fields.push({ name: `${id}・${name} (${price} score)`, value: description });
+            else fields.push({ name: `${name} (${price} score)`, value: description });
             selectMenuOptions.push(new StringSelectMenuOptionBuilder().setLabel(name).setValue(name).setDescription(`${price} score`));
         });
         embed.addFields(fields);
