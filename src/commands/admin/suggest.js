@@ -43,9 +43,12 @@ module.exports = {
         
         // Update the suggestion
         switch (interaction.options.getSubcommand()) {
+            /**
+             * Accept a suggestion
+             */
             case "accepter":
-            let embed;    
-            if (comment) {
+                let embed;    
+                if (comment) {
                     embed = new EmbedBuilder()
                         .setAuthor({ name: `${author.displayName} - ✅ Suggestion acceptée par ${interaction.member.displayName}`, iconURL: author.displayAvatarURL() })
                         .setColor(color_accept)
@@ -71,6 +74,9 @@ module.exports = {
                 await message.edit({ embeds: [embed] });
                 return interaction.reply({ content: `La [suggestion](${message.url}) a été **acceptée**.`, ephemeral: true });
 
+            /**
+             * Refuse a suggestion
+             */
             case "refuser":
                 const embed2 = new EmbedBuilder()
                     .setAuthor({ name: `${author.displayName} - ❌ Suggestion refusée par ${interaction.member.displayName}`, iconURL: author.displayAvatarURL() })

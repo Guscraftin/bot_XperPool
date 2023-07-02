@@ -20,6 +20,9 @@ module.exports = {
         const del_category = interaction.options.getChannel('categorie');
 
         switch (interaction.options.getSubcommand()) {
+            /**
+             * Add a new commu
+             */
             case 'add':
                 /*
                 * Find the position of the role
@@ -97,6 +100,9 @@ module.exports = {
  
                 return interaction.reply({content: `La communauté **${name}** a été ajoutée au serveur.`, ephemeral: true});
 
+            /**
+             * Remove a commu
+             */
             case 'remove':
                 // Check if the category is a commulogy category
                 if (!del_category.name.startsWith("💻┃Commu")) {

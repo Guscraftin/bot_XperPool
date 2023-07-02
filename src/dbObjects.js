@@ -8,10 +8,10 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 
 const Items = require('./models/Items.js')(sequelize, Sequelize.DataTypes);
+const LogMissions = require('./models/LogMissions.js')(sequelize, Sequelize.DataTypes);
 const Members = require('./models/Members.js')(sequelize, Sequelize.DataTypes);
 const Missions = require('./models/Missions.js')(sequelize, Sequelize.DataTypes);
-const LogMissions = require('./models/LogMissions.js')(sequelize, Sequelize.DataTypes);
 const Tickets = require('./models/Tickets.js')(sequelize, Sequelize.DataTypes);
 
 
-module.exports = { Items, Members, Missions, LogMissions, Tickets, sequelize };
+module.exports = { Items, LogMissions, Members, Missions, Tickets, sequelize };

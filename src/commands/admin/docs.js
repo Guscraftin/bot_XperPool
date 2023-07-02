@@ -55,6 +55,9 @@ module.exports = {
         }
 
         switch (interaction.options.getString("message")) {
+            /**
+             * Welcome message
+             */
             case "welcome":
                 const owner = await interaction.guild.members.fetch(interaction.guild.ownerId);
 
@@ -93,6 +96,9 @@ L'équipe XperPool vous souhaite à tous la bienvenue 😃`)
                 await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
+            /**
+             * Rules message
+             */
             case "rules":
                 const rules1 = `||@everyone||
 # Règlement Serveur Discord
@@ -136,6 +142,9 @@ Merci d'ouvrir un ticket dans <#1116845080410603520> en cas de problèmes.\n||@e
                 await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
+            /**
+             * Advantages message
+             */
             case "advantages":
                 const advantages = `
 # Les avantages
@@ -167,6 +176,9 @@ Voici pour tous les <@&${role_members}>, des liens vers des outils externes pouv
                 await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
+            /**
+             * Details missions message
+             */
             case "detailsMissions":
                 const detailsMissions = `||<@&${role_members}>||
 # Comment postuler à une mission ?
@@ -182,7 +194,9 @@ Voici pour tous les <@&${role_members}>, des liens vers des outils externes pouv
                 await interaction.channel.messages.fetch().then(messages => messages.first().delete());
                 break;
 
-
+            /**
+             * Staff missions message
+             */
             case "staffMissions":
                 const staffMissions = `||<@&${role_admins}>||
 # Comment créer une mission ?
@@ -208,6 +222,9 @@ Voici pour tous les <@&${role_members}>, des liens vers des outils externes pouv
              * Because this messages below are subject to change frequently, we use webhooks to send them with discord Dev Bot.
              * 
              */
+            /**
+             * Tips message
+             */
             case "tips":
                 const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123509820218167447/158YbwUvNPdSVj00AMJtrRYaroFzYt-N8kWgw-tZwyBMJYpCiF89n6RoouRtSLLa6Ki-' });
                 const tips = `
@@ -228,7 +245,9 @@ _ _`
                 await webhookClient.send({ content: tips });
                 break;
 
-
+            /**
+             * Annonces message
+             */
             case "annonces":
                 const webhookClient2 = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123509984748113962/8CmqhBC8pa_Gafb3ztHRGsWPCRmi6GK8yccGk_Ent9DXBvu7tuFp0voTmBGprKsChQeu' });
                 const embed10 = new EmbedBuilder()
@@ -252,6 +271,9 @@ _ _`
                 await webhookClient2.send({ content: `# Voici le programme des webinars partenaires à venir :`, embeds: [embed10, embed11, embed12] });
                 break;
 
+            /**
+             * Events message
+             */
             case "events":
                 const webhookClient3 = new WebhookClient({ url: 'https://discord.com/api/webhooks/1123510249014439957/qEuTfzWmh6vOoLSQOV33FWTp_epBpfi7kQ_hPW7-Sm2NlyQK4HmXfMvx9fESgLBehbfY' });
                 const missions = `Test moi !`
