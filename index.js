@@ -18,7 +18,7 @@ client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.modals = new Collection();
 
-['commands', 'events', 'buttons', 'modals', 'selectMenus'].forEach((handler) => {
+['commands', 'events', 'buttons', 'selectMenus'].forEach((handler) => {
     require(`./src/handlers/${handler}`)(client);
 });
 
