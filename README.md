@@ -5,46 +5,51 @@ More information about this project is available on the [XperPool Website](https
 
 ## Commands
 ### Admin Only
-- adminitems: manage the 'items' database.
-- adminscore: manage the 'score' database.
-- adminticket: manage the 'ticket' database.
-- adminuser: manage the 'member' database.
-- clear: clear some messages in a channel.
-- commu: create or delete a commu (role and category).
-- docs: send a embed message.
-- embed: send a custom embed message.
-- getdb: get some tables of the databases in excel file.
-- message: copy a message in another channel.
-- mission: create or edit a mission.
-- suggest: manage a suggestion message.
+- **adminitems:** manage the 'items' database.
+- **adminscore:** manage the 'score' database.
+- **adminticket:** manage the 'ticket' database.
+- **adminuser:** manage the 'member' database.
+- **clear:** clear some messages in a channel.
+- **commu:** create or delete a commu (role and category).
+- **docs:** send an embed message.
+- **embed:** send a custom embed message.
+- **getdb:** get some tables of the databases in Excel file.
+- **message:** copy a message in another channel.
+- **mission:** create or edit a mission.
+- **suggest:** manage a suggestion message.
 ### For everyone
-- boutique: display and buy a item of the shop.
-- info: information about the bot.
-- leaderboard: get the leaderboard of all member.
-- score: get the score of a member.
+- **boutique:** display and buy an item from the shop.
+- **info:** information about the bot.
+- **leaderboard:** get the leaderboard of all members.
+- **score:** get the score of a member.
 
 ## User application
-- Profil: display info about a member. [Admin Only]
+- **Profil:** display info about a member. [Admin Only]
 
 ## Features
-- Add 1 point when a member send a message (cooldown 5 secondes).
-- Add 5 points when a member react to a suggestion.
-- Remove 5 points when a member remove his reaction to as suggestion.
-- Add 10 points when a member has a suggestion accepted.
-- Delete the user of the 'score' database when he left the guild.
-- Log when a user joins or leaves the server.
-- Logs when a message changes or is deleted.
-- Logs when a role is added or removed from a user.
-- Logs when a moderation actions as they occur (mute/ban).
-- Logs when a member react to a mission.
+- Send a welcome DM message when a user joins the guild.
+- Send a welcome message in the general channel when the user receives the "Members" role.
+- Point system:
+  - Add 1 point when a member sends a message (cooldown 5 seconds).
+  - Add 5 points when a member reacts to a suggestion.
+  - Remove 5 points when a member removes his reaction to a suggestion.
+  - Add 10 points when a member has a suggestion accepted.
+  - Send a message in the staff channel when a user buys an item in the shop.
+  - Delete the user of the 'score' database when he left the guild.
+- Suggestion system:
+  - Delete and send an embed with the three reactions and the delete message when a member sends a message in the suggestion channel.
+- Channel logs:
+  - Log when a user joins or leaves the server.
+  - Logs when a message changes or is deleted.
+  - Logs when a role is added or removed from a user.
+  - Logs when moderation actions as they occur (mute/ban).
+  - Logs when a ticket was closed.
+- Mission system:
+  - Logs when a member reacts to a mission.
+  - 
 - Manage automatically the Vocal Général (unlock when at least one admin is in).
-- Mission system.
-- Send a welcome message to the new user.
-- Send a welcome message in the general channel when a user receives the "members" role.
-- Shop system.
-- Suggestion system.
 
-## Database
+## Databases
 - **Items**: List of items available for purchase in our shop.
 - **LogMissions**: Track of member reactions to missions with detailed logs.
 - **Member**: Track the information and the score of each member.
