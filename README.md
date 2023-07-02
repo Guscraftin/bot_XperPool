@@ -29,6 +29,17 @@ More information about this project is available on the [XperPool Website](https
 ## Features
 - Send a welcome DM message when a user joins the guild.
 - Send a welcome message in the general channel when the user receives the "Members" role.
+- Ticket system:
+  - Asks the user the reason for opening the ticket (via a select menu).
+  - Create the ticket in the 'ticket' category for non-members and in the 'ticket members' category for members and update the database.
+  - Confirm button to close a ticket.
+  - Send transcription of the ticket in log-ticket channel and update the database. 
+  - Delete the user of the 'Tickets' database and his ticket channel when he left the guild.
+- Mission system:
+  - Logs in the database and create a thread in details-mission when a member reacts to a mission.
+  - Send log message in staff thread, update the database and disable button for the member when he accept the mission.
+  - Update the description mission from the thread staff channel to all thread members.
+  - Delete the user of the 'LogMissions' database and his threads channels when he left the guild.
 - Point system:
   - Add 1 point when a member sends a message (cooldown 5 seconds).
   - Add 5 points when a member reacts to a suggestion.
@@ -44,9 +55,6 @@ More information about this project is available on the [XperPool Website](https
   - Logs when a role is added or removed from a user.
   - Logs when moderation actions as they occur (mute/ban).
   - Logs when a ticket was closed.
-- Mission system:
-  - Logs when a member reacts to a mission.
-  - 
 - Manage automatically the Vocal Général (unlock when at least one admin is in).
 
 ## Databases
