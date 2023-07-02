@@ -8,7 +8,7 @@ module.exports = {
         .setDMPermission(false)
         .addSubcommand(subcommand => subcommand
             .setName("copier")
-            .setDescription("Permet de copier un message dans un autre salon.")
+            .setDescription("🔧 Permet de copier un message dans un autre salon.")
             .addStringOption(option => option.setName("id").setDescription("L'id du message à déplacer.").setRequired(true))
             .addStringOption(option => option.setName("options").setDescription("Les options du message à déplacer.").setChoices(
                 { name: 'OnlyContent', value: 'only_content' },
