@@ -7,6 +7,7 @@ More information about this project is available on the [XperPool Website](https
 ### Admin Only
 - adminitems: manage the 'items' database.
 - adminscore: manage the 'score' database.
+- adminticket: manage the 'ticket' database.
 - adminuser: manage the 'member' database.
 - clear: clear some messages in a channel.
 - commu: create or delete a commu (role and category).
@@ -23,12 +24,12 @@ More information about this project is available on the [XperPool Website](https
 - score: get the score of a member.
 
 ## User application
-- Contact: display info about a member. [Admin Only]
+- Profil: display info about a member. [Admin Only]
 
 ## Features
 - Add 1 point when a member send a message (cooldown 5 secondes).
 - Add 5 points when a member react to a suggestion.
-- Rmove 5 points when a member remove his reaction to as suggestion.
+- Remove 5 points when a member remove his reaction to as suggestion.
 - Add 10 points when a member has a suggestion accepted.
 - Delete the user of the 'score' database when he left the guild.
 - Log when a user joins or leaves the server.
@@ -44,10 +45,11 @@ More information about this project is available on the [XperPool Website](https
 - Suggestion system.
 
 ## Database
-- Items: Items for sale in the shop.
-- LogMissions: log when a member react to a mission.
-- Member: score of a member for the economic system.
-- Missions: all mission send in public channel.
+- **Items**: List of items available for purchase in our shop.
+- **LogMissions**: Track of member reactions to missions with detailed logs.
+- **Member**: Track the information and the score of each member.
+- **Missions**: Stay updated on all missions shared in our public channel.
+- **Tickets**: Information about past and current tickets.
 
 
 ## Bot Installation
@@ -60,6 +62,8 @@ More information about this project is available on the [XperPool Website](https
 
 3. Rename the `.env.example` file to `.env`.
 4. Replace the `...` placeholders of the three variables in `.env` with your own values.
+
+5. You can customize certain constants in `src/const.json` and `src/constDev.json` to suit your server's needs.
 
 ## Bot Launch
 
