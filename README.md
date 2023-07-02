@@ -15,8 +15,8 @@ More information about this project is available on the [XperPool Website](https
   - **remove:** remove some points to a member.
   - **set:** set some points to a member.
   - **clear:** set to 0 the points of a member.
-  - **clearall:** set to 0 the points of all members.
-  - **deleteall:** delete all member in the database (with the member score).
+  - **clearall:** set to 0 the points of all members (with a confirmation button).
+  - **deleteall:** delete all member in the database (with the member score and a confirmation button).
 - **adminticket:** manage the 'ticket' database.
   - **list:** list all transcripts from the database (in accordance with the command arguments).
   - **delete:** delete one transcript ticket from the database.
