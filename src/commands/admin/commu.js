@@ -76,7 +76,7 @@ module.exports = {
                 await category.children.create({
                     name: `missions-${name.toLowerCase()}`,
                     type: ChannelType.GuildText,
-                    topic: `Ce salon permet de proposer des missions pour les personnes ayant des compétences en ${name}.`,
+                    topic: `Nous vous proposons des missions basées sur ${name}.`,
                     permissionOverwrites: [
                         {
                             id: interaction.guild.roles.everyone.id,
@@ -91,7 +91,7 @@ module.exports = {
                 await category.children.create({
                     name: `${name.toLowerCase()}`,
                     type: ChannelType.GuildText,
-                    topic: `Ce salon permet aux membres ayant des compétences en ${name} d'échanger entre eux.`,
+                    topic: `Nous vous proposons d'échange entre membres possédant des compétences en ${name}.`,
                 });
                 await category.children.create({
                     name: `Vocal ${name}`,
