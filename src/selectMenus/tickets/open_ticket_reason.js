@@ -50,10 +50,13 @@ module.exports = {
         });
 
         // Add the tickets to the database
+        const user_name = interaction.member.displayName.split("_");
         try {
             await Tickets.create({
-                user_id: interaction.user.id,
                 category: reason,
+                user_id: interaction.user.id,
+                first_name: isMember ? user_name[0]: interaction.member.displayName,
+                last_name: isMember ? user_name[1] : null,
                 channel_id: ticketChannel.id,
             });
         } catch (error) {

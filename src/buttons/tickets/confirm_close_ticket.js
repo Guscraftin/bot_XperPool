@@ -38,6 +38,7 @@ module.exports = {
         try {
             await ticket.update({
                 message_id: msg.id,
+                message_url: msg.url,
             });
         } catch (error) {
             console.error("confirm_close_ticket.js tickets msg - " + error);
