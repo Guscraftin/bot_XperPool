@@ -48,7 +48,7 @@ More information about this project is available on the [XperPool Website](https
 - **leaderboard:** get the leaderboard of all members.
 - **score:** get the score of a member.
 
-## User application
+## User application (right click on the member -> Applications -> ...)
 - **Profil:** display info about a member. [Admin Only]
 
 ## Features
