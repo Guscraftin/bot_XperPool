@@ -48,7 +48,7 @@ More information about this project is available on the [XperPool Website](https
 - **leaderboard:** get the leaderboard of all members.
 - **score:** get the score of a member.
 
-## User application (right click on the member -> Applications -> ...)
+## User application (Right click on the member -> Applications -> ...)
 - **Profil:** display info about a member. [Admin Only]
 
 ## Features
@@ -58,6 +58,7 @@ More information about this project is available on the [XperPool Website](https
   - Asks the user the reason for opening the ticket (via a select menu).
   - Create the ticket in the 'ticket' category for non-members and in the 'ticket members' category for members and update the database.
   - Confirm button to close a ticket.
+  - Reopen button (mention the user) and delete button.
   - Send transcription of the ticket in log-ticket channel and update the database. 
   - Delete the user of the 'Tickets' database and his ticket channel when he left the guild.
 - Mission system:
