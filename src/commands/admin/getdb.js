@@ -1,9 +1,6 @@
 const { AttachmentBuilder, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { channel_all_missions } = require(process.env.CONST);
-const { Missions } = require('../../dbObjects');
 const sqlite3 = require('sqlite3').verbose();
 const XLSX = require('xlsx');
-const fs = require('fs');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +13,7 @@ module.exports = {
                 .setName('members')
                 .setDescription("🔧 Permet d'obtenir des données en fichier excel des membres.")
                 .addUserOption(option => option
-                    .setName('user')
+                    .setName('membre')
                     .setDescription("L'utilisateur dont on veut les informations.")))
         .addSubcommand(subcommand =>
             subcommand
@@ -24,23 +21,94 @@ module.exports = {
                 .setDescription("🔧 Permet d'obtenir des données en fichier excel concernant les missions.")
                 .addStringOption(option => option
                     .setName('id')
-                    .setDescription("L'id du message de la mission."))),
+                    .setDescription("L'id du message de la mission.")))
+        .addSubcommand(subcommand =>
+            subcommand
+            .setName('tickets')
+            .setDescription("🔧 Permet d'obtenir des données en fichier excel des tickets.")
+            .addUserOption(option => option.setName('membre').setDescription("Les tickets de l'utilisateur a récupérer."))
+            .addStringOption(option => option
+                .setName('categorie')
+                .setDescription("La catégorie des tickets a récupérer.")
+                .addChoices(
+                    { name: 'Signaler un membre', value: 'Signaler un membre' },
+                    { name: 'Problème sur une mission', value: 'Problème sur une mission' },
+                    { name: 'Bug serveur', value: 'Bug serveur' },
+                    { name: 'Question générale', value: 'Question générale' },
+                ))
+            .addStringOption(option => option
+                .setName('type')
+                .setDescription("Le type de ticket a récupérer.")
+                .addChoices(
+                    { name: 'Ouvert/Fermé', value: 'open' },
+                    { name: 'Supprimé/Retranscrit', value: 'close' },
+                )))
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('missions')
+                .setDescription("🔧 Permet d'obtenir des données en fichier excel des missions."))
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('items')
+                .setDescription("🔧 Permet d'obtenir des données en fichier excel des items.")),
     async execute(interaction) {
         const tableName = interaction.options.getSubcommand();
-        let id_mission = interaction.options.getString('id');
-        const user = interaction.options.getUser('user');
+        const id_mission = interaction.options.getString('id');
+        const user = interaction.options.getUser('membre');
+        const category = interaction.options.getString('categorie');
+        let type = interaction.options.getString('type');
 
-        const user_id = user ? user.id : null;
-        const value = id_mission ? id_mission : user_id;
-        const fieldName = tableName === 'members' ? 'member_id' : 'mission_id';
+        let commandSQL = `SELECT * FROM ${tableName};`;
+        
+        /**
+         * Get data from table 'Members'
+         */
+        if (tableName === 'members' && user) commandSQL = `SELECT * FROM ${tableName} WHERE member_id = '${user.id}';`;
 
+        /**
+         * Get data from table 'LogMissions'
+         */
+        if (tableName === 'logmissions' && id_mission) commandSQL = `SELECT * FROM ${tableName} WHERE mission_id = '${id_mission}';`;
+
+        /**
+         * Get data from table 'Tickets'
+         */
+        if (type === 'close') type = 'channel_id';
+        else if (type === 'open') type = 'message_id';
+
+        if (tableName === 'tickets') {
+            if (user) {
+                if (category) {
+                    if (type) {
+                        commandSQL = `SELECT * FROM ${tableName} WHERE user_id = '${user.id}' AND category = '${category}' AND ${type} IS NULL;`;
+                    } else {
+                        commandSQL = `SELECT * FROM ${tableName} WHERE user_id = '${user.id}' AND category = '${category}';`;
+                    }
+                } else if (type) {
+                    commandSQL = `SELECT * FROM ${tableName} WHERE user_id = '${user.id}' AND ${type} IS NULL;`;
+                } else {
+                    commandSQL = `SELECT * FROM ${tableName} WHERE user_id = '${user.id}';`;
+                }
+            } else {
+                if (category) {
+                    if (type) {
+                        commandSQL = `SELECT * FROM ${tableName} WHERE category = '${category}' AND ${type} IS NULL;`;
+                    } else {
+                        commandSQL = `SELECT * FROM ${tableName} WHERE category = '${category}';`;
+                    }
+                } else if (type) {
+                    commandSQL = `SELECT * FROM ${tableName} WHERE ${type} IS NULL;`;
+                }
+            }
+        }
+        
         const sqliteFilePath = 'database.sqlite';
         const outputFilePath = 'db.xlsx';
 
 
         // Extract data from SQLite database and create Excel file
         let is_create = false;
-        await extractDataFromSQLite(sqliteFilePath, tableName, fieldName, value)
+        await extractDataFromSQLite(sqliteFilePath, commandSQL)
             .then((data) => {
                 is_create = true;
                 createExcelFile(data, outputFilePath);
@@ -55,41 +123,18 @@ module.exports = {
         if (!is_create) return;
 
         // Send the file to the user
-        if (id_mission) {
-            return interaction.reply({
-                content: `Voici les logs de la mission avec l'id ${id_mission} :`,
-                files: [new AttachmentBuilder(outputFilePath)],
-                ephemeral: true
-            });
-        } else if (user_id) {
-            return interaction.reply({
-                content: `Voici les logs de l'utilisateur ${user_id} :`,
-                files: [new AttachmentBuilder(outputFilePath)],
-                ephemeral: true
-            });
-        } else if (tableName) {
-            return interaction.reply({
-                content: `Voici les logs de la table ${tableName} :`,
-                files: [new AttachmentBuilder(outputFilePath)],
-                ephemeral: true
-            });
-        } else {
-            return interaction.reply({
-                content: `Voici toutes les logs :`,
-                files: [new AttachmentBuilder(outputFilePath)],
-                ephemeral: true
-            });
-        }
-
+        return interaction.reply({
+            content: `Voici toutes les logs demandés :`,
+            files: [new AttachmentBuilder(outputFilePath)],
+            ephemeral: true
+        });
     },
 };
 
 // Function for extracting data from SQLite database
-function extractDataFromSQLite(filePath, tableName, fieldName, value) {
+function extractDataFromSQLite(filePath, commandSQL) {
     return new Promise((resolve, reject) => {
         const db = new sqlite3.Database(filePath);
-        let commandSQL = `SELECT * FROM ${tableName};`;
-        if (value) commandSQL = `SELECT * FROM ${tableName} WHERE ${fieldName} = ${value};`;
 
         db.all(commandSQL, (error, rows) => {
             if (error) {

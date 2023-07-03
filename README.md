@@ -31,8 +31,11 @@ More information about this project is available on the [XperPool Website](https
 - **docs:** send an predefined embed message. [Only owner bot except for 'Contacter-nous']
 - **embed:** send a custom embed message.
 - **getdb:** get some tables of the databases in an Excel file.
-  - **members:** get the 'members' tables from the database to an Excel file.
+  - **items:** get the 'items' tables from the database to an Excel file.
   - **logmissions:** get the 'logmissions' tables from the database to an Excel file.
+  - **members:** get the 'members' tables from the database to an Excel file.
+  - **missions:** get the 'missions' tables from the database to an Excel file.
+  - **tickets:** get the 'tickets' tables from the database to an Excel file.
 - **message:** copy a message in another channel.
   - **copier:** copy a message content or a message embed in another channel.
 - **mission:** create, edit, or delete a mission.
