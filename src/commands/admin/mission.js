@@ -21,7 +21,9 @@ module.exports = {
             .addStringOption(option => option.setName('duree').setDescription("Durée de la mission.").setMaxLength(1024).setRequired(true))
             .addStringOption(option => option.setName('competences').setDescription("Compétences de la mission.").setMaxLength(1024).setRequired(true))
             .addChannelOption(option => option.setName("salon").setDescription("Le salon staff de la mission.").addChannelTypes(ChannelType.PublicThread).setRequired(true))
-            .addChannelOption(option => option.setName('commu').setDescription("La commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory).setRequired(true)))
+            .addChannelOption(option => option.setName('commu1').setDescription("La commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory))
+            .addChannelOption(option => option.setName('commu2').setDescription("La 2ème commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory))
+            .addChannelOption(option => option.setName('commu3').setDescription("La 3ème commu a qui la mission s'adresse.").addChannelTypes(ChannelType.GuildCategory)))
         .addSubcommand(subcommand => subcommand
             .setName("edit")
             .setDescription("🔧 Permet de mettre à jour une mission.")
@@ -71,16 +73,27 @@ module.exports = {
         const duration = interaction.options.getString('duree');
         const skills = interaction.options.getString('competences');
 
+        let particulars_msg_id, channel_particulars_id;
         switch (interaction.options.getSubcommand()) {
             /**
              * Add a mission
              */
             case "add":
                 const channelStaff = interaction.options.getChannel('salon');
-                const community = interaction.options.getChannel('commu');
+                const community1 = interaction.options.getChannel('commu1');
+                const community2 = interaction.options.getChannel('commu2');
+                const community3 = interaction.options.getChannel('commu3');
 
                 // Check the community category
-                if (community.id === category_xperpool || community.id === category_important || community.id === category_general || community.id === category_admin || community.id === category_tickets || community.id === category_tickets_members) return interaction.reply({ content: `La commu doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                if (community1 && (community1.id === category_xperpool || community1.id === category_important || community1.id === category_general || community1.id === category_admin || community1.id === category_tickets || community1.id === category_tickets_members)) return interaction.reply({ content: `La commu1 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+
+                if (community2 && (community2.id === category_xperpool || community2.id === category_important || community2.id === category_general || community2.id === category_admin || community2.id === category_tickets || community2.id === category_tickets_members)) return interaction.reply({ content: `La commu1 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+
+                if (community3 && (community3.id === category_xperpool || community3.id === category_important || community3.id === category_general || community3.id === category_admin || community3.id === category_tickets || community3.id === category_tickets_members)) return interaction.reply({ content: `La commu1 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+
+                if (community1 && community2 || community1 && community3 || community2 && community3) {
+                    if (community1 === community2 || community1 === community3 || community2 === community3) return interaction.reply({ content: `Les 3 communautés doivent être différentes.`, ephemeral: true });
+                }
 
                 // Check the channelStaff
                 if (channelStaff.parentId !== channel_staff_missions) return interaction.reply({ content: `Le salon staff de la mission doit être un fil de discussion public dans le salon <#${channel_staff_missions}>.`, ephemeral: true });
@@ -93,9 +106,33 @@ module.exports = {
                 if (messageDetail.content.length > maxCharacter) return interaction.reply({ content: `${messageDetail.url} doit contenir **moins de ${maxCharacter+1}**. Actuellement, il en a ${messageDetail.content.length}.`, ephemeral: true });
 
                 // Get the mission channel of the community category
-                const channel = await interaction.guild.channels.fetch().then(channels => {
-                    if (community) return channels.filter(channel => channel.type === ChannelType.GuildText && channel.parentId === community.id && channel.name.includes("missions-"))
+                const channel1 = await interaction.guild.channels.fetch().then(channels => {
+                    if (community1) return channels.filter(channel => channel.type === ChannelType.GuildText && channel.parentId === community1.id && channel.name.includes("missions-"))
                 });
+
+                const channel2 = await interaction.guild.channels.fetch().then(channels => {
+                    if (community2) return channels.filter(channel => channel.type === ChannelType.GuildText && channel.parentId === community2.id && channel.name.includes("missions-"))
+                });
+
+                const channel3 = await interaction.guild.channels.fetch().then(channels => {
+                    if (community3) return channels.filter(channel => channel.type === ChannelType.GuildText && channel.parentId === community3.id && channel.name.includes("missions-"))
+                });
+
+                // Create the commu channel in description of the embed
+                let commuLine = "";
+                if (channel1 || channel2 || channel3) {
+                    commuLine = "\nEt dans ▸ ";
+                    if (channel1) {
+                        commuLine += `${channel1.first()}`;
+                        if (channel2 || channel3) commuLine += ", ";
+                    }
+                    if (channel2) {
+                        commuLine += `${channel2.first()}`;
+                        if (channel3) commuLine += ", ";
+                    }
+                    if (channel3) commuLine += `${channel3.first()}`;
+                }
+
 
                 // Create the embed mission
                 const missionEmbed = new EmbedBuilder()
@@ -126,7 +163,9 @@ module.exports = {
 
                 // Send the embed mission
                 return interaction.reply({ content: 
-                    `**Es-tu sur de vouloir publier cette mission dans <#${channel_all_missions}>${channel ? ` et dans ${channel.first()}` : ``} ?**\nAvec le salon staff : ${channelStaff}`,
+                    `**Es-tu sur de vouloir publier cette mission dans <#${channel_all_missions}> ?**`+
+                    `${commuLine}`+
+                    `\nAvec le salon staff : ${channelStaff}`,
                     embeds: [missionEmbed],
                     components: [buttonRow],
                     ephemeral: true
@@ -146,6 +185,8 @@ module.exports = {
                 // Get the mission
                 const mission = await Missions.findOne({ where: { id: id } });
                 if (!mission) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
+                particulars_msg_id = mission.particulars_msg_id;
+                channel_particulars_id = mission.channel_particulars_id;
 
                 let is_open;
                 if (status) {
@@ -197,15 +238,19 @@ module.exports = {
                 }
 
                 // Edit the message
-                if (mission.particular_msg_id) {
+                if (particulars_msg_id !== []) {
                     await interaction.guild.channels.fetch(channel_all_missions).then(channel => {
                         channel.messages.fetch(mission.main_msg_id).then(msg => msg.edit({ embeds: [newEmbed] }));
                     });
-                    const channels_fetch = await interaction.guild.channels.fetch();
-                    const channel = channels_fetch.filter(channel => channel.type === ChannelType.GuildText && channel.name.includes("missions-"));
-                    await channel.each(channel => {
-                        channel.messages.fetch(mission.particular_msg_id).then(msg => msg.edit({ embeds: [newEmbed] })).catch(error => {return});
-                    });
+
+                    async function processChannel() {
+                        channel_particulars_id.forEach(async channel_id => {
+                            const channel = await interaction.guild.channels.fetch(channel_id);
+                            if (!channel) return;
+                            channel.messages.fetch(await particulars_msg_id[channel_particulars_id.indexOf(channel_id)]).then(msg => msg.edit({ embeds: [newEmbed] })).catch(error => {return});
+                        });
+                    }
+                    await processChannel();
                 } else {
                     await message.edit({ embeds: [newEmbed] });
                 }
@@ -271,6 +316,8 @@ module.exports = {
                 // Get the mission
                 const mission_delete = await Missions.findOne({ where: { id: id_delete } });
                 if (!mission_delete) return interaction.reply({ content: "Cette mission n'existe pas.\nVérifier l'id entrée.", ephemeral: true });
+                particulars_msg_id = mission_delete.particulars_msg_id;
+                channel_particulars_id = mission_delete.channel_particulars_id;
 
                 // Get the embed message and delete it
                 const main_channel_delete = await interaction.guild.channels.fetch(channel_all_missions);
@@ -279,12 +326,16 @@ module.exports = {
                 if (!message_delete) return interaction.reply({ content: "Le message de la mission n'existe plus.", ephemeral: true });
                 await message_delete.delete();
 
-                if (mission_delete.particular_msg_id) {
-                    const particular_channel_delete = await interaction.guild.channels.fetch(mission_delete.channel_particular_id);
-                    if (!particular_channel_delete) return interaction.reply({ content: "Particular: Le salon de la mission n'existe plus.", ephemeral: true });
-                    const message_particular_delete = await particular_channel_delete.messages.fetch(mission_delete.particular_msg_id);
-                    if (!message_particular_delete) return interaction.reply({ content: "Particular: Le message de la mission n'existe plus.", ephemeral: true });
-                    await message_particular_delete.delete();
+                if (particulars_msg_id) {
+                    async function processChannel() {
+                        channel_particulars_id.forEach(async channel_id => {
+                            const channel = await interaction.guild.channels.fetch(channel_id);
+                            if (!channel) return interaction.reply({ content: "Particular: Le salon de la mission n'existe plus.", ephemeral: true });
+                            const isDelete = await channel.messages.fetch(await particulars_msg_id[channel_particulars_id.indexOf(channel_id)]).then(msg => msg.delete());
+                            if (!isDelete) return interaction.reply({ content: "Particular: Le message de la mission n'existe plus.", ephemeral: true });
+                        });
+                    }
+                    await processChannel();
                 }
 
 

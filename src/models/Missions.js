@@ -10,11 +10,31 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: '0',
             allowNull: false,
         },
-        particular_msg_id: {
-            type: DataTypes.STRING,
+        particulars_msg_id: {
+            type: DataTypes.TEXT,
+            defaultValue: '[]',
+            allowNull: false,
+            get() {
+                const data = this.getDataValue('particulars_msg_id');
+                return data ? JSON.parse(data) : [];
+            },
+            set(value) {
+                const data = value ? JSON.stringify(value) : '[]';
+                this.setDataValue('particulars_msg_id', data);
+            },
         },
-        channel_particular_id: {
-            type: DataTypes.STRING,
+        channel_particulars_id: {
+            type: DataTypes.TEXT,
+            defaultValue: '[]',
+            allowNull: false,
+            get() {
+                const data = this.getDataValue('channel_particulars_id');
+                return data ? JSON.parse(data) : [];
+            },
+            set(value) {
+                const data = value ? JSON.stringify(value) : '[]';
+                this.setDataValue('channel_particulars_id', data);
+            },
         },
         channel_staff_id: {
             type: DataTypes.STRING,
