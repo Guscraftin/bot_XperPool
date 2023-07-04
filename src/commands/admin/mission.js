@@ -172,9 +172,9 @@ module.exports = {
                 embed.fields[3].value = tjm ? tjm : embed.fields[3].value;
                 embed.fields[4].value = start ? start : embed.fields[4].value;
                 embed.fields[5].value = place ? place : embed.fields[5].value;
-                embed.fields[6].value = teleworking ? teleworking : embed.fields[7].value;
-                embed.fields[7].value = duration ? duration : embed.fields[8].value;
-                embed.fields[8].value = skills ? skills : embed.fields[9].value;
+                embed.fields[6].value = teleworking ? teleworking : embed.fields[6].value;
+                embed.fields[7].value = duration ? duration : embed.fields[7].value;
+                embed.fields[8].value = skills ? skills : embed.fields[8].value;
                 const newColor = status ? (is_open ? color_accept : color_decline) : embed.color;
 
                 // Edit the embed
