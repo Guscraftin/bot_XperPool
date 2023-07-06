@@ -11,25 +11,25 @@ module.exports = {
             subcommand
                 .setName('add')
                 .setDescription("🔧 Ajouter du score à un membre.")
-                .addUserOption(option => option.setName('membre').setDescription("Le membre auquel ajouter le score.").setRequired(true))
+                .addUserOption(option => option.setName('membre').setDescription("Le membre ou l'id du membre auquel ajouter le score.").setRequired(true))
                 .addIntegerOption(option => option.setName('score').setDescription("Le score à ajouter.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('remove')
                 .setDescription("🔧 Retirer du score à un membre.")
-                .addUserOption(option => option.setName('membre').setDescription("Le membre auquel supprimer le score.").setRequired(true))
+                .addUserOption(option => option.setName('membre').setDescription("Le membre ou l'id du membre auquel supprimer le score.").setRequired(true))
                 .addIntegerOption(option => option.setName('score').setDescription("Le score à retirer.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('set')
                 .setDescription("🔧 Définir le score d'un membre.")
-                .addUserOption(option => option.setName('membre').setDescription("Le membre auquel définir le score.").setRequired(true))
+                .addUserOption(option => option.setName('membre').setDescription("Le membre ou l'id du membre auquel définir le score.").setRequired(true))
                 .addIntegerOption(option => option.setName('score').setDescription("Le score à mettre.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('clear')
                 .setDescription("🔧 Supprimer le score d'un membre.")
-                .addUserOption(option => option.setName('membre').setDescription("Le membre auquel supprimer le score.").setRequired(true)))
+                .addUserOption(option => option.setName('membre').setDescription("Le membre ou l'id du membre auquel supprimer le score.").setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('clearall')

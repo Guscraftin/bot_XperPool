@@ -12,7 +12,7 @@ module.exports = {
             subcommand
                 .setName('list')
                 .setDescription("🔧 Afficher la liste des transcriptions des tickets fermés.")
-                .addUserOption(option => option.setName('membre').setDescription("Les tickets de l'utilisateur a récupérer."))
+                .addUserOption(option => option.setName('membre').setDescription("L'utilisateur ou l'id de l'utilisateur à qui l'on souhaite récupérer ses tickets."))
                 .addStringOption(option => option
                     .setName('categorie')
                     .setDescription("La catégorie des tickets a récupérer.")
@@ -32,7 +32,7 @@ module.exports = {
             subcommand
                 .setName('deleteall')
                 .setDescription("🔧 Supprimer toutes les retranscriptoins d'un membre ou/et d'une catégorie.")
-                .addUserOption(option => option.setName('membre').setDescription("Les tickets de l'utilisateur a supprimer."))
+                .addUserOption(option => option.setName('membre').setDescription("L'utilisateur ou l'id de l'utilisateur où ses tickets seront supprimés."))
                 .addStringOption(option => option
                     .setName('categorie')
                     .setDescription("La catégorie des tickets a supprimer.")

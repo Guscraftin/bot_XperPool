@@ -14,7 +14,7 @@ module.exports = {
                 .setDescription("🔧 Permet d'obtenir des données en fichier excel des membres.")
                 .addUserOption(option => option
                     .setName('membre')
-                    .setDescription("L'utilisateur dont on veut les informations.")))
+                    .setDescription("L'utilisateur ou l'id de l'utilisateur dont on veut les informations.")))
         .addSubcommand(subcommand =>
             subcommand
                 .setName('logmissions')
@@ -26,7 +26,7 @@ module.exports = {
             subcommand
             .setName('tickets')
             .setDescription("🔧 Permet d'obtenir des données en fichier excel des tickets.")
-            .addUserOption(option => option.setName('membre').setDescription("Les tickets de l'utilisateur a récupérer."))
+            .addUserOption(option => option.setName('membre').setDescription("L'utilisateur ou l'id de l'utilisateur à qui l'on souhaite récupérer les tickets."))
             .addStringOption(option => option
                 .setName('categorie')
                 .setDescription("La catégorie des tickets a récupérer.")
