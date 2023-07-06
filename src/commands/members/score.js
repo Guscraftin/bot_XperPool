@@ -8,7 +8,7 @@ module.exports = {
 		.setName("score")
 		.setDescription("Affiche le score d'un membre.")
         .setDMPermission(false)
-        .addUserOption(option => option.setName('membre').setDescription("Le membre dont afficher le score.")),
+        .addUserOption(option => option.setName('membre').setDescription("Le membre ou l'id du membre dont afficher le score.")),
 	async execute(interaction) {
         try {
             const member = interaction.options.getUser("membre") || interaction.user;

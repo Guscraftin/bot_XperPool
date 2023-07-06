@@ -14,7 +14,7 @@ module.exports = {
                 .setDescription("🔧 Ajouter un utilisateur à la base de données.")
                 .addUserOption(option =>
                     option.setName("user")
-                        .setDescription("L'utilisateur a ajouter.")
+                        .setDescription("L'utilisateur ou l'id de l'utilisateur a ajouter.")
                         .setRequired(true))
                 .addStringOption(option =>
                     option.setName("first_name")
@@ -42,7 +42,7 @@ module.exports = {
                 .setDescription("🔧 Mettre à jour un utilisateur dans la base de données.")
                 .addUserOption(option =>
                     option.setName("user")
-                        .setDescription("L'utilisateur a ajouter.")
+                        .setDescription("L'utilisateur ou l'id de l'utilisateur a ajouter.")
                         .setRequired(true))
                 .addStringOption(option =>
                     option.setName("first_name")
