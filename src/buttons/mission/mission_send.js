@@ -47,8 +47,9 @@ module.exports = {
                 async function processChannel() {
                     const particular_channel = await interaction.guild.channels.fetch(channel);
                     const nameBrut = particular_channel.name.slice(9);
-                    const name = nameBrut.replace('-', ' ');
-                    const role = await role_fetch.find(role => role.name.toLowerCase() == name);
+                    const name = nameBrut.replace(/-/g, ' ');
+                    const role = await role_fetch.find(role => role.name.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '') == name);
+                    console.log(nameBrut, name, role);
 
                     const particular_msg = await particular_channel.send({
                         content: `${role}, voici une nouvelle mission qui pourrait vous intéresser :`,
