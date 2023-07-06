@@ -1,5 +1,9 @@
 const { Tickets } = require("../../dbObjects");
 
+/**
+ * Come from src/buttons/tickets/confirm_close_ticket.js
+ */
+
 module.exports = {
     data: {
         name: "reopen_ticket",

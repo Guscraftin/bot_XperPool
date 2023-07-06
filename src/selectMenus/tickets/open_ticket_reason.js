@@ -83,6 +83,8 @@ module.exports = {
 
         const ticketMsg = await ticketChannel.send({ content: `Bonjour ${member} !`, embeds: [embed], components: [row] });
         await ticketMsg.pin();
+
+        // Send a ghost mention to the admins
         await ticketChannel.send(`<@&${role_admins}>`);
         await ticketChannel.messages.fetch().then(messages => {
             messages.at(0).delete();

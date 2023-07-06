@@ -1,6 +1,10 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { Items } = require("../../dbObjects");
-const { role_admins } = require(process.env.CONST);
+
+/**
+ * Come from src/commands/members/boutique.js
+ * And src/buttons/shop/shop_next.js and src/buttons/shop/shop_previous.js
+ */
 
 module.exports = {
     data: {

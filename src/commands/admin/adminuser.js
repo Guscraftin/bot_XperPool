@@ -136,7 +136,11 @@ module.exports = {
 
             // Change nickname
             const nickname = `${first_name_nor}_${last_name}`;
-            await user.setNickname(nickname);
+            try {
+                await user.setNickname(nickname);
+            } catch (error) {
+                return interaction.reply({ content: `${user} a correctement été ajouté à la base de données. Malheureusement, le membre n'a pas pu être renommé.`, ephemeral: true });
+            }
 
             return interaction.reply({ content: `${user} a été ajouté à la base de données.`, ephemeral: true });
 
@@ -156,10 +160,14 @@ module.exports = {
             // Change nickname
             const userDB = await Members.findOne({ where: { member_id: user.id } });
             if (user.nickname !== `${userDB.first_name}_${userDB.last_name}`) {
-                if (first_name_nor && last_name_nor) await user.setNickname(`${first_name_nor}_${last_name_nor}`);
-                else if (first_name_nor) await user.setNickname(`${first_name_nor}_${userDB.last_name}`);
-                else if (last_name_nor) await user.setNickname(`${userDB.first_name}_${last_name_nor}`);
-                else await user.setNickname(`${userDB.first_name}_${userDB.last_name}`);
+                try {
+                    if (first_name_nor && last_name_nor) await user.setNickname(`${first_name_nor}_${last_name_nor}`);
+                    else if (first_name_nor) await user.setNickname(`${first_name_nor}_${userDB.last_name}`);
+                    else if (last_name_nor) await user.setNickname(`${userDB.first_name}_${last_name_nor}`);
+                    else await user.setNickname(`${userDB.first_name}_${userDB.last_name}`);
+                } catch (error) {
+                    return interaction.reply({ content: `${user} a correctement été modifié dans la base de données. Malheureusement, le membre n'a pas pu être renommé.`, ephemeral: true });
+                }
             }
 
             return interaction.reply({ content: `${user} a bien été mis à jour dans la base de données.`, ephemeral: true });

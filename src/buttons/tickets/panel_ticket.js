@@ -1,6 +1,10 @@
 const { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { color_basic } = require(process.env.CONST);
 
+/**
+ * Come from src/commands/admin/docs.js
+ */
+
 module.exports = {
     data: {
         name: "panel_ticket",

@@ -2,6 +2,10 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("
 const { Members, LogMissions, Missions } = require("../../dbObjects");
 const { channel_all_missions, role_admins } = require(process.env.CONST);
 
+/**
+ * Come from src/buttons/mission/mission_interested.js
+ */
+
 module.exports = {
     data: {
         name: "mission_accept",

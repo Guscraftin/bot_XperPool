@@ -2,6 +2,10 @@ const discordTranscripts = require('discord-html-transcripts');
 const { channel_logs_tickets } = require(process.env.CONST);
 const { Tickets } = require('../../dbObjects');
 
+/**
+ * Come from src/buttons/tickets/confirm_close_ticket.js
+ */
+
 module.exports = {
     data: {
         name: "delete_ticket",

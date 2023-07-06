@@ -1,6 +1,11 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const { Members } = require("../../dbObjects");
 
+/**
+ * Come from src/commands/members/leaderboard.js
+ * And src/buttons/score/score_lb_next.js and src/buttons/score/score_lb_previous.js
+ */
+
 module.exports = {
     data: {
         name: "score_lb_previous",

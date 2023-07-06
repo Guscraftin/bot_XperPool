@@ -1,6 +1,10 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { Tickets } = require('../../dbObjects');
 
+/**
+ * Come from src/buttons/tickets/close_ticket.js
+ */
+
 module.exports = {
     data: {
         name: "confirm_close_ticket",

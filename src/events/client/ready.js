@@ -39,3 +39,38 @@ module.exports = {
         console.log(`${client.user.username} est prêt à être utilisé par ${usersCount} utilisateurs sur ${guildsCount.size} serveurs !`);
     },
 };
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// NOT USED
+// Fetch RSS feed
+// With a lib like rss-parser for parsing the feed
+async function fetchLatestArticles(client, rssUrl, channelId) {
+    try {
+        const feed = await parser.parseURL(rssUrl);
+        const latestArticles = feed.items[0];
+
+        if (latestArticles) {
+            // console.log(latestArticles);
+            const channel = await client.channels.fetch(channelId);
+
+            const existingArticles = await Articles.findOne({ where: { link: latestArticles.link } });
+            if (!existingArticles) {
+                const embed = new EmbedBuilder()
+                    .setTitle(latestArticles.title)
+                    .setURL(latestArticles.link)
+                    .setAuthor({ name: latestArticles.author })
+                    .setTimestamp(new Date(latestArticles.isoDate));
+
+                channel.send({ embeds: [embed] });
+
+                // Register the last Articles in the database
+                await Articles.create({ title: latestArticles.title, link: latestArticles.link });
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'extraction du flux RSS :', error);
+    }
+
+    setTimeout(fetchLatestArticles, 60000, client, rssUrl, channelId);
+}

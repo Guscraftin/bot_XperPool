@@ -2,6 +2,11 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelect
 const { channel_logs_tickets, color_basic } = require(process.env.CONST);
 const { Tickets } = require("../../dbObjects");
 
+/**
+ * Come from src/commands/admin/adminticket.js
+ * And src/buttons/tickets/ticket_next.js and src/buttons/tickets/ticket_previous.js
+ */
+
 module.exports = {
     data: {
         name: "ticket_previous",

@@ -1,6 +1,10 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const { Missions } = require("../../dbObjects");
 
+/**
+ * Come from src/commands/admin/mission.js
+ */
+
 module.exports = {
     data: {
         name: "mission_send",

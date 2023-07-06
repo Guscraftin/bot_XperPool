@@ -1,5 +1,9 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 
+/**
+ * Come from src/selectMenus/tickets/open_ticket_reason.js
+ */
+
 module.exports = {
     data: {
         name: "close_ticket",

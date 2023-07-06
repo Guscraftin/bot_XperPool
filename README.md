@@ -93,6 +93,56 @@ More information about this project is available on the [XperPool Website](https
 - **Tickets**: Information about past and current tickets.
 
 
+## Information about update of the server
+### Something you can't change without break the bot
+- The field author in suggest.js command (' - ')
+- - Add new category in const.json/constDev.json and mission.js/commu.js command (because the others category is tech category)
+- - Add new role in const.json/constDev.json and commu.js/adminuser.js command (because the others role is for the tech category)
+- - Tech category need to be '💻┃Commu ' + the name of the tech in commu.js command
+- The channel mission in all tech category need to start by 'mission-' in mission.js command
+- Format of the nickname: need a '_' between first name and surname in adminuser.js command
+- Description in leaderboard ticket in ticket_previous.js/ticket_next.js button and adminticket.js command
+- The footer of the shop in shop_previous.js/shop_next.js button and boutique.js command
+- The footer of the shop in score_lb_previous.js/score_lb_next.js button and leaderboard.js command
+- Content of the preview message to send a mission in mission_send.js button and mission.js command
+
+
+### Updating the const.json File with a New ID
+This step is necessary only if you delete a specific item and replace it with a new one.
+
+#### Categories
+- category_xperpool
+- category_important
+- category_general
+- category_tickets_members
+- category_tickets
+- category_admin
+
+#### Channels
+- channel_general
+- channel_suggestions
+- channel_all_missions
+- channel_detail_missions
+- channel_staff_missions
+- channel_staff
+- channel_logs_message
+- channel_logs_moderation
+- channel_logs_join_leave
+- channel_logs_role
+- channel_logs_tickets
+- vocal_general
+
+#### Emojis
+- emoji_yes
+- emoji_neutral
+- emoji_no
+
+#### Roles
+- role_admins
+- role_members
+- role_bots
+
+
 ## Bot Installation
 
 1. Clone this repository using the command `git clone https://github.com/Guscraftin/bot_XperPool.git`.  

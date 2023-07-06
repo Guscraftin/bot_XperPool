@@ -1,5 +1,9 @@
 const { Members } = require("../../dbObjects");
 
+/**
+ * Come from src/commands/admin/adminscore.js
+ */
+
 module.exports = {
     data: {
         name: "adminscore_deleteall",

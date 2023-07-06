@@ -24,6 +24,9 @@ module.exports = {
             .setRequired(true)),
     async execute(interaction) {
         if (interaction.options.getString("message") === "contact") {
+            /**
+             * Contact message
+             */
             const embed = new EmbedBuilder()
                 .setTitle("Contacter-nous")
                 .setDescription("Vous pouvez nous contacter en cliquant sur le bouton 📩")
@@ -44,14 +47,6 @@ module.exports = {
             await msg0.pin();
             await interaction.channel.messages.fetch().then(messages => messages.first().delete());
             return interaction.reply({ content: "Message envoyé !", ephemeral: true });
-        }
-        
-        // Filter only the owner of the bot because this command it's useless for other people.
-        const bot = await interaction.client.application.fetch();
-        if (bot.owner.username !== undefined) {
-            if (interaction.member.id !== bot.owner.id) {
-                return interaction.reply({ content: "Cette commande est inutile pour vous à l'exception de l'option \`Contacter-nous\`. Veuillez utiliser les commandes `/embed` et `message` à la place.", ephemeral: true });
-            }
         }
 
         switch (interaction.options.getString("message")) {
