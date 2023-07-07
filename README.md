@@ -29,7 +29,7 @@ More information about this project is available on the [XperPool Website](https
   - **add:** add a user in the database (update the database, change nickname, add his commu roles and the member role).
   - **edit:** edit a user in the database (update the database, and his commu roles).
 - **clear:** clear some messages in a channel.
-- **commu:** create or delete a commu (role and category).
+- **commu:** create or delete a commu (role and category) => Sometimes the category is not in the right place, so you'll have to move it by hand to respect the alphabetical order of the communities.
   - **add:** create a new role and a new category like other commu categories.
   - **remove:** delete the role and the category of the commu.
 - **docs:** send an predefined embed message. [Only owner bot except for 'Contacter-nous']
