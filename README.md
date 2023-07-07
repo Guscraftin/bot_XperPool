@@ -1,6 +1,6 @@
 # XperPool Bot
 
-This is the discord bot of the [discord server (insert link)]().  
+This is the discord bot of the [discord server](https://discord.gg/pnSCVTkWbU).  
 More information about this project is available on the [XperPool Website](https://xperpool.fr/).
 
 ## Commands
