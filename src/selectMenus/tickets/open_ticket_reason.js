@@ -60,7 +60,7 @@ module.exports = {
                 channel_id: ticketChannel.id,
             });
         } catch (error) {
-            console.log("panel_ticket.js tickets - " + error);
+            console.error("panel_ticket.js tickets - " + error);
         }
 
         // Create the embed in the ticket channel
