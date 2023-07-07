@@ -333,9 +333,9 @@ module.exports = {
                     async function processChannel() {
                         channel_particulars_id.forEach(async channel_id => {
                             const channel = await interaction.guild.channels.fetch(channel_id);
-                            if (!channel) return interaction.reply({ content: "Particular: Le salon de la mission n'existe plus.", ephemeral: true });
-                            const isDelete = await channel.messages.fetch(await particulars_msg_id[channel_particulars_id.indexOf(channel_id)]).then(msg => msg.delete());
-                            if (!isDelete) return interaction.reply({ content: "Particular: Le message de la mission n'existe plus.", ephemeral: true });
+                            if (channel) {
+                                await channel.messages.fetch(await particulars_msg_id[channel_particulars_id.indexOf(channel_id)]).then(msg => msg.delete()).catch(() => {});
+                            }
                         });
                     }
                     await processChannel();
