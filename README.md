@@ -5,6 +5,10 @@ More information about this project is available on the [XperPool Website](https
 
 ## Commands
 ### Admin Only
+- **admincommu:** manage the 'communities' database.
+  - **add:** add a new community in the database.
+  - **list:** list all communities in the database.
+  - **delete:** delete a community in the database.
 - **adminitems:** manage the 'items' database.
   - **add:** add a new item in the shop.
   - **edit:** edit the name, description, or price of an item in the shop.
@@ -56,6 +60,7 @@ More information about this project is available on the [XperPool Website](https
 
 ## Features
 - Send a welcome DM message when a user joins the guild.
+- Send a reminder DM message every 48 hours to users in the guild who do not have the "Members" role.
 - Send a welcome message in the general channel when the user receives the "Members" role.
 - Ticket system:
   - Asks the user the reason for opening the ticket (via a select menu).
@@ -87,6 +92,7 @@ More information about this project is available on the [XperPool Website](https
 - Manage automatically the Vocal Général (unlock when at least one admin is in).
 
 ## Databases
+- **Communities:** List of communities in the server.
 - **Items**: List of items available for purchase in our shop.
 - **LogMissions**: Track of member reactions to missions with detailed logs.
 - **Member**: Track the information and the score of each member.
@@ -97,9 +103,7 @@ More information about this project is available on the [XperPool Website](https
 ## Information about update of the server
 ### Something you can't change without break the bot
 - The field author in suggest.js command (' - ')
-- - Add new category in const.json/constDev.json and mission.js/commu.js command (because the others category is tech category)
-- - Add new role in const.json/constDev.json and commu.js/adminuser.js command (because the others role is for the tech category)
-- - Tech category need to be '💻┃Commu ' + the name of the tech in commu.js command
+- The name of the thread when a member react interested to a mission (need space between name and mission id) in mission.js command
 - The channel mission in all tech category need to start by 'mission-' in mission.js command
 - Format of the nickname: need a '_' between first name and surname in adminuser.js command
 - Description in leaderboard ticket in ticket_previous.js/ticket_next.js button and adminticket.js command
@@ -112,12 +116,8 @@ More information about this project is available on the [XperPool Website](https
 This step is necessary only if you delete a specific item and replace it with a new one.
 
 #### Categories
-- category_xperpool
-- category_important
-- category_general
 - category_tickets_members
 - category_tickets
-- category_admin
 
 #### Channels
 - channel_general
@@ -141,7 +141,6 @@ This step is necessary only if you delete a specific item and replace it with a 
 #### Roles
 - role_admins
 - role_members
-- role_bots
 
 
 ## Bot Installation
