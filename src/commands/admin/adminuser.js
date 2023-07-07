@@ -1,6 +1,6 @@
 const { PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { role_admins, role_bots, role_members } = require(process.env.CONST);
-const { Members } = require('../../dbObjects');
+const { role_members } = require(process.env.CONST);
+const { Communities, Members } = require('../../dbObjects');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -72,7 +72,6 @@ module.exports = {
         // Exception
         if (user.user.bot) return interaction.reply({ content: "Vous ne pouvez pas ajouter un bot à la base de données.", ephemeral: true });
 
-        
         // Normalize the user's name
         const first_name_nor = first_name ? first_name.charAt(0).toUpperCase() + first_name.slice(1).toLowerCase() : null;
         const last_name_nor = last_name ? last_name.toUpperCase() : null;
@@ -90,15 +89,17 @@ module.exports = {
         // Check the technologies
         const technologiesArray = technologies ? technologies.split(', ') : [];
         const technologiesArrayFiltered = technologiesArray.filter(technology => technology !== '');
-        const guildRoles = await interaction.guild.roles.fetch();
+        const communities = await Communities.findAll();
+        const communitiesArray = communities.map(community => community.name);
 
+        // Check if the role exists in the database
         let technoRoles = [];
         for (const technology of technologiesArrayFiltered) {
-            const role = await guildRoles.find(role => role.name.toLowerCase() === technology.toLowerCase());
-            if (!role) {
-                return interaction.reply({ content: `Le rôle \`${technology}\` n'existe pas sur le serveur.`, ephemeral: true });
+            if (!communitiesArray.includes(technology)) {
+                return interaction.reply({ content: `Le rôle \`${technology}\` n'existe pas sur le serveur/dans la base de donnée.`, ephemeral: true });
             } else {
-                technoRoles.push(role);
+                const role = interaction.guild.fetch(communities[communitiesArray.indexOf(technology)].role_id);
+                if (role) technoRoles.push(role);
             }
         }
         
@@ -146,7 +147,7 @@ module.exports = {
 
         } else {        
             const userRolesArray = user.roles.cache.map(role => role);
-            const userRolesArrayFiltered = userRolesArray.filter(role => role.id !== role_members && role.id !== role_admins && role.id !== role_bots && !role.managed);
+            const userRolesArrayFiltered = userRolesArray.filter((role) => communitiesArray.includes(role.name))
             const userRolesToRemove = userRolesArrayFiltered.filter(role => !technoRoles.includes(role));
             const userRolesToAdd = technoRoles.filter(role => !userRolesArrayFiltered.includes(role));
 

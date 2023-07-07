@@ -1,5 +1,5 @@
 const { ChannelType, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
-const { category_admin, category_general, category_important, category_tickets, category_tickets_members, category_xperpool, role_admins, role_members, role_bots } = require(process.env.CONST);
+const { Communities } = require('../../dbObjects');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,10 +14,12 @@ module.exports = {
         .addSubcommand(subcommand => subcommand
             .setName('remove')
             .setDescription("🔧 Supprime une commu du serveur.")
-            .addChannelOption(option => option.setName('categorie').setDescription("La catégorie de la communauté a supprimer du serveur.").addChannelTypes(ChannelType.GuildCategory).setRequired(true))),
+            .addChannelOption(option => option.setName('categorie').setDescription("La catégorie de la communauté a supprimer du serveur.").addChannelTypes(ChannelType.GuildCategory).setRequired(true))
+            .addBooleanOption(option => option.setName('confirmation').setDescription("Confirmer la suppression de la commu.").setRequired(true))),
     async execute(interaction) {
         const name = interaction.options.getString('nom');
         const del_category = interaction.options.getChannel('categorie');
+        const confirmation = interaction.options.getBoolean('confirmation');
 
         switch (interaction.options.getSubcommand()) {
             /**
@@ -25,16 +27,18 @@ module.exports = {
              */
             case 'add':
                 /*
-                * Find the position of the role
+                * Find the position of the new community
                 */
-                // Get all commu roles and sort them by name in roles array
-                const roles_fetch = await interaction.guild.roles.fetch();
-                const roles = await roles_fetch.filter(role => !role.managed && role.id != interaction.guild.id && role.id != role_admins && role.id != role_members && role.id != role_bots);
-                roles.sort(compareName);
-
-                // Find the position of the role
-                const position = findPositionReverse(roles, name);
-                const pos_member_role = await interaction.guild.roles.fetch(role_members).then(role => {return role.position});
+                const communities = await Communities.findAll({ order: [['name', 'DESC']] });
+                const rolesCommunities = communities.map(community => community.name);
+                let positionRole = 0;
+                for (let pos = rolesCommunities.length-1; pos >= -1; pos--) {
+                    if (rolesCommunities[pos] >= name) {
+                        positionRole = pos+1;
+                        break;
+                    }
+                }
+                const startRolePosition = await interaction.guild.roles.fetch(communities[0].role_id).then(role => { return role.position });
 
                 /*
                  * Create the role and the category
@@ -44,22 +48,17 @@ module.exports = {
                 const role = await interaction.guild.roles.create({
                     name: name,
                     color: color,
-                    position: pos_member_role + position,
+                    position: startRolePosition + positionRole,
                     permissions: [],
                 });
 
                 // Create the category
-                const category_fetch = await interaction.guild.channels.fetch();
-                const categories = await category_fetch.filter(channel => channel.type == ChannelType.GuildCategory && channel.id != category_admin && channel.id != category_general && channel.id != category_important && channel.id != category_xperpool && channel.id != category_tickets && channel.id != category_tickets_members);
-                categories.sort(compareName);
-                
-                const position_category = findPosition(categories, name);
-                const pos_important_category = await interaction.guild.channels.fetch(category_important).then(channel => {return channel.position});
+                const startCategoryPosition = await interaction.guild.channels.fetch(communities[communities.length-1].category_id).then(channel => { return channel.position });
 
                 const category = await interaction.guild.channels.create({
                     name: `💻┃Commu ${name}`,
                     type: ChannelType.GuildCategory,
-                    position: pos_important_category + position_category,
+                    position: startCategoryPosition + positionRole-communities.length,
                     permissionOverwrites: [
                         {
                             id: interaction.guild.roles.everyone.id,
@@ -73,7 +72,7 @@ module.exports = {
                 });
 
                 // Create the channel of the category
-                await category.children.create({
+                const channel_mission = await category.children.create({
                     name: `missions-${name.toLowerCase()}`,
                     type: ChannelType.GuildText,
                     topic: `Nous vous proposons des missions basées sur ${name}.`,
@@ -97,6 +96,14 @@ module.exports = {
                     name: `Vocal ${name}`,
                     type: ChannelType.GuildVoice,
                 });
+
+                // Add the commu in the database
+                await Communities.create({
+                    category_id: category.id,
+                    name: name,
+                    role_id: role.id,
+                    channel_mission_id: channel_mission.id,
+                });
  
                 return interaction.reply({content: `La communauté **${name}** a été ajoutée au serveur.`, ephemeral: true});
 
@@ -104,15 +111,16 @@ module.exports = {
              * Remove a commu
              */
             case 'remove':
-                // Check if the category is a commulogy category
-                if (!del_category.name.startsWith("💻┃Commu")) {
-                    return interaction.reply({content: "Cette catégorie n'est pas une catégorie de communauté.", ephemeral: true});
-                }
+                if (!confirmation) return interaction.reply({content: "Vous devez confirmer la suppression de la communauté.", ephemeral: true});
+
+                const community = await Communities.findOne({where: {category_id: del_category.id}});
+                if (!community) return interaction.reply({content: "La catégorie n'est pas une communauté technologique.", ephemeral: true});
+                
+                const del_role = await interaction.guild.roles.fetch(community.role_id);
+                if (!del_role) return interaction.reply({content: "Le rôle de la communauté n'a pas été trouvé.", ephemeral: true});
 
                 // Delete the role
-                const del_name_role = del_category.name.slice(9).toLowerCase();
-                const del_role_fetch = await interaction.guild.roles.fetch();
-                const del_role = await del_role_fetch.find(role => role.name.toLowerCase() == del_name_role);
+                const del_name_role = del_role.name;
                 await del_role.delete();
 
                 // Delete channel of the category and the category
@@ -121,6 +129,9 @@ module.exports = {
                 });
                 await del_category.delete();
 
+                // Delete the community in the database
+                await community.destroy();
+
                 return interaction.reply({content: `La communauté **${del_name_role}** a été supprimée du serveur.`, ephemeral: true});
 
             default:
@@ -128,41 +139,3 @@ module.exports = {
         }
     },
 };
-
-function compareName(a, b) {
-    const aLower = a.name.toLowerCase();
-    const bLower = b.name.toLowerCase();
-    if (aLower < bLower) {
-        return -1;
-    }
-    if (aLower > bLower) {
-        return 1;
-    }
-    return 0;
-}
-
-function findPositionReverse(roles, name) {
-    const roles_size = roles.size;
-    let position = roles_size+1;
-    const nameLower = name.toLowerCase();
-    for (let pos = roles_size-1; pos >= 0; pos--) {
-        if (roles.at(pos).name.toLowerCase() <= nameLower) {
-            position = roles_size-pos;
-            break;
-        }
-    }
-    return position;
-}
-
-function findPosition(channels, name) {
-    const channels_size = channels.size;
-    let position = channels_size;
-    const nameLower = name.toLowerCase();
-    for (let pos = 0; pos < channels_size; pos++) {
-        if (channels.at(pos).name.split(" ")[1].toLowerCase() >= nameLower) {
-            position = pos;
-            break;
-        }
-    }
-    return position;
-}
