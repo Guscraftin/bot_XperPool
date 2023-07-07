@@ -1,5 +1,5 @@
 const { Events, EmbedBuilder } = require('discord.js');
-const { channel_logs_join_leave } = require(process.env.CONST);
+const { channel_logs_join_leave, color_basic } = require(process.env.CONST);
 
 module.exports = {
     name: Events.GuildMemberAdd,
@@ -28,7 +28,7 @@ module.exports = {
         if (member.user.bot) return;
 
         const embed2 = new EmbedBuilder()
-            .setColor('#0A038C')
+            .setColor(color_basic)
             .setDescription(`
 ## Bienvenue ${member} !
 
