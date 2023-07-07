@@ -1,10 +1,6 @@
 {
-    "category_xperpool": "1123500723590664252",
-    "category_important": "1123500724060422266",
-    "category_general": "1123500726233071663",
     "category_tickets_members": "1124635581696192544",
     "category_tickets": "1124635554533867540",
-    "category_admin": "1123500726732214304",
 
     "channel_general": "1123500726233071664",
     "channel_suggestions": "1123500726233071665",
@@ -29,6 +25,5 @@
     "emoji_no": "<:Croix_rouge:1123502926342660106>",
 
     "role_admins": "1123500722512744510",
-    "role_members": "1123500722093293664",
-    "role_bots": "1123500722093293663"
+    "role_members": "1123500722093293664"
 }
