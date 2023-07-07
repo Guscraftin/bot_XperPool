@@ -106,7 +106,7 @@ module.exports = {
         // Update the database
         if (!userExists) {
             try {
-                await Members.upsert({ member_id: user.id, first_name: first_name_nor, last_name: last_name_nor, email: email, tel: tel, technologies: technologies });
+                await Members.upsert({ member_id: user.id, first_name: first_name_nor, last_name: last_name_nor, email: email, tel: tel, technologies: technologies, score: 100 });
             } catch (error) {
                 console.error("adminuser.js add - " + error);
                 return interaction.reply({ content: `Une erreur est survenue lors de l'ajout de l'utilisateur ${user} à la base de données.`, ephemeral: true });
