@@ -70,6 +70,7 @@ More information about this project is available on the [XperPool Website](https
   - Update the description mission from the thread staff channel to all thread members.
   - Delete the user of the 'LogMissions' database and his threads channels when he left the guild.
 - Point system:
+  - Add 100 points to a new member (added with the adminuser command).
   - Add 1 point when a member sends a message (cooldown 5 seconds).
   - Add 5 points when a member reacts to a suggestion.
   - Remove 5 points when a member removes his reaction to a suggestion.
