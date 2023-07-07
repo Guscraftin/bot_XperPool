@@ -5,7 +5,7 @@ More information about this project is available on the [XperPool Website](https
 
 ## Commands
 ### Admin Only
-- **admincommu:** manage the 'communities' database.
+- **admincommu:** manage the 'communities' database => Use `/commu` if you want to manage the community. This command is intended only for individuals who are responsible for managing the bot.
   - **add:** add a new community in the database.
   - **list:** list all communities in the database.
   - **delete:** delete a community in the database.
@@ -30,7 +30,7 @@ More information about this project is available on the [XperPool Website](https
   - **edit:** edit a user in the database (update the database, and his commu roles).
 - **clear:** clear some messages in a channel.
 - **commu:** create or delete a commu (role and category) => Sometimes the category is not in the right place, so you'll have to move it by hand to respect the alphabetical order of the communities.
-  - **add:** create a new role and a new category like other commu categories.
+  - **add:** create a new role and a new category like other commu categories. => Use it only if there is at least one community already in the database. Otherwise, manually create the role and channel for the first community, and add it using the `/admincommu` command.
   - **remove:** delete the role and the category of the commu.
 - **docs:** send an predefined embed message. [Only owner bot except for 'Contacter-nous']
 - **embed:** send a custom embed message.
