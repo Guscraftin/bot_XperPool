@@ -30,6 +30,7 @@ module.exports = {
                 * Find the position of the new community
                 */
                 const communities = await Communities.findAll({ order: [['name', 'DESC']] });
+                if (communities.length === 0) return interaction.reply({content: "Avant de créer de nouvelles communautés avec cette commande, vous devez créer manuellement le premier rôle et les premiers salons pour la première communauté. Ensuite, enregistrez-les en utilisant la commande `/admincommu` add. Assurez-vous de **bien placer le rôle de la première communauté dans la liste des rôles** et de **placer la catégorie de la première communauté dans la liste des catégories** du serveur Discord.\n\nUne fois que vous avez créé une autre communauté en utilisant la commande `/commu`, vous pouvez supprimer cette première communauté. Cela garantira que les bonnes permissions et les bons salons sont configurés pour la nouvelle communauté.", ephemeral: true});
                 const rolesCommunities = communities.map(community => community.name);
                 let positionRole = 0;
                 for (let pos = rolesCommunities.length-1; pos >= -1; pos--) {
@@ -39,6 +40,8 @@ module.exports = {
                     }
                 }
                 const startRolePosition = await interaction.guild.roles.fetch(communities[0].role_id).then(role => { return role.position });
+
+                if (rolesCommunities.includes(name)) return interaction.reply({content: "Une communauté avec ce nom existe déjà.", ephemeral: true});
 
                 /*
                  * Create the role and the category
