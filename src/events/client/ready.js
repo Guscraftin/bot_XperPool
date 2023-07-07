@@ -49,8 +49,8 @@ module.exports = {
  * Call the function sendDM() every 48 hours
  */
 async function calledEvery48h(callback, client) {
-    // Call the first time the callback function after 1 hour
-    setTimeout(callback, 60 * 60 * 1000, client);
+    // Call the first time the callback function after 12 hours
+    setTimeout(callback, 12 * 60 * 60 * 1000, client);
 
     // Call the callback function every 48 hours
     setInterval(callback, 48 * 60 * 60 * 1000, client);
