@@ -85,14 +85,21 @@ module.exports = {
                 const community3 = interaction.options.getChannel('commu3');
 
                 // Check the community category
-                const category1 = await Communities.findOne({ where: { category_id: community1.id } });
-                if (!category1) return interaction.reply({ content: `La commu1 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                let category1, category2, category3;
+                if (community1) {
+                    category1 = await Communities.findOne({ where: { category_id: community1.id } });
+                    if (!category1) return interaction.reply({ content: `La commu1 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                }
 
-                const category2 = await Communities.findOne({ where: { category_id: community2.id } });
-                if (!category2) return interaction.reply({ content: `La commu2 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                if (community2) {
+                    category2 = await Communities.findOne({ where: { category_id: community2.id } });
+                    if (!category2) return interaction.reply({ content: `La commu2 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                }
                 
-                const category3 = await Communities.findOne({ where: { category_id: community3.id } });
-                if (!category3) return interaction.reply({ content: `La commu3 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                if (community3) {
+                    category3 = await Communities.findOne({ where: { category_id: community3.id } });
+                    if (!category3) return interaction.reply({ content: `La commu3 doit être une catégorie correspondant à une technologie.`, ephemeral: true });
+                }
 
                 if (community1 && community2 || community1 && community3 || community2 && community3) {
                     if (community1 === community2 || community1 === community3 || community2 === community3) return interaction.reply({ content: `Les 3 communautés doivent être différentes.`, ephemeral: true });
@@ -109,23 +116,24 @@ module.exports = {
                 if (messageDetail.content.length > maxCharacter) return interaction.reply({ content: `${messageDetail.url} doit contenir **moins de ${maxCharacter+1}**. Actuellement, il en a ${messageDetail.content.length}.`, ephemeral: true });
 
                 // Get the mission channel of the community category
-                const channel1 = await interaction.guild.channels.fetch(category1.channel_mission_id);
-                const channel2 = await interaction.guild.channels.fetch(category2.channel_mission_id);
-                const channel3 = await interaction.guild.channels.fetch(category3.channel_mission_id);
+                let channel1, channel2, channel3;
+                if (category1) channel1 = await interaction.guild.channels.fetch(category1.channel_mission_id);
+                if (category2) channel2 = await interaction.guild.channels.fetch(category2.channel_mission_id);
+                if (category3) channel3 = await interaction.guild.channels.fetch(category3.channel_mission_id);
 
                 // Create the commu channel in description of the embed
                 let commuLine = "";
                 if (channel1 || channel2 || channel3) {
                     commuLine = "\nEt dans ▸ ";
                     if (channel1) {
-                        commuLine += `${channel1.first()}`;
+                        commuLine += `${channel1}`;
                         if (channel2 || channel3) commuLine += ", ";
                     }
                     if (channel2) {
-                        commuLine += `${channel2.first()}`;
+                        commuLine += `${channel2}`;
                         if (channel3) commuLine += ", ";
                     }
-                    if (channel3) commuLine += `${channel3.first()}`;
+                    if (channel3) commuLine += `${channel3}`;
                 }
 
 

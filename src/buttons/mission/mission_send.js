@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const { Missions } = require("../../dbObjects");
+const { Communities, Missions } = require("../../dbObjects");
 
 /**
  * Come from src/commands/admin/mission.js
@@ -46,9 +46,10 @@ module.exports = {
             for (const channel of particulars_channel) {
                 async function processChannel() {
                     const particular_channel = await interaction.guild.channels.fetch(channel);
-                    const nameBrut = particular_channel.name.slice(9);
-                    const name = nameBrut.replace(/-/g, ' ');
-                    const role = await role_fetch.find(role => role.name.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '') == name);
+                    const community = await Communities.findOne({ where: { channel_mission_id: channel } });
+                    if (!community) return interaction.editReply({ content: "Une erreur est survenue lors de la récupération de la communauté.", ephemeral: true });
+                    const role = await interaction.guild.roles.fetch(community.role_id);
+                    if (!role) return interaction.editReply({ content: "Une erreur est survenue lors de la récupération du rôle.", ephemeral: true });
 
                     const particular_msg = await particular_channel.send({
                         content: `${role}, voici une nouvelle mission qui pourrait vous intéresser :`,
