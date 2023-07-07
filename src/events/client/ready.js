@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Events } = require('discord.js');
 const { channel_detail_missions, color_basic } = require(process.env.CONST);
-const { Items, Members, Missions, LogMissions, Tickets } = require('../../dbObjects');
+const { Communities, Items, Members, Missions, LogMissions, Tickets } = require('../../dbObjects');
 
 module.exports = {
     name: Events.ClientReady,
@@ -14,6 +14,7 @@ module.exports = {
 
         // Sync db models with db
         try {
+            await Communities.sync({ alter: true });
             await Items.sync({ alter: true });
             await Members.sync({ alter: true });
             await Missions.sync({ alter: true });
@@ -111,7 +112,6 @@ async function fetchLatestArticles(client, rssUrl, channelId) {
         const latestArticles = feed.items[0];
 
         if (latestArticles) {
-            // console.log(latestArticles);
             const channel = await client.channels.fetch(channelId);
 
             const existingArticles = await Articles.findOne({ where: { link: latestArticles.link } });
