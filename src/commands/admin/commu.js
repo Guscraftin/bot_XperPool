@@ -61,7 +61,7 @@ module.exports = {
                 const category = await interaction.guild.channels.create({
                     name: `💻┃Commu ${name}`,
                     type: ChannelType.GuildCategory,
-                    position: startCategoryPosition + positionRole-communities.length,
+                    position: startCategoryPosition + communities.length-positionRole,
                     permissionOverwrites: [
                         {
                             id: interaction.guild.roles.everyone.id,
