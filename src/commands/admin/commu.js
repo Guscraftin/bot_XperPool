@@ -30,30 +30,34 @@ module.exports = {
                 * Find the position of the new community
                 */
                 const communities = await Communities.findAll({ order: [['name', 'DESC']] });
-                if (communities.length === 0) return interaction.reply({content: "Avant de créer de nouvelles communautés avec cette commande, vous devez créer manuellement le premier rôle et les premiers salons pour la première communauté. Ensuite, enregistrez-les en utilisant la commande `/admincommu` add. Assurez-vous de **bien placer le rôle de la première communauté dans la liste des rôles** et de **placer la catégorie de la première communauté dans la liste des catégories** du serveur Discord.\n\nUne fois que vous avez créé une autre communauté en utilisant la commande `/commu`, vous pouvez supprimer cette première communauté. Cela garantira que les bonnes permissions et les bons salons sont configurés pour la nouvelle communauté.", ephemeral: true});
+                if (communities.length === 0) return interaction.reply({ content: "Avant de créer de nouvelles communautés avec cette commande, vous devez créer manuellement le premier rôle et les premiers salons pour la première communauté. Ensuite, enregistrez-les en utilisant la commande `/admincommu` add. Assurez-vous de **bien placer le rôle de la première communauté dans la liste des rôles** et de **placer la catégorie de la première communauté dans la liste des catégories** du serveur Discord.\n\nUne fois que vous avez créé une autre communauté en utilisant la commande `/commu`, vous pouvez supprimer cette première communauté. Cela garantira que les bonnes permissions et les bons salons sont configurés pour la nouvelle communauté.", ephemeral: true });
                 const rolesCommunities = communities.map(community => community.name);
                 let positionRole = 0;
-                for (let pos = rolesCommunities.length-1; pos >= -1; pos--) {
+                for (let pos = rolesCommunities.length - 1; pos >= -1; pos--) {
                     if (rolesCommunities[pos] >= name) {
-                        positionRole = pos+1;
+                        positionRole = pos + 1;
                         break;
                     }
                 }
                 const startRolePosition = await interaction.guild.roles.fetch(communities[0].role_id).then(role => { return role.position });
 
-                if (rolesCommunities.includes(name)) return interaction.reply({content: "Une communauté avec ce nom existe déjà.", ephemeral: true});
+                if (rolesCommunities.includes(name)) return interaction.reply({ content: "Une communauté avec ce nom existe déjà.", ephemeral: true });
 
                 /*
                  * Create the role and the category
                  */
                 // Create the role with a random color
-                const color = Math.floor(Math.random()*16777215).toString(16);
+                let color = Math.floor(Math.random() * 16777215).toString(16);
+                while (color.length < 6) {
+                    color = "0" + color;
+                }
                 const role = await interaction.guild.roles.create({
                     name: name,
                     color: color,
                     position: startRolePosition + positionRole,
                     permissions: [],
                 });
+                await role.delete();
 
                 // Create the category
                 const startCategoryPosition = await interaction.guild.channels.fetch(communities[communities.length-1].category_id).then(channel => { return channel.position });
@@ -107,20 +111,20 @@ module.exports = {
                     role_id: role.id,
                     channel_mission_id: channel_mission.id,
                 });
- 
-                return interaction.reply({content: `La communauté **${name}** a été ajoutée au serveur.`, ephemeral: true});
+
+                return interaction.reply({ content: `La communauté **${name}** a été ajoutée au serveur.`, ephemeral: true });
 
             /**
              * Remove a commu
              */
             case 'remove':
-                if (!confirmation) return interaction.reply({content: "Vous devez confirmer la suppression de la communauté.", ephemeral: true});
+                if (!confirmation) return interaction.reply({ content: "Vous devez confirmer la suppression de la communauté.", ephemeral: true });
 
-                const community = await Communities.findOne({where: {category_id: del_category.id}});
-                if (!community) return interaction.reply({content: "La catégorie n'est pas une communauté technologique.", ephemeral: true});
-                
+                const community = await Communities.findOne({ where: { category_id: del_category.id } });
+                if (!community) return interaction.reply({ content: "La catégorie n'est pas une communauté technologique.", ephemeral: true });
+
                 const del_role = await interaction.guild.roles.fetch(community.role_id);
-                if (!del_role) return interaction.reply({content: "Le rôle de la communauté n'a pas été trouvé.", ephemeral: true});
+                if (!del_role) return interaction.reply({ content: "Le rôle de la communauté n'a pas été trouvé.", ephemeral: true });
 
                 // Delete the role
                 const del_name_role = del_role.name;
@@ -135,10 +139,10 @@ module.exports = {
                 // Delete the community in the database
                 await community.destroy();
 
-                return interaction.reply({content: `La communauté **${del_name_role}** a été supprimée du serveur.`, ephemeral: true});
+                return interaction.reply({ content: `La communauté **${del_name_role}** a été supprimée du serveur.`, ephemeral: true });
 
             default:
-                return interaction.reply({content: "Une erreur est survenue.", ephemeral: true});
+                return interaction.reply({ content: "Une erreur est survenue.", ephemeral: true });
         }
     },
 };
