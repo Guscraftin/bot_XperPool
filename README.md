@@ -60,7 +60,7 @@ More information about this project is available on the [XperPool Website](https
 
 ## Features
 - Send a welcome DM message when a user joins the guild.
-- Send a reminder DM message every 48 hours to users in the guild who do not have the "Members" role.
+- Send a reminder DM message 12 hours after the bot is started, then every 48 hours to users in the guild who do not have the "Members" role.
 - Send a welcome message in the general channel when the user receives the "Members" role.
 - Ticket system:
   - Asks the user the reason for opening the ticket (via a select menu).
