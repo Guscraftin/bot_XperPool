@@ -88,9 +88,9 @@ module.exports = {
         
         // Check the technologies
         const technologiesArray = technologies ? technologies.split(', ') : [];
-        const technologiesArrayFiltered = technologiesArray.filter(technology => technology !== '');
+        const technologiesArrayFiltered = await technologiesArray.filter(technology => technology !== '');
         const communities = await Communities.findAll();
-        const communitiesArray = communities.map(community => community.name);
+        const communitiesArray = await communities.map(community => community.name);
 
         // Check if the role exists in the database
         let technoRoles = [];
@@ -98,7 +98,7 @@ module.exports = {
             if (!communitiesArray.includes(technology)) {
                 return interaction.reply({ content: `Le rôle \`${technology}\` n'existe pas sur le serveur/dans la base de donnée.`, ephemeral: true });
             } else {
-                const role = interaction.guild.fetch(communities[communitiesArray.indexOf(technology)].role_id);
+                const role = await interaction.guild.roles.fetch(communities[communitiesArray.indexOf(technology)].role_id);
                 if (role) technoRoles.push(role);
             }
         }
@@ -146,9 +146,9 @@ module.exports = {
             return interaction.reply({ content: `${user} a été ajouté à la base de données.`, ephemeral: true });
 
         } else {        
-            const userRolesArray = user.roles.cache.map(role => role);
-            const userRolesArrayFiltered = userRolesArray.filter((role) => communitiesArray.includes(role.name))
-            const userRolesToRemove = userRolesArrayFiltered.filter(role => !technoRoles.includes(role));
+            const userRolesArray = await user.roles.cache.map(role => role);
+            const userRolesArrayFiltered = await userRolesArray.filter((role) => communitiesArray.includes(role.name));
+            const userRolesToRemove = await userRolesArrayFiltered.filter(role => !technoRoles.includes(role));
             const userRolesToAdd = technoRoles.filter(role => !userRolesArrayFiltered.includes(role));
 
             if (userRolesToRemove.length > 0) {
