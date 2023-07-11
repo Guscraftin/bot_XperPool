@@ -62,7 +62,7 @@ module.exports = {
                     .setColor(color_basic)
                     .setThumbnail('https://images-ext-2.discordapp.net/external/sHMmkyKqLTBXwgigTcXBA0TCHhdTa4rIBfDt15wdWtA/https/cdn-longterm.mee6.xyz/plugins/embeds/images/1079366462050934784/bf7b417c7216b32a517d0a4abaa8679b74f15b334a800b49c16890b486b8e1cf.png?width=253&height=253')
                     .setDescription(`_ _
-Remplissez rapidement notre court questionnaire pour rejoindre officiellement la communauté et accéder à des salons exclusifs ("missions-disponibles","astuces",...) :
+Remplissez ce questionnaire en quelques clics pour rejoindre officiellement la communauté et accéder à des salons exclusifs (*"missions-disponibles"*,*"astuces"*,...) :
 
 🔗 **[Lien du questionnaire : https://tally.so/r/3EKPvN]**
 
