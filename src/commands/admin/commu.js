@@ -57,7 +57,6 @@ module.exports = {
                     position: startRolePosition + positionRole,
                     permissions: [],
                 });
-                await role.delete();
 
                 // Create the category
                 const startCategoryPosition = await interaction.guild.channels.fetch(communities[communities.length-1].category_id).then(channel => { return channel.position });
