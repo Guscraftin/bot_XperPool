@@ -102,10 +102,9 @@ More information about this project is available on the [XperPool Website](https
 
 ## Information about update of the server
 ### Something you can't change without break the bot
-- The field author in suggest.js command (' - ')
 - The name of the thread when a member react interested to a mission (need space between name and mission id) in mission.js command
-- The channel mission in all tech category need to start by 'mission-' in mission.js command
 - Format of the nickname: need a '_' between first name and surname in adminuser.js command
+- The field author in suggest.js command (' - ')
 - Description in leaderboard ticket in ticket_previous.js/ticket_next.js button and adminticket.js command
 - The footer of the shop in shop_previous.js/shop_next.js button and boutique.js command
 - The footer of the shop in score_lb_previous.js/score_lb_next.js button and leaderboard.js command

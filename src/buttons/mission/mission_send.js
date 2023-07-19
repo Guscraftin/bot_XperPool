@@ -100,18 +100,6 @@ module.exports = {
             });
         }
 
-        // Change the channel staff name with the id of the mission
-        const channel_staff = await interaction.guild.channels.fetch(channel_staff_id).catch(() => { return null; });
-        if (!channel_staff) return interaction.editReply({ content: "Le salon staff de la mission n'existe plus.", ephemeral: true });
-        try {
-            if (channel_staff.name !== `Mission ${mission.id}`) {
-                await channel_staff.setName(`Mission ${mission.id}`);
-            }
-        } catch (error) {
-            console.error("mission_send.js - " + error);
-            return interaction.editReply({ content: `Une erreur est survenue lors du changement du nom du channel staff. De ce fait, vous devez changer manuellement le nom du salon ${channel_staff} avec \`Mission ${mission.id}\`.`, ephemeral: true });
-        }
-
         return interaction.editReply({ content: "La mission a bien été publiée.", ephemeral: true });
     }
 };
