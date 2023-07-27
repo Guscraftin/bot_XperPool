@@ -11,7 +11,7 @@ module.exports = {
             .setName('message')
             .setDescription("L'id du message de la suggestion.")
             .addChoices(
-                { name: "Contacter-nous", value: "contact" },
+                { name: "Contactez-nous", value: "contact" },
                 { name: "Bienvenue", value: "welcome" },
                 { name: "Règlement", value: "rules" },
                 { name: "Avantages", value: "advantages" },
@@ -28,7 +28,7 @@ module.exports = {
              * Contact message
              */
             const embed = new EmbedBuilder()
-                .setTitle("Contacter-nous")
+                .setTitle("Contactez-nous")
                 .setDescription("Vous pouvez nous contacter en cliquant sur le bouton 📩")
                 .setColor(color_basic)
                 .setTimestamp()
@@ -38,7 +38,7 @@ module.exports = {
                 .addComponents(
                     new ButtonBuilder()
                         .setCustomId("panel_ticket")
-                        .setLabel("Contacter-nous")
+                        .setLabel("Contactez-nous")
                         .setStyle(ButtonStyle.Primary)
                         .setEmoji("📩")
                 );
