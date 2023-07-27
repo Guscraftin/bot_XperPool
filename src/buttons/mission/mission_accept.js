@@ -50,8 +50,18 @@ module.exports = {
             ])
             .setTimestamp()
             .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+        const buttonsStaff = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setLabel("Accepter")
+                .setCustomId(`mission_candidate_accept`)
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+                .setLabel("Refuser")
+                .setCustomId(`mission_candidate_refuse`)
+                .setStyle(ButtonStyle.Danger)
+        );  
 
-        await channel_staff.send({ content: `${interaction.member} a accepté la mission ! ||(${roleAdmin})||`, embeds: [embed] });
+        await channel_staff.send({ content: `${interaction.member} a accepté la mission ! ||(${roleAdmin})||`, embeds: [embed], components: [buttonsStaff] });
         
 
         // Disable button

@@ -71,7 +71,7 @@ More information about this project is available on the [XperPool Website](https
   - Delete the user of the 'Tickets' database and his ticket channel when he left the guild.
 - Mission system:
   - Logs in the database and create a thread in details-mission when a member reacts to a mission.
-  - Send log message in staff thread, update the database and disable button for the member when he accept the mission.
+  - Send log message in staff thread, update the database and disable button for the member when he accept the mission. A staff member can accept or refuse the candidate of the user (the bot send the answer to the user).
   - Update the description mission from the thread staff channel to all thread members.
   - Delete the user of the 'LogMissions' database and his threads channels when he left the guild.
 - Point system:
@@ -104,6 +104,7 @@ More information about this project is available on the [XperPool Website](https
 ### Something you can't change without break the bot
 - The name of the thread when a member react interested to a mission (need space between name and mission id) in mission.js command
 - Format of the nickname: need a '_' between first name and surname in adminuser.js command
+- Title of the mission in the first field in embed of mission in mission_candidature_refuse/accept.js
 - The field author in suggest.js command (' - ')
 - Description in leaderboard ticket in ticket_previous.js/ticket_next.js button and adminticket.js command
 - The footer of the shop in shop_previous.js/shop_next.js button and boutique.js command
