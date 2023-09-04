@@ -41,6 +41,7 @@ module.exports = {
 
 
         // Get the detail mission of the channel staff
+        console.log(`Id mission: ${mission_id} - Id member: ${interaction.user.id} - Id salon staff mission: ${mission.channel_staff_id}`);
         const channel_staff = await interaction.guild.channels.fetch(mission.channel_staff_id);
         const detail_mission_staff = await channel_staff.messages.fetch().then(messages => { return messages.at(-1).content });
 
