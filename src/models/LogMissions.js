@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0,
             allowNull: false,
         },
+        mission_name: {
+            type: DataTypes.STRING,
+            defaultValue: '',
+            allowNull: false,
+        },
         user_id: {
             type: DataTypes.STRING,
             defaultValue: '0',

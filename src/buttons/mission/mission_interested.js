@@ -76,6 +76,7 @@ module.exports = {
             }
             LogMissions.upsert({
                 mission_id: mission.id,
+                mission_name: mission.name,
                 channel_details: channel.id,
                 user_id: interaction.user.id,
                 first_name: user_name[0],
@@ -86,7 +87,7 @@ module.exports = {
             });
         } catch (error) {
             console.error("mission_interested.js - " + error);
-            return interaction.editReply({ content: "Une erreur est survenue lors de l'ajout de votre réponse dans la base de donnée.\nVeuillez contacter un admins du serveur discord.", ephemeral: true });
+            return interaction.editReply({ content: "Une erreur est survenue lors de l'ajout de votre réponse dans la base de donnée.\nVeuillez contacter un admin du serveur discord.", ephemeral: true });
         }
 
         const row = new ActionRowBuilder().addComponents(

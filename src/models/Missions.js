@@ -5,6 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true,
         },
+        name: {
+            type: DataTypes.STRING,
+            defaultValue: '',
+            allowNull: false,
+        },
         main_msg_id: {
             type: DataTypes.STRING,
             defaultValue: '0',

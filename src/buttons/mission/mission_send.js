@@ -71,6 +71,7 @@ module.exports = {
         try {
             if (is_particular) {
                 mission = await Missions.create({
+                    name: missionEmbed.fields[0].value,
                     main_msg_id: main_msg.id,
                     particulars_msg_id: particulars_msg_id,
                     channel_particulars_id: particulars_channel,
@@ -78,6 +79,7 @@ module.exports = {
                 });
             } else {
                 mission = await Missions.create({
+                    name: missionEmbed.fields[0].value,
                     main_msg_id: main_msg.id,
                     channel_staff_id: channel_staff_id,
                 });
