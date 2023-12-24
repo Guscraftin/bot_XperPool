@@ -28,9 +28,11 @@ module.exports = {
                 let newMsg;
                 switch (options) {
                     case "only_content":
+                        if (!msg.content) return interaction.reply({ content: "Le message à copier n'a pas de contenu.", ephemeral: true });
                         newMsg = await channel.send({ content: msg.content });
                         break;
                     case "only_embed":
+                        if (!msg.embeds.length) return interaction.reply({ content: "Le message à copier n'a pas d'embed.", ephemeral: true });
                         newMsg = await channel.send({ embeds: msg.embeds });
                         break;
                     default:
