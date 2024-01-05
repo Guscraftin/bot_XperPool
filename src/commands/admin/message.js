@@ -16,6 +16,7 @@ module.exports = {
             ).setRequired(true))
             .addChannelOption(option => option.setName("salon").setDescription("Le salon où déplacer le message.").setRequired(true).addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread, ChannelType.GuildAnnouncement))),
     async execute(interaction) {
+        await interaction.deferReply({ ephemeral: true });
         const id = interaction.options.getString("id");
         const options = interaction.options.getString("options");
         const channel = interaction.options.getChannel("salon");
@@ -23,26 +24,26 @@ module.exports = {
         switch (interaction.options.getSubcommand()) {
             case "copier":
                 const msg = await interaction.channel.messages.fetch(id).catch(() => { return null; });
-                if (!msg || msg.size > 1) return interaction.reply({ content: "Le message à copier n'existe pas.", ephemeral: true });
+                if (!msg || msg.size > 1) return interaction.editReply({ content: "Le message à copier n'existe pas.", ephemeral: true });
 
                 let newMsg;
                 switch (options) {
                     case "only_content":
-                        if (!msg.content) return interaction.reply({ content: "Le message à copier n'a pas de contenu.", ephemeral: true });
+                        if (!msg.content) return interaction.editReply({ content: "Le message à copier n'a pas de contenu.", ephemeral: true });
                         newMsg = await channel.send({ content: msg.content });
                         break;
                     case "only_embed":
-                        if (!msg.embeds.length) return interaction.reply({ content: "Le message à copier n'a pas d'embed.", ephemeral: true });
+                        if (!msg.embeds.length) return interaction.editReply({ content: "Le message à copier n'a pas d'embed.", ephemeral: true });
                         newMsg = await channel.send({ embeds: msg.embeds });
                         break;
                     default:
                         newMsg = await channel.send({ content: msg.content, embeds: msg.embeds });
                         break;
                 }
-                return interaction.reply({ content: `Message correctement copié : ${newMsg.url} !`, ephemeral: true });
+                return interaction.editReply({ content: `Message correctement copié : ${newMsg.url} !`, ephemeral: true });
                 
             default:
-                return interaction.reply({ content: "Cette sous-commande n'existe pas.", ephemeral: true });
+                return interaction.editReply({ content: "Cette sous-commande n'existe pas.", ephemeral: true });
         }
     }
 }
