@@ -14,6 +14,8 @@ module.exports = {
             try {
                 await command.execute(interaction);
             } catch (error) {
+                await interaction.reply({ content: "Il y a eu une erreur lors de l'exécution de cette commande. Veuillez réessayer !", ephemeral: true });
+
                 console.error(`Erreur lors de l'exécution de la commande ${interaction.commandName}`);
                 console.error(error);
             }
@@ -26,6 +28,8 @@ module.exports = {
             try {
                 await button.execute(interaction);
             } catch (error) {
+                await interaction.reply({ content: "Il y a eu une erreur lors de l'exécution de ce bouton. Veuillez réessayer !", ephemeral: true });
+
                 console.error(`Erreur d'exécution du boutton : ${interaction.customId}`);
                 console.error(error);
             }
