@@ -59,7 +59,9 @@ module.exports = {
             .setFooter({ text: newMessage.guild.name, iconURL: newMessage.guild.iconURL() })
 
         // Logs for edited messages
-        if ((oldContentMessage === null || oldContentMessage.length <= 1024) && newContentMessage.length <= 1024) {
+        const sizeValueInField = 1024;
+        const sizeDefaultDesign = 6;
+        if ((oldContentMessage === null || oldContentMessage.length <= sizeValueInField - sizeDefaultDesign) && newContentMessage.length <= sizeValueInField - sizeDefaultDesign) {
             embed
                 .setDescription(`**Message envoyé par <@${newMessage.author.id}> modifié dans ${newMessage.channel}.** [Aller au message.](${newMessage.url})`)
                 .addFields([
